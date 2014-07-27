@@ -1,4 +1,4 @@
-package java.io.serialport;
+package java.mc.serialport;
 
 /**
  * Serial Port listener.

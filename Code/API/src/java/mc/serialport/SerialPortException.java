@@ -1,4 +1,4 @@
-package java.io.serialport;
+package java.mc.serialport;
 
 import java.mc.MicroApplicationException;
 
