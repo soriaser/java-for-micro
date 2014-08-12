@@ -1,5 +1,6 @@
 package jmc.converter;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
 
@@ -176,6 +177,16 @@ public class JCConverter {
         if (jmcFileClass != null) {
             JMCFile jmcFile = new JMCFile();
             jmcFile.addClass(jmcFileClass);
+
+            String fileName = (new File(args[0])).getAbsolutePath();
+
+            if (fileName.contains(".")) {
+                fileName = fileName.substring(0, fileName.lastIndexOf("."));
+            }
+
+            fileName += ".jmc";
+
+            jmcFile.createOutputFile(fileName);
         }
     }
 
