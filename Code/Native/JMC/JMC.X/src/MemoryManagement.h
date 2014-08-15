@@ -16,6 +16,8 @@ extern unsigned char Mm_GetByteNVM(unsigned char *byte);
 
 extern void Mm_SetByteNVM(unsigned char *byte, unsigned char value);
 
+extern void Mm_SetBytesNVM(unsigned short *bytes, unsigned short value);
+
 #ifdef	__cplusplus
 }
 #endif
