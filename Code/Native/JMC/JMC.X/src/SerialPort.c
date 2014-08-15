@@ -1,6 +1,8 @@
 #include "Common.h"
-#include "SerialPort.h"
+
 #include "Loader.h"
+#include "MemoryManagement.h"
+#include "SerialPort.h"
 
 #define SERIALPORT_RX_BUFFER_SIZE 10
 
@@ -29,7 +31,8 @@ void SerialPort_ISR(void)
         CREN = 1;
     }
 
-    if (Loader_IsLoaderEnabled) {
+    if (LOADER_ENABLED == 
+            Mm_GetByteNVM((unsigned char *) &Loader_IsLoaderEnabled)) {
         Loader_ISR();
     }
 

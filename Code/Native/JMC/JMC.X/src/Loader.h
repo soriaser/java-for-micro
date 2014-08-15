@@ -18,9 +18,9 @@ extern "C" {
 
 #define LOADER_ENABLED      0x01
 
-extern unsigned char Loader_InputArrayPointer;
+extern const unsigned char Loader_InputArrayPointer;
 
-extern unsigned char Loader_IsLoaderEnabled;
+extern const unsigned char Loader_IsLoaderEnabled;
 
 extern volatile unsigned char Loader_InputArray[LOADER_INPUT_ARRAY_MAX_SIZE];
 
