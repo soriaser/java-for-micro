@@ -4,7 +4,24 @@
 #include "MemoryManagement.h"
 #include "SerialPort.h"
 
+#define LOADER_CMD_CLA 0x00
+
+#define LOADER_CMD_CLA_OFFSET   0
+#define LOADER_CMD_INS_OFFSET   1
+#define LOADER_CMD_LEN_OFFSET   4
+#define LOADER_CMD_DATA_OFFSET  6
+
+#define LOADER_CMD_LOAD_INS 0xA0
+
+#define LOADER_ERROR_CLA_NOT_SUPPORTED  0x6E00
+#define LOADER_ERROR_INS_NOT_SUPPORTED  0x6D00
+
+#define LOADER_STATE_IDLE           0x00
+#define LOADER_STATE_PROCESS_DATA   0x01
+
 const unsigned char Loader_IsLoaderEnabled = LOADER_ENABLED;
+
+volatile unsigned char Loader_CmdReceived = 0x00;
 
 volatile unsigned char Loader_CurrentValue = 0xFF;
 
@@ -21,9 +38,25 @@ void Loader_ISR(void)
     switch (Loader_LoaderState) {
         case LOADER_STATE_IDLE:
             Loader_ProcessCommandHeader();
-            Loader_InputOffset++;
             break;
         case LOADER_STATE_PROCESS_DATA:
+            Loader_ProcessCommandData();
+            break;
+    }
+
+    Loader_InputOffset++;
+}
+
+void Loader_ProcessCommandLoad(void)
+{
+    // TODO
+}
+
+void Loader_ProcessCommandData(void)
+{
+    switch (Loader_CmdReceived) {
+        case LOADER_CMD_LOAD_INS:
+            Loader_ProcessCommandLoad();
             break;
     }
 }
@@ -32,13 +65,14 @@ void Loader_ProcessCommandHeader(void)
 {
     switch (Loader_InputOffset) {
         case LOADER_CMD_CLA_OFFSET:
-            if (LOADER_CMD_LOAD_CLA != Loader_CurrentValue) {
+            if (LOADER_CMD_CLA != Loader_CurrentValue) {
                 Loader_SendError(LOADER_ERROR_CLA_NOT_SUPPORTED);
             }
             break;
         case LOADER_CMD_INS_OFFSET:
             switch (Loader_CurrentValue) {
                 case LOADER_CMD_LOAD_INS:
+                    Loader_CmdReceived = Loader_CurrentValue;
                     break;
                 default:
                     Loader_SendError(LOADER_ERROR_INS_NOT_SUPPORTED);
