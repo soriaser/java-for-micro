@@ -7,17 +7,25 @@
 #define LOADER_CMD_CLA 0x00
 
 #define LOADER_CMD_CLA_OFFSET   0
-#define LOADER_CMD_INS_OFFSET   1
-#define LOADER_CMD_LEN_OFFSET   4
-#define LOADER_CMD_DATA_OFFSET  6
+#define LOADER_CMD_INS_OFFSET   LOADER_CMD_CLA_OFFSET + 1
+#define LOADER_CMD_PR1_OFFSET   LOADER_CMD_INS_OFFSET + 1
+#define LOADER_CMD_PR2_OFFSET   LOADER_CMD_PR1_OFFSET + 1
+#define LOADER_CMD_LEN_OFFSET   LOADER_CMD_PR2_OFFSET + 1
+#define LOADER_CMD_DATA_OFFSET  LOADER_CMD_LEN_OFFSET + 2
 
 #define LOADER_CMD_LOAD_INS 0xA0
 
+#define LOADER_CMD_LOAD_VERSION_OFFSET  LOADER_CMD_DATA_OFFSET
+
 #define LOADER_ERROR_CLA_NOT_SUPPORTED  0x6E00
 #define LOADER_ERROR_INS_NOT_SUPPORTED  0x6D00
+#define LOADER_ERROR_WRONG_DATA         0x6A80
 
 #define LOADER_STATE_IDLE           0x00
 #define LOADER_STATE_PROCESS_DATA   0x01
+
+#define LOADER_VERSION_MSB 0x00
+#define LOADER_VERSION_LSB 0x01
 
 const unsigned char Loader_IsLoaderEnabled = LOADER_ENABLED;
 
@@ -25,9 +33,9 @@ volatile unsigned char Loader_CmdReceived = 0x00;
 
 volatile unsigned char Loader_CurrentValue = 0xFF;
 
-volatile unsigned char Loader_InputOffset = 0x00;
-
 volatile unsigned char Loader_LoaderState = LOADER_STATE_IDLE;
+
+volatile unsigned short Loader_InputOffset = 0;
 
 volatile unsigned short Loader_InputCmdLength = 0x00;
 
@@ -49,7 +57,22 @@ void Loader_ISR(void)
 
 void Loader_ProcessCommandLoad(void)
 {
-    // TODO
+    unsigned char error = 0x00;
+
+    if (Loader_InputCmdLength + LOADER_CMD_DATA_OFFSET >= Loader_InputOffset) {
+        switch (Loader_InputOffset) {
+            case LOADER_CMD_LOAD_VERSION_OFFSET:
+                error = (LOADER_VERSION_MSB != Loader_CurrentValue);
+                break;
+            case LOADER_CMD_LOAD_VERSION_OFFSET + 1:
+                error = (LOADER_VERSION_LSB != Loader_CurrentValue);
+                break;
+        }
+    }
+
+    if (0x00 < error) {
+        Loader_SendError(LOADER_ERROR_WRONG_DATA);
+    }
 }
 
 void Loader_ProcessCommandData(void)

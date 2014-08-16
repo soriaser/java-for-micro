@@ -27,5 +27,5 @@ void main(void) {
         SerialPort_Init();
     }
 
-    return;
+    while (1);
 }

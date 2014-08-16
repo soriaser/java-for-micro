@@ -22,9 +22,9 @@ extern volatile unsigned char Loader_CmdReceived;
 
 extern volatile unsigned char Loader_CurrentValue;
 
-extern volatile unsigned char Loader_InputOffset;
-
 extern volatile unsigned char Loader_LoaderState;
+
+extern volatile unsigned short Loader_InputOffset;
 
 extern volatile unsigned short Loader_InputCmdLength;
 
