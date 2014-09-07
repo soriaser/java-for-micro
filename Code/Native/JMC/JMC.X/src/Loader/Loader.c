@@ -21,34 +21,38 @@
 #define LOADER_ERROR_INS_NOT_SUPPORTED  0x6D00
 #define LOADER_ERROR_WRONG_DATA         0x6A80
 
-#define LOADER_STATE_IDLE           0x00
-#define LOADER_STATE_PROCESS_DATA   0x01
+#define LOADER_STATE_IDLE                       0x00
+#define LOADER_STATE_PROCESS_DATA               0x80
+#define LOADER_STATE_PROCESS_DATA_LOAD_CMD_TAG  LOADER_STATE_PROCESS_DATA | 0x01
+#define LOADER_STATE_PROCESS_DATA_LOAD_CMD_LEN  LOADER_STATE_PROCESS_DATA | 0x02
+#define LOADER_STATE_END                        0xFF
 
 #define LOADER_VERSION_MSB 0x00
 #define LOADER_VERSION_LSB 0x01
 
-const unsigned char Loader_IsLoaderEnabled = LOADER_ENABLED;
+uint8_t Loader_CmdReceived = 0x00;
 
-volatile unsigned char Loader_CmdReceived = 0x00;
+uint8_t Loader_CurrentValue = 0xFF;
 
-volatile unsigned char Loader_CurrentValue = 0xFF;
+uint8_t Loader_LoaderState = LOADER_STATE_IDLE;
 
-volatile unsigned char Loader_LoaderState = LOADER_STATE_IDLE;
+uint16_t Loader_InputOffset = 0;
 
-volatile unsigned short Loader_InputOffset = 0;
-
-volatile unsigned short Loader_InputCmdLength = 0x00;
+uint16_t Loader_InputCmdLength = 0x00;
 
 void Loader_ISR(void)
 {
     Loader_CurrentValue = RCREG;
 
-    switch (Loader_LoaderState) {
+    switch (Loader_LoaderState & 0x80) {
         case LOADER_STATE_IDLE:
             Loader_ProcessCommandHeader();
             break;
         case LOADER_STATE_PROCESS_DATA:
             Loader_ProcessCommandData();
+            break;
+        case LOADER_STATE_END:
+            Mm_SetU08((uint32_t *) &Loader_IsLoaderEnabled, LOADER_DISABLED);
             break;
     }
 
@@ -57,7 +61,7 @@ void Loader_ISR(void)
 
 void Loader_ProcessCommandLoad(void)
 {
-    unsigned char error = 0x00;
+    uint8_t error = 0x00;
 
     if (Loader_InputCmdLength + LOADER_CMD_DATA_OFFSET >= Loader_InputOffset) {
         switch (Loader_InputOffset) {
@@ -66,6 +70,12 @@ void Loader_ProcessCommandLoad(void)
                 break;
             case LOADER_CMD_LOAD_VERSION_OFFSET + 1:
                 error = (LOADER_VERSION_LSB != Loader_CurrentValue);
+                break;
+            default:
+                switch (Loader_LoaderState) {
+                    case LOADER_STATE_PROCESS_DATA_LOAD_CMD_TAG:
+                        break;
+                }
                 break;
         }
     }
@@ -122,9 +132,9 @@ void Loader_ProcessLoadHeader(void)
     }
 }
 
-void Loader_SendError(unsigned short error)
+void Loader_SendError(uint16_t error)
 {
     SerialPort_DisableRx();
-    SerialPort_Send((unsigned char) (error >> 8));
-    SerialPort_Send((unsigned char) (error));
+    SerialPort_Send((uint8_t) (error >> 8));
+    SerialPort_Send((uint8_t) (error));
 }

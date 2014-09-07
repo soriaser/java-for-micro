@@ -31,15 +31,14 @@ void SerialPort_ISR(void)
         CREN = 1;
     }
 
-    if (LOADER_ENABLED == 
-            Mm_GetByteNVM((unsigned char *) &Loader_IsLoaderEnabled)) {
+    if (LOADER_ENABLED == Loader_IsLoaderEnabled) {
         Loader_ISR();
     }
 
     RCIF = 0;
 }
 
-void SerialPort_Send(unsigned char byte)
+void SerialPort_Send(uint8_t byte)
 {
     while (!TXIF);
     TXREG = byte;

@@ -16,17 +16,17 @@ extern "C" {
 
 #define LOADER_ENABLED      0x01
 
-extern const unsigned char Loader_IsLoaderEnabled;
+extern NVMDATA uint8_t Loader_IsLoaderEnabled;
 
-extern volatile unsigned char Loader_CmdReceived;
+extern uint8_t Loader_CmdReceived;
 
-extern volatile unsigned char Loader_CurrentValue;
+extern uint8_t Loader_CurrentValue;
 
-extern volatile unsigned char Loader_LoaderState;
+extern uint8_t Loader_LoaderState;
 
-extern volatile unsigned short Loader_InputOffset;
+extern uint16_t Loader_InputOffset;
 
-extern volatile unsigned short Loader_InputCmdLength;
+extern uint16_t Loader_InputCmdLength;
 
 extern void Loader_ISR(void);
 
@@ -38,7 +38,7 @@ extern void Loader_ProcessCommandHeader(void);
 
 extern void Loader_ProcessLoadHeader(void);
 
-extern void Loader_SendError(unsigned short error);
+extern void Loader_SendError(uint16_t error);
 
 #ifdef	__cplusplus
 }

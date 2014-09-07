@@ -12,6 +12,8 @@
 extern "C" {
 #endif
 
+#include "Common.h"
+
 #define SerialPort_DisableRx() (RCIE = 0)
 
 #define SerialPort_EnableRx() (RCIE = 1)
@@ -20,7 +22,7 @@ extern void SerialPort_Init(void);
 
 extern void SerialPort_ISR(void);
 
-extern void SerialPort_Send(unsigned char byte);
+extern void SerialPort_Send(uint8_t byte);
 
 #ifdef	__cplusplus
 }
