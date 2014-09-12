@@ -1,5 +1,6 @@
 #include "Common.h"
 
+#include "JMC.h"
 #include "Loader.h"
 #include "MemoryManagement.h"
 #include "SerialPort.h"

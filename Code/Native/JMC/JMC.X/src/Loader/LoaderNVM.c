@@ -1,5 +1,3 @@
-#pragma psect smallconst=nvm
-
 #include "Common.h"
 #include "Loader.h"
 

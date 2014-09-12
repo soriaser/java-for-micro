@@ -18,25 +18,7 @@ extern "C" {
 
 extern NVMDATA uint8_t Loader_IsLoaderEnabled;
 
-extern uint8_t Loader_CmdReceived;
-
-extern uint8_t Loader_CurrentValue;
-
-extern uint8_t Loader_LoaderState;
-
-extern uint16_t Loader_InputOffset;
-
-extern uint16_t Loader_InputCmdLength;
-
 extern void Loader_ISR(void);
-
-extern void Loader_ProcessCommandLoad(void);
-
-extern void Loader_ProcessCommandData(void);
-
-extern void Loader_ProcessCommandHeader(void);
-
-extern void Loader_ProcessLoadHeader(void);
 
 extern void Loader_SendError(uint16_t error);
 

@@ -12,8 +12,15 @@
 extern "C" {
 #endif
 
-#include <xc.h>
 #include "Features.h"
+#include "Platform.h"
+
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
+typedef unsigned short long uint24_t;
+typedef unsigned long uint32_t;
+
+#define NVMDATA const
 
 #ifdef	__cplusplus
 }

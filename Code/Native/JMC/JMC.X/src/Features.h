@@ -12,14 +12,17 @@
 extern "C" {
 #endif
 
-#define _XTAL_FREQ  4000000
-
-#define API_PORT_REGISTRY
-#define API_SERIAL_PORT
-#define API_TIMER
-
+#define _XTAL_FREQ 4000000
 
 #define BAUDRATE 2400
+
+#define PLATFORM_PIC18F4520 0
+#define PLATFORM PLATFORM_PIC18F4520
+
+#define JMC_CLASSES_BUFFER_SIZE 1
+#define JMC_FIELDS_BUFFER_SIZE  300
+#define JMC_METHODS_BUFFER_SIZE 100
+#define JMC_CODE_BUFFER_SIZE    1000
 
 #ifdef	__cplusplus
 }

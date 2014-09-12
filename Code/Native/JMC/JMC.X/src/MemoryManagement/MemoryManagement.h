@@ -14,7 +14,8 @@ extern "C" {
 
 #include "Common.h"
 
-extern void Mm_SetU08(uint32_t* pointer, uint8_t value);
+extern void Mm_SetU08(uint32_t address, uint8_t value);
+extern void Mm_SetU16(uint32_t address, uint16_t value);
 
 #ifdef	__cplusplus
 }

@@ -11,8 +11,6 @@
 #include "MemoryManagement.h"
 #include "SerialPort.h"
 
-#pragma config OSC = HS
-
 void interrupt ISR(void)
 {
     if (RCIF) {
@@ -20,10 +18,9 @@ void interrupt ISR(void)
     }
 }
 
-void main(void) {
-
-    if (LOADER_ENABLED ==
-            Mm_GetByteNVM((unsigned char *) &Loader_IsLoaderEnabled)) {
+void main(void)
+{
+    if (LOADER_ENABLED == Loader_IsLoaderEnabled) {
         SerialPort_Init();
     }
 
