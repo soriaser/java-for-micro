@@ -144,6 +144,57 @@ uint8_t Loader_ProcessCommandLoadField(void)
     return 0x00;
 }
 
+uint8_t Loader_ProcessCommandLoadMethod(void)
+{
+    if (!Loader_IsTagProcessed()) {
+        if (JMC_TAG_METHOD != Loader_CurrentValue) {
+            return 0x01;
+        }
+
+        Loader_SetProcessLength();
+    } else if (!Loader_IslengthProcessed()) {
+        Loader_ProcessLength(LENGTH_FORMAT_2B);
+
+        if (Loader_IslengthProcessed()) {
+            Loader_SetProcessData();
+        }
+    } else {
+        if (0xFF == Jmc_Methods[Jmc_CurrentOffsetMethods].id) {
+            Mm_SetU08((uint32_t) &Jmc_Methods[Jmc_CurrentOffsetMethods].id,
+                    Loader_CurrentValue);
+            Mm_SetU16((uint32_t) &Jmc_CurrentOffsetMethods,
+                (uint16_t) (Jmc_CurrentOffsetMethods + 1));
+        } else {
+            if (0xFF == Jmc_Methods[(Jmc_CurrentOffsetMethods - 1)].offset) {
+                Mm_SetU08((uint32_t)
+                        &Jmc_Methods[(Jmc_CurrentOffsetMethods - 1)].offset,
+                        Jmc_CurrentOffsetCode);
+
+                Mm_SetU08((uint32_t)
+                        &Jmc_Methods[(Jmc_CurrentOffsetMethods - 1)].size,
+                        0x00);
+            }
+
+            Mm_SetU08((uint32_t) &Jmc_Code[Jmc_CurrentOffsetCode],
+                    Loader_CurrentValue);
+            Mm_SetU16((uint32_t) &Jmc_CurrentOffsetCode,
+                    (uint16_t) (Jmc_CurrentOffsetCode + 1));
+
+            Mm_SetU08((uint32_t)
+                    &Jmc_Methods[(Jmc_CurrentOffsetMethods - 1)].size,
+                    (Jmc_Methods[(Jmc_CurrentOffsetMethods - 1)].size + 1));
+        }
+    }
+
+    Loader_InputTlvLength--;
+    if (!Loader_InputTlvLength) {
+        Loader_LoaderState &= ~LOADER_STATE_PROCESS_DATA_LOAD_F_OR_M;
+        Loader_LoaderState |= LOADER_STATE_PROCESS_DATA_LOAD_CLASS;
+    }
+
+    return 0x00;
+}
+
 uint8_t Loader_ProcessCommandLoadFields(void)
 {
     if (Loader_LoaderState & LOADER_STATE_PROCESS_DATA_LOAD_F_OR_M) {
@@ -161,6 +212,32 @@ uint8_t Loader_ProcessCommandLoadFields(void)
                 Mm_SetU16((uint32_t)
                         &Jmc_Classes[Jmc_CurrentOffsetClasses].fieldsOffset,
                         (uint16_t) Jmc_CurrentOffsetFields);
+            }
+        }
+    }
+
+    return 0x00;
+}
+
+uint8_t Loader_ProcessCommandLoadMethods(void)
+{
+    if (Loader_LoaderState & LOADER_STATE_PROCESS_DATA_LOAD_F_OR_M) {
+        return Loader_ProcessCommandLoadMethod();
+    } else {
+        if (!Loader_IslengthProcessed()) {
+            Loader_ProcessLength(LENGTH_FORMAT_2B);
+
+            if (Loader_IslengthProcessed()) {
+                // Next step: field tag
+                Loader_SetProcessTag();
+                Loader_LoaderState |= LOADER_STATE_PROCESS_DATA_LOAD_F_OR_M;
+
+                if (0x00 < Loader_InputTlvLength) {
+                    // Store offset in JMC class
+                    Mm_SetU16((uint32_t)
+                            &Jmc_Classes[Jmc_CurrentOffsetClasses].methodsOffset,
+                            (uint16_t) Jmc_CurrentOffsetMethods);
+                }
             }
         }
     }
@@ -226,7 +303,7 @@ void Loader_ProcessCommandLoad(void)
                     error = Loader_ProcessCommandLoadFields();
                 } else if (Loader_LoaderState &
                         LOADER_STATE_PROCESS_DATA_LOAD_METHODS) {
-                    // TODO: Process Methods
+                    error = Loader_ProcessCommandLoadMethods();
                 }
                 break;
         }
