@@ -41,7 +41,7 @@ public class JMCFileFields extends JMCFileTLV {
 
         for (int ii = 0; ii < this.fields.size(); ii++) {
             // Get length from TLV and add length bytes and tag
-            length += this.fields.get(ii).getLength() + this.lengthSize + 1;
+            //length += this.fields.get(ii).getLength() + this.lengthSize + 1;
         }
 
         return length;
@@ -53,7 +53,7 @@ public class JMCFileFields extends JMCFileTLV {
 
         for (int ii = 0; ii < this.fields.size(); ii++) {
             // Get length from TLV and add length (1 byte) and tag
-            value += this.fields.get(ii).getTLV();
+            //value += this.fields.get(ii).getTLV();
         }
 
         return value;

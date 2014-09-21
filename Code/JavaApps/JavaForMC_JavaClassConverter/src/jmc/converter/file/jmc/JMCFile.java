@@ -39,7 +39,7 @@ public class JMCFile {
             fileOutput.write(Util.byte2HexString(JMCFileConstants.VERSION_LSB));
 
             for (int ii = 0; ii < classes.size(); ii++) {
-                fileOutput.write(classes.get(ii).getTLV());
+                fileOutput.write(classes.get(ii).getTV());
             }
 
             fileOutput.close();

@@ -2,26 +2,24 @@ package jmc.converter.file.jmc;
 
 import java.util.Vector;
 
-public class JMCFileClass extends JMCFileTLV {
+import jmc.converter.util.Util;
+
+public class JMCFileClass extends JMCFileTV {
 
     private JMCFileFields fields;
 
     private JMCFileMethods methods;
 
-    public final static int LENGTH_SIZE = 2;
-
     public JMCFileClass() {
         this.tag = JMCFileConstants.TAG_CLASS;
         this.fields = new JMCFileFields();
         this.methods = new JMCFileMethods();
-        this.lengthSize = LENGTH_SIZE;
     }
 
     public JMCFileClass(JMCFileClass jmcClass) {
         this.tag = jmcClass.getTag();
         this.fields = jmcClass.getJMCFields();
         this.methods = jmcClass.getJMCMethods();
-        this.lengthSize = LENGTH_SIZE;
     }
 
     public void addField(JMCFileField field) {
@@ -65,24 +63,22 @@ public class JMCFileClass extends JMCFileTLV {
     }
 
     @Override
-    public int getLength() {
-        int length = 0;
-
-        length += this.fields.getLength();
-        length += this.methods.getLength();
-        length += this.lengthSize;
-        length += 1;
-
-        return length;
-    }
-
-    @Override
     public String getValue() {
         String value = "";
 
-        value += this.fields.getTLV();
-        value += this.methods.getTLV();
+        value += Util.byte2HexString((byte) this.fields.getNumberOfFields());
+        value += Util.byte2HexString((byte) this.methods.getNumberOfMethods());
+
+        for (int field = 0; field < this.fields.getNumberOfFields(); field++) {
+            value += this.fields.getField(field).getTV();
+        }
+        
+        for (int method = 0; method < this.methods.getNumberOfMethods();
+                method++) {
+            value += this.methods.getMethod(method).getTLV();
+        }
 
         return value;
     }
+
 }
