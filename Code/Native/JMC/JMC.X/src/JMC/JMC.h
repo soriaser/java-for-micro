@@ -20,6 +20,13 @@ extern "C" {
 #define JMC_TAG_FIELD                       0xC1
 #define JMC_TAG_METHOD                      0xC2
 
+#define JMC_FIELD_BYTES_SIZE    3
+#define JMC_METHOD_BYTES_SIZE   6
+#define JMC_CLASS_BYTES_SIZE    6
+
+#define JMC_UNDEFINED_1B        0xFF
+#define JMC_UNDEFINED_2B        0xFFFF
+
 typedef struct {
     uint8_t id;
     uint16_t value;

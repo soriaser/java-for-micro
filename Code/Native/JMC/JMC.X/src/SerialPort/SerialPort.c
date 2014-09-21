@@ -2,10 +2,9 @@
 
 #include "JMC.h"
 #include "Loader.h"
+#include "Timer.h"
 #include "MemoryManagement.h"
 #include "SerialPort.h"
-
-#define SERIALPORT_RX_BUFFER_SIZE 10
 
 void SerialPort_Init(void)
 {
@@ -33,7 +32,15 @@ void SerialPort_ISR(void)
     }
 
     if (LOADER_ENABLED == Loader_IsLoaderEnabled) {
-        Loader_ISR();
+        // Store value
+        Loader_CurrentValue = RCREG;
+        // Disable Serial Port Interrupt
+        SerialPort_DisableRx();
+        // Start Timer
+        Timer_T0_Start();
+
+        // Mark as pending
+        Loader_LoaderState |= LOADER_STATE_PENDING;
     }
 
     RCIF = 0;

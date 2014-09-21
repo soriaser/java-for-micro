@@ -1,0 +1,84 @@
+/* 
+ * File:   InitializeArrayStructs.h
+ * Author: Sergio Soria
+ *
+ * Created on 13 de septiembre de 2014, 17:05
+ */
+
+#ifndef INITIALIZEARRAYSTRUCTS_H
+#define INITIALIZEARRAYSTRUCTS_H
+
+#ifndef STATIC_INIT_S_COUNT
+#error "Please define 'STATIC_INIT_S_COUNT' before including this file!"
+#endif
+
+#define INIT_S_1() (#include "InitializeArray.h")
+#if STATIC_INIT_S_COUNT & 1
+INIT_S_1()
+#endif
+#define INIT_S_2 {INIT_S_1}, INIT_S_1
+#if STATIC_INIT_S_COUNT & 2
+INIT_S_2
+#endif
+#define INIT_S_4 INIT_S_2 INIT_S_2
+#if STATIC_INIT_S_COUNT & 4
+INIT_S_4
+#endif
+#define INIT_S_8 INIT_S_4 INIT_S_4
+#if STATIC_INIT_S_COUNT & 8
+INIT_S_8
+#endif
+#define INIT_S_16 INIT_S_8 INIT_S_8
+#if STATIC_INIT_S_COUNT & 16
+INIT_S_16
+#endif
+#define INIT_S_32 INIT_S_16 INIT_S_16
+#if STATIC_INIT_S_COUNT & 32
+INIT_S_32
+#endif
+#define INIT_S_64 INIT_S_32 INIT_S_32
+#if STATIC_INIT_S_COUNT & 64
+INIT_S_64
+#endif
+#define INIT_S_128 INIT_S_64 INIT_S_64
+#if STATIC_INIT_S_COUNT & 128
+INIT_S_128
+#endif
+#define INIT_S_256 INIT_S_128 INIT_S_128
+#if STATIC_INIT_S_COUNT & 256
+INIT_S_256
+#endif
+#define INIT_S_512 INIT_S_256 INIT_S_256
+#if STATIC_INIT_S_COUNT & 512
+INIT_S_512
+#endif
+#define INIT_S_1024 INIT_S_512 INIT_S_512
+#if STATIC_INIT_S_COUNT & 1024
+INIT_S_1024
+#endif
+#define INIT_S_2048 INIT_S_1024 INIT_S_1024
+#if STATIC_INIT_S_COUNT & 2048
+INIT_S_2048
+#endif
+#define INIT_S_4096 INIT_S_2048 INIT_S_2048
+#if STATIC_INIT_S_COUNT & 4096
+INIT_S_4096
+#endif
+#define INIT_S_8192 INIT_S_4096 INIT_S_4096
+#if STATIC_INIT_S_COUNT & 8192
+INIT_S_8192
+#endif
+#define INIT_S_16384 INIT_S_8192 INIT_S_8192
+#if STATIC_INIT_S_COUNT & 16384
+INIT_S_16384
+#endif
+#define INIT_S_32768 INIT_S_16384 INIT_S_16384
+#if STATIC_INIT_S_COUNT & 32768
+INIT_S_32768
+#endif
+
+#if STATIC_INIT_S_COUNT >= 65536
+#error "Please add more init blocks to this list!"
+#endif
+
+#endif /* INITIALIZEARRAYSTRUCTS_H */
