@@ -148,14 +148,19 @@ uint8_t Loader_ProcessCommandLoadMethod(void)
                 (uint16_t) Loader_CodeLength);
 
             // Set code offset
-            Mm_SetU08((uint32_t)
+            Mm_SetU16((uint32_t)
                     &Jmc_Methods[Jmc_CurrentOffsetMethods].offset,
                     Jmc_CurrentOffsetCode);
 
             Loader_SetProcessData();
         }
     } else {
-        if (JMC_UNDEFINED_2B == Jmc_Methods[Jmc_CurrentOffsetMethods].id) {
+        if (JMC_UNDEFINED_1B == Jmc_Methods[Jmc_CurrentOffsetMethods].locals) {
+            // Set Locals
+            Mm_SetU08((uint32_t) &Jmc_Methods[Jmc_CurrentOffsetMethods].locals,
+                    Loader_CurrentValue);
+        } else if (JMC_UNDEFINED_1B ==
+                Jmc_Methods[Jmc_CurrentOffsetMethods].id) {
             // Set ID
             Mm_SetU08((uint32_t) &Jmc_Methods[Jmc_CurrentOffsetMethods].id,
                     Loader_CurrentValue);

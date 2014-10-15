@@ -24,6 +24,8 @@ extern "C" {
 #define JMC_METHOD_BYTES_SIZE   6
 #define JMC_CLASS_BYTES_SIZE    6
 
+#define JMC_METHOD_INIT         0x00
+
 #define JMC_UNDEFINED_1B        0xFF
 #define JMC_UNDEFINED_2B        0xFFFF
 
@@ -33,9 +35,10 @@ typedef struct {
 } jmc_f;
 
 typedef struct {
-    uint16_t id;
+    uint8_t id;
     uint16_t size;
     uint16_t offset;
+    uint8_t locals;
 } jmc_m;
 
 typedef struct {

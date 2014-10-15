@@ -18,7 +18,7 @@ NVMDATA jmc_f Jmc_Fields[JMC_FIELDS_BUFFER_SIZE] = {
 };
 
 NVMDATA jmc_m Jmc_Methods[JMC_METHODS_BUFFER_SIZE] = {
-    #define STATIC_INIT_VALUE {0xFFFF, 0xFFFF, 0xFFFF}
+    #define STATIC_INIT_VALUE {0xFF, 0xFFFF, 0xFFFF, 0xFF}
     #define STATIC_INIT_COUNT JMC_METHODS_BUFFER_SIZE
     #include "InitializeArray.h"
     #undef STATIC_INIT_VALUE
