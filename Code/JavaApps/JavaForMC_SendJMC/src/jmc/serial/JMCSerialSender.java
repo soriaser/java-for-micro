@@ -9,8 +9,6 @@ public class JMCSerialSender {
     
     private final static byte RX_WAIT = (byte) 0x60;
 
-    private final static short SW_NO_ERROR = (byte) 0x9000;
-
     private int BaudRate = 2400;
 
     public JMCSerialSender() {};
@@ -29,10 +27,16 @@ public class JMCSerialSender {
         try {
             serialPort.openPort();
             serialPort.setParams(this.BaudRate, 8, 1, 0);
+            
+            System.out.println("Sending by " + port + "\n\n");
 
-            for (int ii = 0; (ii < bytes.length) && (!statusWordReceived); ii++) {
+            for (int ii = 0; (ii < bytes.length) && (!statusWordReceived);
+                    ii++) {
                 // Send one byte
                 serialPort.writeByte(bytes[ii]);
+                System.out.println("    ->" + Integer.toHexString(
+                        (bytes[ii] & 0xFF)));
+
                 receivedByte = RX_WAIT;
 
                 while (receivedByte != RX_CONTINUE) {
@@ -49,14 +53,19 @@ public class JMCSerialSender {
                         statusWordReceived = true;
                         break;
                     }
+
+                    System.out.println("    <-" + Integer.toHexString(
+                            (receivedByte & 0xFF)));
                 }
             }
+
+            serialPort.closePort();
 
         } catch (SerialPortException exception) {
             System.out.println(exception);
         }
 
-        System.out.println("Status Word:\n");
-        System.out.println(Integer.toHexString(statusWord & 0xFFFF));
+        System.out.println("    <-" + Integer.toHexString(
+                (statusWord & 0xFFFF)));
     }
 }
