@@ -4,9 +4,9 @@ public class Util {
 
     public static String byte2HexString(byte value) {
         StringBuilder strBuilder = new StringBuilder(2);
-        strBuilder.append(String.format("%02x", value & 0xFF));
+        strBuilder.append(String.format("%02X", value & 0xFF));
 
-        return strBuilder.toString();
+        return strBuilder.toString().toUpperCase();
     }
 
     public static String byteArray2HexString(byte array[]) {

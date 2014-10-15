@@ -165,6 +165,10 @@ public class JCConverter {
                         methods[method].getCode().getCode());
                 jmcFileMethod.replaceMethodRefsInCode(methodRefIndexMap);
 
+                // Maximum locals
+                jmcFileMethod.setLocals((short)
+                        methods[method].getLocalVariableTable().getLength());
+
                 // Add method to JMC class
                 jmcFileClass.addMethod(jmcFileMethod);
             }
@@ -187,6 +191,8 @@ public class JCConverter {
             fileName += ".jmc";
 
             jmcFile.createOutputFile(fileName);
+
+            System.out.println("JMC file created!");
         }
     }
 

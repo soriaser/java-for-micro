@@ -13,11 +13,22 @@ public class JMCFileMethod extends JMCFileTLV {
 
     private short id;
 
+    private short locals;
+
     public final static int LENGTH_SIZE = 2;
+
+    public JMCFileMethod(short id, byte code[], short locals) {
+        this.tag = JMCFileConstants.TAG_METHOD;
+        this.id = id;
+        this.locals = locals;
+        this.code = Arrays.copyOf(code, code.length);
+        this.lengthSize = LENGTH_SIZE;
+    }
 
     public JMCFileMethod(short id, byte code[]) {
         this.tag = JMCFileConstants.TAG_METHOD;
         this.id = id;
+        this.locals = 0;
         this.code = Arrays.copyOf(code, code.length);
         this.lengthSize = LENGTH_SIZE;
     }
@@ -44,6 +55,15 @@ public class JMCFileMethod extends JMCFileTLV {
     public void setID(short id) {
         this.id = id;
     }
+
+    public short getLocals() {
+        return this.locals;
+    }
+
+    public void setLocals(short locals) {
+        this.locals = locals;
+    }
+
 
     public void replaceMethodRefsInCode(Vector<Integer> map) {
         for (int ii = 0; ii < code.length; ii++) {
@@ -76,18 +96,20 @@ public class JMCFileMethod extends JMCFileTLV {
 
     @Override
     public int getLength() {
-        return (2 + code.length);
+        // Max. Locals + ID + Code
+        return (4 + code.length);
     }
 
     @Override
     public String getValue() {
         String value = "";
 
-        for (int ii = this.lengthSize; ii > 0; ii--) {
-            value += Util.byte2HexString((byte) (id >> ((ii - 1) * 8)));
-        }
-
-        value += Util.byteArray2HexString(code);
+        // Max. locals
+        value += Util.byte2HexString((byte) (this.locals));
+        // ID
+        value += Util.byte2HexString((byte) (this.id));
+        // Code
+        value += Util.byteArray2HexString(this.code);
         
         return value;
     }
