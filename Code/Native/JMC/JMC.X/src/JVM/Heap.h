@@ -14,7 +14,7 @@ extern "C" {
 
 typedef uint8_t heap_id_t;
 
-extern uint8_t Heap[1024];
+extern uint8_t Heap[JVM_MAX_SIZE_HEAP];
 
 extern void Heap_Init(void);
 

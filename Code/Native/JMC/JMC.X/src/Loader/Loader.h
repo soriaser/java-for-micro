@@ -15,29 +15,17 @@ extern "C" {
 #define LOADER_DISABLED         0x00
 #define LOADER_ENABLED          0x01
 
-#define LOADER_STATE_IDLE           0x00
-#define LOADER_STATE_PENDING        0x80
-#define LOADER_STATE_PROCESS_MASK   0x40
-#define LOADER_STATE_PROCESS        0x00
-#define LOADER_STATE_PROCESS_DATA   0x40
+#define LOADER_STATE_IDLE       0x00
+#define LOADER_STATE_PENDING    0x01
 
-#define LOADER_WAIT_BYTE        0x60
-#define LOADER_CONTINUE_BYTE    0x61
+#define LOADER_ACK_WAIT         0x60
+#define LOADER_ACK_CONTINUE     0x61
 
 extern NVMDATA uint8_t Loader_IsLoaderEnabled;
 
-extern uint8_t Loader_LoaderState;
+extern uint8_t Loader_State;
 
-extern uint8_t Loader_CurrentValue;
-
-#define Loader_SetToIdle() \
-    Loader_LoaderState &= ~LOADER_STATE_PENDING;
-
-extern void Loader_ISR(void);
-
-extern void Loader_SendResponse(uint16_t error);
-
-extern void Loader_Disable(void);
+extern void Loader_ProcessCommand(uint8_t value);
 
 #ifdef	__cplusplus
 }

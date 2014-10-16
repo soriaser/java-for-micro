@@ -10,7 +10,7 @@ void Timer_T0_ISR(void)
         // Stop Timer 0
         Timer_T0_Stop();
         // Send wait byte
-        SerialPort_Send(LOADER_WAIT_BYTE);
+        SerialPort_Send(LOADER_ACK_WAIT);
         // Restart Timer 0
         Timer_T0_Start();
     }

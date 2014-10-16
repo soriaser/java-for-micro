@@ -12,13 +12,9 @@
 extern "C" {
 #endif
 
-#define BC_ALOAD_0          0x2A
-#define BC_ALOAD_1          0x2B
-#define BC_ALOAD_2          0x2C
-#define BC_ALOAD_3          0x2D
+extern NVMDATA uint16_t Jvm_ClassDataSize;
 
-extern void Jvm_Init(void);
-extern void Jvm_ExecuteMethod(uint16_t jmcClassOffset, uint16_t jmcMethodId);
+extern NVMDATA uint8_t  Jvm_ClassData[JVM_MAX_SIZE_CLASS_DATA];
 
 #ifdef	__cplusplus
 }

@@ -4,7 +4,7 @@
 
 #define HEAP_ID_FREE 0
 
-uint8_t Heap[1024];
+uint8_t Heap[JVM_MAX_SIZE_HEAP];
 
 typedef struct {
   heap_id_t id;

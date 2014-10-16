@@ -1,10 +1,11 @@
 #include "Common.h"
 
-#include "JMC.h"
 #include "Loader.h"
 #include "Timer.h"
 #include "MemoryManagement.h"
 #include "SerialPort.h"
+
+uint8_t SerialPort_CurrentValueRx = 0xFF;
 
 void SerialPort_Init(void)
 {
@@ -31,16 +32,14 @@ void SerialPort_ISR(void)
         CREN = 1;
     }
 
+    // Store value
+    SerialPort_CurrentValueRx = RCREG;
+
     if (LOADER_ENABLED == Loader_IsLoaderEnabled) {
-        // Store value
-        Loader_CurrentValue = RCREG;
         // Disable Serial Port Interrupt
         SerialPort_DisableRx();
-        // Start Timer
-        Timer_T0_Start();
-
         // Mark as pending
-        Loader_LoaderState |= LOADER_STATE_PENDING;
+        Loader_State = LOADER_STATE_PENDING;
     }
 
     RCIF = 0;
