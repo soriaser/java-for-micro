@@ -4,11 +4,11 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
+//import java.math.BigInteger;
 
 import jssc.SerialPortList;
 
-public class JMCSerial {
+public class SerialSender {
 
     /**
      * @param args
@@ -16,6 +16,8 @@ public class JMCSerial {
     public static void main(String[] args) {
         // Print ports option requested
         boolean optPrintPorts = false;
+        // Load file
+        boolean optLoadFile = false;
 
         // Port chosen to read and write
         String optPort = "";
@@ -41,6 +43,7 @@ public class JMCSerial {
             if (args[option].equals("--file") ||
                     args[option].equals("-f")) {
                 optFile = args[option + 1];
+                optLoadFile = true;
             }
         }
 
@@ -75,10 +78,42 @@ public class JMCSerial {
                 System.out.println(exception);
             }
 
-            byte[] data = new BigInteger(hexStringData, 16).toByteArray();
+            byte instruction = 0x00;
+            byte[] command = null;
+            byte[] data = null;
 
-            JMCSerialSender jmcSerialSender = new JMCSerialSender();
-            jmcSerialSender.send(optPort, data);
+            if (optLoadFile) {
+                //byte[] data = new BigInteger(hexStringData, 16).toByteArray();
+                data = hexStringData.getBytes();
+                instruction = 0x10;
+            }
+
+            // CLA + INS
+            short commandSize = 2;
+            short offset = 0;
+
+            if (data != null) {
+                // CLA + INS + Length (2 bytes) + data
+                commandSize += 2 + data.length;
+            }
+
+            // Header
+            command = new byte[commandSize];
+            command[offset++] = 0x00;
+            command[offset++] = instruction;
+
+            // Length + data
+            if (data != null) {
+                // Length
+                command[offset++] = (byte) (data.length >> 8);
+                command[offset++] = (byte) (data.length);
+                // Data
+                System.arraycopy(data, (short) 0, command, offset, data.length);
+            }
+
+            // Send command
+            Sender jmcSerialSender = new Sender();
+            jmcSerialSender.start(optPort, command);
         }
     }
 
