@@ -18,17 +18,40 @@ public class Sender implements SerialPortEventListener {
 
     private int Offset = 0;
 
-    private int BaudRate = 2400;
+    private int BaudRate = 9600;
+    
+    private byte Retries = 0;
 
     private final static byte RX_CONTINUE = (byte) 0x61;
 
-    private final static int TIME = 10000;
+    private final static byte MAX_RETRIES = 2;
+
+    private final static int TIME = 1000;
 
     private Timer TimerSend = new Timer(TIME, new ActionListener() {
         
         public void actionPerformed(ActionEvent action) {
+            // Timer triggered, stop it
             TimerSend.stop();
-            sendNext();
+
+            if (Retries < MAX_RETRIES) {
+                // If timer has been triggered means that resend is required.
+                // Offset is decreased to resend previous byte
+                Offset--;
+                // Send again
+                sendNext();
+                // Increase retries
+                Retries++;
+            } else {
+                System.out.print("\n");
+                System.out.print("Retries exceeding!! Port is closed!!\n");
+
+                try {
+                    Port.closePort();
+                } catch (SerialPortException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     });
 
@@ -42,13 +65,19 @@ public class Sender implements SerialPortEventListener {
         try {
             // Send next byte
             this.Port.writeByte(this.Data[this.Offset]);
-            System.out.println("    ->" +
-                    Integer.toHexString((this.Data[this.Offset] & 0xFF)) +
-                    "   " +
-                    "(" + this.Offset + "/" + this.Data.length + ")"
-                    );
-            this.Offset++;
 
+            // Print bytes
+            if (this.Retries == 0) {
+                if ((this.Offset % 16) == 0) {
+                    System.out.print("\n");
+                    System.out.print("-> ");
+                }
+                System.out.printf("0x%02X ", this.Data[this.Offset]);
+            }
+
+            // Increase data offset
+            this.Offset++;
+            // Start timer to allow resend in case of send error
             TimerSend.start();
         } catch (SerialPortException e) {
             System.out.println(e);
@@ -68,13 +97,13 @@ public class Sender implements SerialPortEventListener {
             // Open and configure port
             this.Port.openPort();
             this.Port.setParams(this.BaudRate, 8, 1, 0);
-            System.out.println("Sending by " + port + "\n\n");
+            System.out.println("Start sending by " + port + "\n\n");
 
-            // Register as a Listener
+            // Register the listener
             this.Port.setEventsMask(SerialPort.MASK_RXCHAR);
             this.Port.addEventListener(this);
 
-            // Start!
+            // Start sending first byte
             this.sendNext();
         } catch (SerialPortException e) {
             e.printStackTrace();
@@ -82,24 +111,32 @@ public class Sender implements SerialPortEventListener {
     }
 
     public void serialEvent(SerialPortEvent event) {
+        // If data received...
         if (event.isRXCHAR()) {
+            // Stop timer becuase we have received something
             TimerSend.stop();
 
             try {
+                // Read byte received
                 byte buffer[] = this.Port.readBytes(1);
 
-                System.out.println("    <-" + Integer.toHexString(
-                        (buffer[0] & 0xFF)));
-
+                // If byte indicates that we can send next byte, we continue.
+                // Otherwise, stop communication.
                 if (buffer[0] == RX_CONTINUE) {
+                    // Reset retries
+                    Retries = 0;
+                    // Send byte
                     this.sendNext();
                 } else {
+                    // Print response
+                    System.out.print("\n");
+                    System.out.printf("<- 0x%02X\n", buffer[0]);
                     // Close port
                     this.Port.closePort();
                 }
             }
-            catch (SerialPortException ex) {
-                System.out.println(ex);
+            catch (SerialPortException e) {
+                System.out.println(e);
             }
         }
     }
