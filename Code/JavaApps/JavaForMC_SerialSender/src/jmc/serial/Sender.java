@@ -123,8 +123,6 @@ public class Sender implements SerialPortEventListener {
                 // If byte indicates that we can send next byte, we continue.
                 // Otherwise, stop communication.
                 if (buffer[0] == RX_CONTINUE) {
-                    // Reset retries
-                    Retries = 0;
                     // Send byte
                     this.sendNext();
                 } else {
@@ -134,6 +132,9 @@ public class Sender implements SerialPortEventListener {
                     // Close port
                     this.Port.closePort();
                 }
+
+                // Reset retries
+                Retries = 0;
             }
             catch (SerialPortException e) {
                 System.out.println(e);

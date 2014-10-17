@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-//import java.math.BigInteger;
+import java.math.BigInteger;
 
 import jssc.SerialPortList;
 
@@ -83,8 +83,8 @@ public class SerialSender {
             byte[] data = null;
 
             if (optLoadFile) {
-                //byte[] data = new BigInteger(hexStringData, 16).toByteArray();
-                data = hexStringData.getBytes();
+                data = new BigInteger(hexStringData, 16).toByteArray();
+                //data = hexStringData.getBytes();
                 instruction = 0x10;
             }
 
