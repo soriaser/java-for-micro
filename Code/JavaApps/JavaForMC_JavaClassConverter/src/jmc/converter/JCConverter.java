@@ -1,5 +1,6 @@
 package jmc.converter;
 
+/*
 import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
@@ -20,6 +21,7 @@ import jmc.converter.file.jmc.JMCFile;
 import jmc.converter.file.jmc.JMCFileClass;
 import jmc.converter.file.jmc.JMCFileField;
 import jmc.converter.file.jmc.JMCFileMethod;
+*/
 
 public class JCConverter {
 
@@ -28,6 +30,29 @@ public class JCConverter {
      *
      * @param args At least one argument containing *.class file path
      */
+    public static void main(String[] args) {
+        String classPathAndFileName = "";
+
+        // Read options
+        for (int option = 0; option < args.length; option++) {
+            // Class file
+            if (args[option].equals("--class") ||
+                args[option].equals("-c")) {
+                option++;
+                classPathAndFileName = args[option];
+            }
+        }
+
+        if (classPathAndFileName.length() == 0) {
+            System.out.println("File not present in arguments");
+            System.exit(0);
+        }
+
+        JCReducedFile JCRFile = new JCReducedFile(classPathAndFileName);
+        JCRFile.create();
+    }
+
+    /*
     public static void main(String[] args) {
         if (args.length != 1) {
             System.out.println("Invalid input arguments");
@@ -195,5 +220,6 @@ public class JCConverter {
             System.out.println("JMC file created!");
         }
     }
+    */
 
 }
