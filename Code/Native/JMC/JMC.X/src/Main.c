@@ -6,7 +6,7 @@
  */
 
 #include "Common.h"
-
+#include "JVM.h"
 #include "Loader.h"
 #include "MemoryManagement.h"
 #include "SerialPort.h"
@@ -29,6 +29,10 @@ void main(void)
         if ((LOADER_ENABLED == Loader_IsLoaderEnabled)
                 && (LOADER_STATE_PENDING == Loader_State)) {
             Loader_ProcessCommand(SerialPort_CurrentValueRx);
+        }
+
+        if (LOADER_DISABLED == Loader_IsLoaderEnabled) {
+            Jvm_PreInit();
         }
     }
 }
