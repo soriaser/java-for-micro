@@ -13,10 +13,13 @@ extern "C" {
 #endif
 
 extern uint16_t *Stack_Pointer;
+
 extern uint16_t *Stack_CurrentPointer;
+
 extern uint16_t *Stack_BasePointer;
 
-extern void Stack_Init(void);
+extern void Stack_Init(void)
+;
 extern void Stack_Push(uint16_t value);
 
 #ifdef	__cplusplus

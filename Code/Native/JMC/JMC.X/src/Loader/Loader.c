@@ -1,5 +1,5 @@
 #include "Common.h"
-#include "JVM.h"
+#include "JavaClass.h"
 #include "Loader.h"
 #include "MemoryManagement.h"
 #include "SerialPort.h"
@@ -38,7 +38,7 @@ uint8_t  Loader_State = LOADER_STATE_IDLE;
 
 uint8_t Loader_ProcessCommandLoad(uint8_t value)
 {
-    Mm_SetU08((uint32_t) &Jvm_ClassData[Loader_CmdDataOffset], value);
+    Mm_SetU08((uint32_t) &JavaClass_Data[Loader_CmdDataOffset], value);
     Loader_CmdDataOffset++;
 
     if (Loader_CmdLength == Loader_CmdDataOffset) {
@@ -48,7 +48,7 @@ uint8_t Loader_ProcessCommandLoad(uint8_t value)
         // Reset offset
         Loader_CmdDataOffset = 0;
         // Store length of java class
-        Mm_SetU16((uint32_t) &Jvm_ClassDataSize, Loader_CmdLength);
+        Mm_SetU16((uint32_t) &JavaClass_DataSize, Loader_CmdLength);
         // Loader is disabled until java application is removed
         Mm_SetU08((uint32_t) &Loader_IsLoaderEnabled, LOADER_DISABLED);
         // Successfully finished

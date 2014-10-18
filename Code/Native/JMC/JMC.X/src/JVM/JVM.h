@@ -12,18 +12,7 @@
 extern "C" {
 #endif
 
-typedef struct {
-  uint8_t  version;
-  uint8_t  methods;
-  uint16_t main;
-  uint16_t offsetConstants;
-} jvm_header_t;
-
-extern NVMDATA uint16_t Jvm_ClassDataSize;
-
-extern NVMDATA uint8_t  Jvm_ClassData[JVM_MAX_SIZE_CLASS_DATA];
-
-extern void Jvm_PreInit(void);
+extern void Jvm_Init(void);
 
 #ifdef	__cplusplus
 }

@@ -22,9 +22,7 @@ typedef unsigned long uint32_t;
 
 #define NVMDATA const
 
-#define Loop() \
-    do { \
-    } while (0x01);
+#define EndlessLoop() do {} while (0x01)
 
 #ifdef	__cplusplus
 }

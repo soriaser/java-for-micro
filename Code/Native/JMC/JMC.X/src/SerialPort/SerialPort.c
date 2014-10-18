@@ -13,7 +13,9 @@ void SerialPort_Init(void)
     TRISC = 0xC0;
     BRG16 = 0;
     BRGH = 0;
-    SPBRG = ((_XTAL_FREQ / 64) / BAUDRATE) - 1;
+    //SPBRG = ((_XTAL_FREQ / 16) / BAUDRATE) - 1;
+    //SPBRG = ((_XTAL_FREQ / BAUDRATE) / 16) - 1;
+    SPBRG = 129;
     TX9 = 0;
     SYNC = 0;
     RX9 = 0;

@@ -12,9 +12,15 @@
 extern "C" {
 #endif
 
-typedef uint8_t heap_id_t;
+typedef struct {
+  uint8_t  id;
+  uint16_t ref;
+  uint16_t size;
+} heap_t;
 
 extern uint8_t Heap[JVM_MAX_SIZE_HEAP];
+
+extern void Heap_GetBytes(uint16_t bytes);
 
 extern void Heap_Init(void);
 

@@ -6,6 +6,7 @@
  */
 
 #include "Common.h"
+#include "JavaClass.h"
 #include "JVM.h"
 #include "Loader.h"
 #include "MemoryManagement.h"
@@ -32,7 +33,8 @@ void main(void)
         }
 
         if (LOADER_DISABLED == Loader_IsLoaderEnabled) {
-            Jvm_PreInit();
+            JavaClass_Init();
+            Jvm_Init();
         }
     }
 }
