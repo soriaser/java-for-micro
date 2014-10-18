@@ -26,7 +26,25 @@ public class JCFile {
 
         // Create new output file
         this.oFile = new File(pathAndFileName);
+    }
 
+    public void fill() {};
+
+    public void create() {
+        this.start();
+        this.fill();
+        this.finalize();
+    }
+
+    public void finalize() {
+        try {
+            this.oFileBuffer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void start() {
         try {
             // Create output file buffer
             this.oFileBuffer = new BufferedWriter(new FileWriter(this.oFile));
