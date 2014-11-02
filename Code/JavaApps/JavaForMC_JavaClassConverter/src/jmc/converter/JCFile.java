@@ -11,6 +11,8 @@ public class JCFile {
 
     private File oFile = null;
 
+    private int size = 0;
+
     protected BufferedWriter oFileBuffer = null;
 
     public JCFile(String pathAndFileName, String fileExtension) {
@@ -53,16 +55,28 @@ public class JCFile {
         }
     }
 
+    public void writeArray(byte array[]) {
+        for (int ii = 0; ii < array.length; ii++) {
+            this.writeByte(array[ii]);
+        }
+    }
+
     public void writeByte(byte value) {
         try {
             this.oFileBuffer.write(Util.byte2HexString(value));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        this.size++;
     }
 
     public void writeShort(short value) {
         this.writeByte((byte) (value >> 8));
         this.writeByte((byte) (value));
+    }
+
+    public int getSize() {
+        return this.size;
     }
 }
