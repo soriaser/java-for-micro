@@ -30,6 +30,15 @@ typedef struct javaclass_header {
   uint16_t offsetMethods;
 } javaclass_header_t;
 
+typedef struct javaclass_method_header_t {
+    uint16_t code;
+    uint16_t id;
+    uint8_t  flags;
+    uint8_t  arguments;
+    uint8_t  locals;
+    uint8_t  stack;
+};
+
 extern NVMDATA uint16_t JavaClass_DataSize;
 
 extern NVMDATA uint8_t  JavaClass_Data[JAVACLASS_MAX_SIZE_DATA];
