@@ -195,7 +195,25 @@ public class JCReducedFile extends JCFile {
      * @param code Object org.apache.bcel.classfile.Code.
      */
     private void writeMethodCode(Code code) {
-        // TODO: Adapt bytecode
+        byte bytecodes[] = code.getCode();
+
+        for (int ii = 0; ii < bytecodes.length; ii++) {
+            switch (bytecodes[ii]) {
+            case Constants.ALOAD_0:
+                bytecodes[ii] = Constants.ILOAD_0;
+                break;
+            case Constants.ALOAD_1:
+                bytecodes[ii] = Constants.ILOAD_1;
+                break;
+            case Constants.ALOAD_2:
+                bytecodes[ii] = Constants.ILOAD_2;
+                break;
+            case Constants.ALOAD_3:
+                bytecodes[ii] = Constants.ILOAD_3;
+                break;
+            }
+        }
+
         this.writeArray(code.getCode());
     }
 }
