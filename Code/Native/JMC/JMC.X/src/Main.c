@@ -26,15 +26,15 @@ void main(void)
         SerialPort_Init();
     }
 
-    while (1) {
-        if ((LOADER_ENABLED == Loader_IsLoaderEnabled)
-                && (LOADER_STATE_PENDING == Loader_State)) {
+    while (LOADER_ENABLED == Loader_IsLoaderEnabled) {
+        if (LOADER_STATE_PENDING == Loader_State) {
             Loader_ProcessCommand(SerialPort_CurrentValueRx);
         }
+    }
 
-        if (LOADER_DISABLED == Loader_IsLoaderEnabled) {
-            JavaClass_Init();
-            Jvm_Init();
-        }
+    if (LOADER_DISABLED == Loader_IsLoaderEnabled) {
+        JavaClass_Init();
+        Jvm_Init();
+        Jvm_Main();
     }
 }

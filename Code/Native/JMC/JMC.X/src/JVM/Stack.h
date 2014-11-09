@@ -18,9 +18,11 @@ extern uint16_t *Stack_CurrentPointer;
 
 extern uint16_t *Stack_BasePointer;
 
+#define Stack_Push(value) \
+    (*(++Stack_CurrentPointer) = value)
+
 extern void Stack_Init(void)
 ;
-extern void Stack_Push(uint16_t value);
 
 #ifdef	__cplusplus
 }

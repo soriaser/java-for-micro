@@ -12,7 +12,9 @@
 extern "C" {
 #endif
 
-#include "Common.h"
+#if (PLATFORM == PLATFORM_PIC18F4520)
+#include "MemoryManagement_PIC18F4520.h"
+#endif // PLATFORM
 
 extern void Mm_SetU08(uint32_t address, uint8_t value);
 extern void Mm_SetU16(uint32_t address, uint16_t value);

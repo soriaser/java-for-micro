@@ -17,8 +17,3 @@ extern void Stack_Init(void)
 
     Stack_CurrentPointer += JavaClass_GetNumberStaticFields();
 }
-
-extern void Stack_Push(uint16_t value)
-{
-    *(++Stack_CurrentPointer) = value;
-}
