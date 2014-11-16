@@ -9,7 +9,6 @@
 #include "JavaClass.h"
 #include "JVM.h"
 #include "Loader.h"
-#include "MemoryManagement.h"
 #include "SerialPort.h"
 #include "Timer.h"
 

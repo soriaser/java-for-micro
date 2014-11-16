@@ -48,6 +48,9 @@ extern NVMDATA uint8_t  JavaClass_Data[JAVACLASS_MAX_SIZE_DATA];
 #define JavaClass_GetOffsetMethods() \
     (((javaclass_header_t *) JavaClass_Data)->offsetMethods)
 
+#define JavaClass_GetNumberConstants() \
+    (((javaclass_header_t *) JavaClass_Data)->constants)
+
 #define JavaClass_GetNumberStaticFields() \
     (((javaclass_header_t *) JavaClass_Data)->fields)
 
@@ -59,7 +62,7 @@ extern NVMDATA uint8_t  JavaClass_Data[JAVACLASS_MAX_SIZE_DATA];
 
 #define JavaClass_GetMethod(index) \
     ((javaclass_method_header_t *) (JavaClass_Data + \
-        JavaClass_GetOffsetMethods()) + index)
+    JavaClass_GetOffsetMethods() + (sizeof(javaclass_method_header_t) * index)))
 
 extern void JavaClass_Init(void);
 
