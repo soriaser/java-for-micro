@@ -18,7 +18,7 @@ public class Sender implements SerialPortEventListener {
 
     private int Offset = 0;
 
-    private int BaudRate = 9600;
+    private int BaudRate = 2400;
     
     private byte Retries = 0;
 
