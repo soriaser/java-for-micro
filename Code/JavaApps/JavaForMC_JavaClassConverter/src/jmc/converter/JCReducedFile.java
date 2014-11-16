@@ -84,8 +84,7 @@ public class JCReducedFile extends JCFile {
         this.writeByte(this.jcParser.getNumberOfStaticFields());
         offset++;
         // Main method index
-        this.writeShort(this.jcParser.getMainMethodIndex());
-        offset++;
+        this.writeByte(this.jcParser.getMainMethodIndex());
         offset++;
 
         // Write offsets
@@ -120,8 +119,7 @@ public class JCReducedFile extends JCFile {
         // Code offset = (Header Size) + (Number of Classes * 2 Bytes) +
         // (Number of constants * 4 Bytes) + (Number of strings * 2 Bytes) +
         // Strings (X Bytes) + (Number of methods * Method header size)
-        offset += JCR_HEADER_METHODS_SIZE +
-                (this.jcParser.getNumberOfMethods() - 1);
+        offset += JCR_HEADER_METHODS_SIZE * this.jcParser.getNumberOfMethods();
         // It is not written, just stored
         this.offsetToCode = offset;
     }

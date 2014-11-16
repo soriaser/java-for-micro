@@ -15,6 +15,8 @@ public class JCFile {
 
     protected BufferedWriter oFileBuffer = null;
 
+    protected boolean isLittleEndian = false;
+
     public JCFile(String pathAndFileName, String fileExtension) {
         // Remove last file extension and add new one
         if (pathAndFileName.contains(".")) {
@@ -72,11 +74,34 @@ public class JCFile {
     }
 
     public void writeShort(short value) {
-        this.writeByte((byte) (value >> 8));
+        if (!this.isLittleEndian) {
+            this.writeByte((byte) (value >> 8));
+        }
+
         this.writeByte((byte) (value));
+
+        if (this.isLittleEndian) {
+            this.writeByte((byte) (value >> 8));
+        }
+    }
+
+    public void setLittleEndian() {
+        this.isLittleEndian = true;
+    }
+
+    public void setBigEndian() {
+        this.isLittleEndian = false;
     }
 
     public int getSize() {
         return this.size;
+    }
+
+    public boolean isLittleEndian() {
+        return this.isLittleEndian;
+    }
+
+    public boolean isBigEndian() {
+        return !this.isLittleEndian;
     }
 }
