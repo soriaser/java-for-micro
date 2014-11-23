@@ -63,6 +63,15 @@ void Jvm_RunMethod(javaclass_method_header_t *methodHeader)
         pc += pcIncrement;
 
         switch (bytecode) {
+            case BC_ICONST_M1:
+            case BC_ICONST_0:
+            case BC_ICONST_1:
+            case BC_ICONST_2:
+            case BC_ICONST_3:
+            case BC_ICONST_4:
+            case BC_ICONST_5:
+                Stack_Push(bytecode - BC_ICONST_0);
+                break;
             case BC_ILOAD_0:
             case BC_ILOAD_1:
             case BC_ILOAD_2:

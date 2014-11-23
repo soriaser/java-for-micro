@@ -12,13 +12,20 @@
 extern "C" {
 #endif
 
-#define BC_ILOAD        0x15
-#define BC_ILOAD_0      0x1A
-#define BC_ILOAD_1      0x1B
-#define BC_ILOAD_2      0x1C
-#define BC_ILOAD_3      0x1D
-#define BC_IRETURN      0xAC
-#define BC_RETURN       0xB1
+#define BC_ICONST_M1        0x02
+#define BC_ICONST_0         0x03
+#define BC_ICONST_1         0x04
+#define BC_ICONST_2         0x05
+#define BC_ICONST_3         0x06
+#define BC_ICONST_4         0x07
+#define BC_ICONST_5         0x08
+#define BC_ILOAD            0x15
+#define BC_ILOAD_0          0x1A
+#define BC_ILOAD_1          0x1B
+#define BC_ILOAD_2          0x1C
+#define BC_ILOAD_3          0x1D
+#define BC_IRETURN          0xAC
+#define BC_RETURN           0xB1
 
 extern void Jvm_Init(void);
 
