@@ -1,30 +1,17 @@
 package jmc.converter;
 
-import java.io.IOException;
-
 import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.ClassFormatException;
-import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.ConstantInteger;
 import org.apache.bcel.classfile.ConstantPool;
-import org.apache.bcel.classfile.Field;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Method;
 import org.apache.bcel.generic.Type;
 
 public class JCParser {
 
-    private JavaClass jClass;
-
-    public JCParser(String pathAndFileName) {
-        try {
-            this.jClass = (new ClassParser(pathAndFileName)).parse();
-        } catch (ClassFormatException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public byte getNumberOfArguments(Method method) {
+    public static byte getNumberOfArguments(Method method) {
         int arguments = 0;
+
         Type[] types = method.getArgumentTypes();
 
         for (int ii = 0; ii < types.length; ii++) {
@@ -43,15 +30,62 @@ public class JCParser {
         }
 
         if (arguments > 255) {
-            throw new InternalError("Number of arguments exceed maximum" +
-                    "allowed");
+            String message = "Number of arguments exceed maximum allowed";
+            throw new InternalError(message);
         }
 
         return (byte) arguments;
     }
 
-    public byte getNumberOfMethods() {
-        int methods = this.jClass.getMethods().length;
+    public static short getNumberOfConstants(JavaClass javaclasses[],
+            byte types[]) {
+        short constants = 0;
+
+        for (int ii = 0; ii < javaclasses.length; ii++) {
+            constants += getNumberOfConstants(javaclasses[ii], types);
+        }
+
+        return constants;
+    }
+
+    public static short getNumberOfConstants(JavaClass javaclass,
+            byte types[]) {
+        return getNumberOfConstants(javaclass.getConstantPool(), types);
+    }
+
+    public static short getNumberOfConstants(ConstantPool pools[],
+            byte types[]) {
+        short constants = 0;
+
+        for (int ii = 0; ii < pools.length; ii++) {
+            constants += getNumberOfConstants(pools[ii], types);
+        }
+
+        return constants;
+    }
+
+    public static short getNumberOfConstants(ConstantPool pool, byte types[]) {
+        short constants = 0;
+
+        for (int jj = 0; jj < (int) pool.getLength(); jj++) {
+            if (pool.getConstant(jj) != null) {
+                for (int kk = 0; kk < (int) types.length; kk++) {
+                    if (types[kk] == pool.getConstant(jj).getTag()) {
+                        constants++;
+                    }
+                }
+            }
+        }
+
+        return constants;
+    }
+
+    public static byte getNumberOfMethods(JavaClass javaclasses[], short flags) {
+        int methods = 0;
+
+        for (int ii = 0; ii < javaclasses.length; ii++) {
+            methods += getNumberOfMethods(javaclasses[ii], flags);
+        }
 
         if (methods > 255) {
             throw new InternalError("Number of methods exceed maximum allowed");
@@ -60,84 +94,193 @@ public class JCParser {
         return (byte) methods;
     }
 
-    public byte getNumberOfClasses() {
-        return 0x01;
-    }
+    public static byte getNumberOfMethods(JavaClass javaclass, short flags) {
+        int methods = 0;
 
-    public short getNumberOfConstants(byte type) {
-        short constants = 0;
-
-        ConstantPool pool = this.jClass.getConstantPool();
-        for (int ii = 0; ii < (int) pool.getLength(); ii++) {
-            if (pool.getConstant(ii) != null) {
-                if (pool.getConstant(ii).getTag() == type) {
-                    constants++;
+        for (int ii = 0; ii < (int) javaclass.getMethods().length; ii++) {
+            if (javaclass.getMethods()[ii] != null) {
+                if (((javaclass.getMethods()[ii].getAccessFlags() & flags) ==
+                        flags) || (flags == (short) 0xFFFF)) {
+                    methods++;
                 }
             }
         }
 
-        return constants;
+        if (methods > 255) {
+            throw new InternalError("Number of methods exceed maximum allowed");
+        }
+
+        return (byte) methods;
     }
 
-    public byte getNumberOfStaticFields() {
+    public static byte getNumberOfFields(JavaClass javaclasses[], short flags) {
         int fields = 0;
 
-        for (int ii = 0; ii < (int) this.jClass.getFields().length; ii++) {
-            Field field = this.jClass.getFields()[ii];
-            if (field.isStatic()) {
-                fields++;
-            }
+        for (int ii = 0; ii < javaclasses.length; ii++) {
+            fields += getNumberOfFields(javaclasses[ii], flags);
         }
 
         if (fields > 255) {
-            throw new InternalError("Number of static fields" +
-                    "exceed maximum allowed");
+            throw new InternalError("Number of fields exceed maximum allowed");
         }
 
         return (byte) fields;
     }
 
-    public byte getClassId() {
-        return 0x00;
-    }
+    public static byte getNumberOfFields(JavaClass javaclass, short flags) {
+        int fields = 0;
 
-    public byte getMainMethodIndex() {
-        if (this.jClass.getMethods().length > 255) {
-            throw new InternalError("Number of methods exceed maximum allowed");
-        }
-
-        for (byte ii = 0; ii < (byte) this.jClass.getMethods().length; ii++) {
-            if (this.jClass.getMethods()[ii].getName().equals("main")) {
-                return ii;
-            }
-        }
-
-        throw new InternalError("Main method doesn't found");
-    }
-
-    public short getSizeOfAllStrings() {
-        String string = "";
-
-        ConstantPool pool = this.jClass.getConstantPool();
-        for (int ii = 0; ii < (int) pool.getLength(); ii++) {
-            if (pool.getConstant(ii) != null) {
-                if (pool.getConstant(ii).getTag() ==
-                        Constants.CONSTANT_String) {
-                    string += pool.getConstantString(ii,
-                            Constants.CONSTANT_String);
+        for (int ii = 0; ii < (int) javaclass.getFields().length; ii++) {
+            if (javaclass.getFields()[ii] != null) {
+                if (((javaclass.getFields()[ii].getAccessFlags() & flags) ==
+                        flags) || (flags == (short) 0xFFFF)) {
+                    fields++;
                 }
             }
         }
 
-        if ((short) string.length() > 65535) {
-            throw new InternalError("Total strings size exceeds" +
-                    "maximum allowed");
+        if (fields > 255) {
+            throw new InternalError("Number of fields exceed maximum allowed");
         }
 
-        return (short) string.length();
+        return (byte) fields;
     }
 
-    public Method getMethod(int index) {
-        return this.jClass.getMethods()[index];
+    public static short[] getNumberValues(JavaClass javaclasses[],
+            byte types[]) {
+        int offset = 0;
+        short values[] = new short[getNumberOfConstants(javaclasses, types)];
+
+        for (int ii = 0; ii < javaclasses.length; ii++) {
+            short poolValues[] = getNumberValues(javaclasses[ii], types);
+
+            for (int jj = 0; jj < poolValues.length; jj++) {
+                values[offset] = poolValues[jj];
+                offset++;
+            }
+        }
+
+        return values;
     }
+
+    public static short[] getNumberValues(JavaClass javaclass, byte types[]) {
+        return getNumberValues(javaclass.getConstantPool(), types);
+    }
+
+    public static short[] getNumberValues(ConstantPool pools[], byte types[]) {
+        int offset = 0;
+        short values[] = new short[getNumberOfConstants(pools, types)];
+
+        for (int ii = 0; ii < pools.length; ii++) {
+            short poolValues[] = getNumberValues(pools[ii], types);
+
+            for (int jj = 0; jj < poolValues.length; jj++) {
+                values[offset] = poolValues[jj];
+                offset++;
+            }
+        }
+
+        return values;
+    }
+
+    public static short[] getNumberValues(ConstantPool pool, byte types[]) {
+        int offset = 0;
+        String message = "";
+        short values[] = new short[getNumberOfConstants(pool, types)];
+
+        for (int jj = 0; jj < (int) pool.getLength(); jj++) {
+            if (pool.getConstant(jj) != null) {
+                for (int kk = 0; kk < (int) types.length; kk++) {
+                    if (types[kk] == pool.getConstant(jj).getTag()) {
+                        switch (types[kk]) {
+                        case Constants.CONSTANT_Integer:
+                            values[offset] = (short) ((ConstantInteger)
+                                    pool.getConstant(jj)).getBytes();
+
+                            if (values[offset] > Short.MAX_VALUE) {
+                                message  = "Constant value exceeds maximum";
+                                message += " short value";
+                                throw new InternalError(message);
+                            }
+
+                            break;
+                        default:
+                            message = "Constant type not allowed";
+                            throw new InternalError(message);
+                        }
+                        
+                        offset++;
+                    }
+                }
+            }
+        }
+
+        return values;
+    }
+
+    public static String[] getStringValues(JavaClass javaclasses[],
+            byte types[]) {
+        int offset = 0;
+        String values[] = new String[getNumberOfConstants(javaclasses, types)];
+
+        for (int ii = 0; ii < javaclasses.length; ii++) {
+            String poolValues[] = getStringValues(javaclasses[ii], types);
+
+            for (int jj = 0; jj < poolValues.length; jj++) {
+                values[offset] = poolValues[jj];
+                offset++;
+            }
+        }
+
+        return values;
+    }
+
+    public static String[] getStringValues(JavaClass javaclass, byte types[]) {
+        return getStringValues(javaclass.getConstantPool(), types);
+    }
+
+    public static String[] getStringValues(ConstantPool pools[], byte types[]) {
+        int offset = 0;
+        String values[] = new String[getNumberOfConstants(pools, types)];
+
+        for (int ii = 0; ii < pools.length; ii++) {
+            String poolValues[] = getStringValues(pools[ii], types);
+
+            for (int jj = 0; jj < poolValues.length; jj++) {
+                values[offset] = poolValues[jj];
+                offset++;
+            }
+        }
+
+        return values;
+    }
+
+    public static String[] getStringValues(ConstantPool pool, byte types[]) {
+        int offset = 0;
+        String message = "";
+        String values[] = new String[getNumberOfConstants(pool, types)];
+
+        for (int jj = 0; jj < (int) pool.getLength(); jj++) {
+            if (pool.getConstant(jj) != null) {
+                for (int kk = 0; kk < (int) types.length; kk++) {
+                    if (types[kk] == pool.getConstant(jj).getTag()) {
+                        switch (types[kk]) {
+                        case Constants.CONSTANT_String:
+                            values[offset] = pool.getConstantString(jj,
+                                    Constants.CONSTANT_String);
+                            break;
+                        default:
+                            message = "Constant type not allowed";
+                            throw new InternalError(message);
+                        }
+                        
+                        offset++;
+                    }
+                }
+            }
+        }
+
+        return values;
+    }
+
 }

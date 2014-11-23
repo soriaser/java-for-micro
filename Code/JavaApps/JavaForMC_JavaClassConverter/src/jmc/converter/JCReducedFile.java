@@ -1,51 +1,68 @@
 package jmc.converter;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.Method;
+import java.io.IOException;
+
+import org.apache.bcel.classfile.ClassFormatException;
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.JavaClass;
 
 public class JCReducedFile extends JCFile {
 
     private final static String EXTENSION = "jcr";
 
-    private final static byte VERSION = 0x01;
+    private final static short JCR_HEADER_SIZE = 15;
 
-    private final static byte FLAG_INIT_METHOD = 0x01;
-
-    private final static short JCR_HEADER_CLASS_SIZE = 2;
-
-    private final static short JCR_HEADER_METHODS_SIZE = 8;
-
-    private final static short JCR_CONSTANT_SIZE = 4;
-
-    private final static short JCR_STRING_SIZE = 2;
-
-    private JCParser jcParser = null;
-
-    private short offsetToClasses = 0;
-
-    private short offsetToConstants = 0;
-
-    private short offsetToStrings = 0;
-
-    private short offsetToMethods = 0;
+    private JCReduced jcReduced = null;
 
     private short offsetToCode = 0;
 
-    public JCReducedFile(String pathAndFileName) {
-        super(pathAndFileName, EXTENSION);
-        this.jcParser = new JCParser(pathAndFileName);
+    public JCReducedFile(String classFiles[], int main) {
+        super(classFiles[main], EXTENSION);
+
+        JavaClass javaclasses[] = new JavaClass[classFiles.length];
+
+        try {
+            for (int ii = 0; ii < classFiles.length; ii++) {
+                javaclasses[ii] = (new ClassParser(classFiles[ii])).parse();
+            }    
+        } catch (ClassFormatException | IOException exception) {
+            exception.printStackTrace();
+        }
+
+        this.jcReduced = new JCReduced(javaclasses);
     }
 
     public void fill() {
         this.writeHeader();
-
-        // Temporal loop to write empty bytes until methods
-        while (this.getSize() < this.offsetToMethods) {
-            this.writeByte((byte) 0xFF);
-        }
-
+        this.writeClasses();
+        this.writeConstants();
         this.writeMethods();
+    }
+
+    /**
+     * Writes following C structure representing Java class
+     *     struct javaclass_class_t {
+     *         uint8_t  super;
+     *         uint8_t  fields;
+     *         };
+     *
+     * @param jcrClass JCReducedClass object.
+     */
+    private void writeClass(JCReducedClass jcrClass) {
+        this.writeByte(jcrClass.getSuperClass());
+        this.writeByte(jcrClass.getFields());
+    }
+
+    private void writeClasses() {
+        for (int ii = 0; ii < this.jcReduced.getNumberOfClasses(); ii++) {
+            this.writeClass(this.jcReduced.getClass(ii));
+        }
+    }
+
+    private void writeConstants() {
+        for (int ii = 0; ii < this.jcReduced.getNumberOfConstants(); ii++) {
+            this.writeShort(this.jcReduced.getConstant(ii));
+        }
     }
 
     /**
@@ -66,78 +83,40 @@ public class JCReducedFile extends JCFile {
     private void writeHeader() {
         short offset = 0;
 
-        // Version byte
-        this.writeByte(VERSION);
-        offset++;
-        // Number of methods
-        this.writeByte(this.jcParser.getNumberOfMethods());
-        offset++;
-        // Number of constants
-        this.writeShort(this.jcParser.getNumberOfConstants(
-                Constants.CONSTANT_Integer));
-        offset++;
-        offset++;
-        // Number of classes
-        this.writeByte(this.jcParser.getNumberOfClasses());
-        offset++;
-        // Number of Static Fields
-        this.writeByte(this.jcParser.getNumberOfStaticFields());
-        offset++;
-        // Main method index
-        this.writeByte(this.jcParser.getMainMethodIndex());
-        offset++;
+        this.writeByte (this.jcReduced.getVersion());
+        this.writeByte (this.jcReduced.getNumberOfMethods());
+        this.writeShort(this.jcReduced.getNumberOfConstants());
+        this.writeByte (this.jcReduced.getNumberOfClasses());
+        this.writeByte (this.jcReduced.getNumberOfStaticFields());
+        this.writeByte (this.jcReduced.getMainMethodIndex());
 
-        // Write offsets
-        //     + Offset Classes (+2)
-        //     + Offset Constants (+2)
-        //     + Offset Strings (+2)
-        //     + Offset Methods (+2)
-        offset += 8;
-        // Classes offset = (Header Size)
-        this.offsetToClasses = offset;
+        offset = JCR_HEADER_SIZE;
+        // Offset to Classes
         this.writeShort(offset);
-        // Constants offset = (Header Size) + (Number of Classes * 2 Bytes)
-        // 2 bytes corresponds to super id and number of fields, every class
-        // header has these 2 bytes
-        offset += JCR_HEADER_CLASS_SIZE * this.jcParser.getNumberOfClasses();
-        this.offsetToConstants = offset;
+
+        offset += this.jcReduced.getNumberOfClasses() * JCReducedClass.SIZE;
+        // Offset to Constants
         this.writeShort(offset);
-        // Strings offset = (Header Size) + (Number of Classes * 2 Bytes) +
-        // (Number of constants * 4 Bytes)
-        offset += JCR_CONSTANT_SIZE * this.jcParser.getNumberOfConstants(
-                Constants.CONSTANT_Integer);
-        this.offsetToStrings = offset;
+
+        offset += this.jcReduced.getNumberOfConstants() *
+                JCReduced.SIZE_CONSTANT;
+        // Offset to Strings
         this.writeShort(offset);
-        // Methods offset = (Header Size) + (Number of Classes * 2 Bytes) +
-        // (Number of constants * 4 Bytes) + (Number of strings * 2 Bytes) +
-        // Strings (X Bytes)
-        offset += JCR_STRING_SIZE * this.jcParser.getNumberOfConstants(
-                Constants.CONSTANT_String);
-        offset += this.jcParser.getSizeOfAllStrings();
-        this.offsetToMethods = offset;
+
+        offset += this.jcReduced.getNumberOfStrings() *
+                JCReduced.SIZE_STRING_INDEX;
+        offset += this.jcReduced.getAllStringsSize();
+        // Offset to Methods
         this.writeShort(offset);
-        // Code offset = (Header Size) + (Number of Classes * 2 Bytes) +
-        // (Number of constants * 4 Bytes) + (Number of strings * 2 Bytes) +
-        // Strings (X Bytes) + (Number of methods * Method header size)
-        offset += JCR_HEADER_METHODS_SIZE * this.jcParser.getNumberOfMethods();
-        // It is not written, just stored
+
+        offset += this.jcReduced.getNumberOfMethods() *
+                JCReducedMethod.SIZE_HEADER;
+        // Offset to Code
         this.offsetToCode = offset;
     }
 
-    /**
-     * Writes all method headers as described in writeMethod description. It
-     * starts at methods offset set in Java Class header.
-     */
-    private void writeMethods() {
-        // Write all method headers
-        for (byte id = 0; id < this.jcParser.getNumberOfMethods(); id++) {
-            this.writeMethodHeader(id, this.jcParser.getMethod(id));
-        }
-
-        // Write all methods code
-        for (byte id = 0; id < this.jcParser.getNumberOfMethods(); id++) {
-            this.writeMethodCode(this.jcParser.getMethod(id).getCode());
-        }
+    private void writeMethodCode(JCReducedMethod method) {
+        this.writeArray(method.getByteCode());
     }
 
     /**
@@ -151,67 +130,28 @@ public class JCReducedFile extends JCFile {
      *         uint8_t  stack;
      *         };
      *
-     * @param id Method ID.
-     * @param method Object org.apache.bcel.classfile.Method.
+     * @param method JCReduced Method.
      */
-    private void writeMethodHeader(byte id, Method method) {
-        // Write offset to bytecode of this method.
+    private void writeMethodHeader(JCReducedMethod method) {
         this.writeShort(this.offsetToCode);
-        // Write method id (class id + method id)
-        this.writeByte(this.jcParser.getClassId());
-        this.writeByte(id);
+        this.offsetToCode += method.getByteCode().length;
 
-        // Write flags:
-        // If <init> method, bit 0 is set to 1        
-        byte flags = 0x00;
-        if (method.getName().equals("<init>")) {
-            flags |= FLAG_INIT_METHOD;
-        }
-        this.writeByte(flags);
-
-        // Write number of arguments
-        this.writeByte(this.jcParser.getNumberOfArguments(method));
-
-        int locals = method.getCode().getMaxLocals();
-        int stack = method.getCode().getMaxStack();
-
-        if ((locals > 255) || (stack > 255)) {
-            throw new InternalError("Maximum locals and stack are 255");
-        }
-        
-        // Write maximum number of locals and stack
-        this.writeByte((byte) locals);
-        this.writeByte((byte) stack);
-        
-        // Increase code offset to put 
-        this.offsetToCode += method.getCode().getLength();
+        this.writeByte(method.getClassId());
+        this.writeByte(method.getId());
+        this.writeByte(method.getFlags());
+        this.writeByte(method.getNumberOfArguments());
+        this.writeByte(method.getMaximumLocals());
+        this.writeByte(method.getMaximumStack());
     }
 
-    /**
-     * Writes Java method bytecode.
-     *
-     * @param code Object org.apache.bcel.classfile.Code.
-     */
-    private void writeMethodCode(Code code) {
-        byte bytecodes[] = code.getCode();
-
-        for (int ii = 0; ii < bytecodes.length; ii++) {
-            switch (bytecodes[ii]) {
-            case Constants.ALOAD_0:
-                bytecodes[ii] = Constants.ILOAD_0;
-                break;
-            case Constants.ALOAD_1:
-                bytecodes[ii] = Constants.ILOAD_1;
-                break;
-            case Constants.ALOAD_2:
-                bytecodes[ii] = Constants.ILOAD_2;
-                break;
-            case Constants.ALOAD_3:
-                bytecodes[ii] = Constants.ILOAD_3;
-                break;
-            }
+    private void writeMethods() {
+        for (byte ii = 0; ii < this.jcReduced.getNumberOfMethods(); ii++) {
+            this.writeMethodHeader(this.jcReduced.getMethod(ii));
         }
 
-        this.writeArray(code.getCode());
+        for (byte ii = 0; ii < this.jcReduced.getNumberOfMethods(); ii++) {
+            this.writeMethodCode(this.jcReduced.getMethod(ii));
+        }
     }
+
 }

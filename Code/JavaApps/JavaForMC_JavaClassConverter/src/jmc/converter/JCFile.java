@@ -17,6 +17,10 @@ public class JCFile {
 
     protected boolean isLittleEndian = false;
 
+    public JCFile(String pathAndFileName) {
+        this.oFile = new File(pathAndFileName);
+    }
+
     public JCFile(String pathAndFileName, String fileExtension) {
         // Remove last file extension and add new one
         if (pathAndFileName.contains(".")) {
@@ -74,15 +78,23 @@ public class JCFile {
     }
 
     public void writeShort(short value) {
-        if (!this.isLittleEndian) {
-            this.writeByte((byte) (value >> 8));
-        }
-
-        this.writeByte((byte) (value));
-
         if (this.isLittleEndian) {
-            this.writeByte((byte) (value >> 8));
+            value = this.revert(value);
         }
+
+        this.writeByte((byte) (value >> 8));
+        this.writeByte((byte) (value >> 0));
+    }
+
+    public void writeInt(int value) {
+        if (this.isLittleEndian) {
+            value = this.revert(value);
+        }
+
+        this.writeByte((byte) (value >> 24));
+        this.writeByte((byte) (value >> 16));
+        this.writeByte((byte) (value >>  8));
+        this.writeByte((byte) (value >>  0));        
     }
 
     public void setLittleEndian() {
@@ -104,4 +116,25 @@ public class JCFile {
     public boolean isBigEndian() {
         return !this.isLittleEndian;
     }
+
+    private short revert(short value) {
+        short tmp = value;
+
+        value  = (short) ((tmp & 0x00FF) << 8);
+        value += (short) ((tmp & 0xFF00) >> 8);
+
+        return value;
+    }
+
+    private int revert(int value) {
+        int tmp = value;
+
+        value  = (int) ((tmp & 0x000000FF) << 24);
+        value += (int) ((tmp & 0x0000FF00) <<  8);
+        value += (int) ((tmp & 0x00FF0000) >>  8);
+        value += (int) ((tmp & 0xFF000000) >> 24);
+
+        return value;
+    }
+
 }
