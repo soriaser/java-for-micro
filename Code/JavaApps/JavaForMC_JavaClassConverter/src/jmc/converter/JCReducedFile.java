@@ -2,6 +2,8 @@ package jmc.converter;
 
 import java.io.IOException;
 
+import jmc.converter.util.Util;
+
 import org.apache.bcel.classfile.ClassFormatException;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
@@ -29,6 +31,7 @@ public class JCReducedFile extends JCFile {
             exception.printStackTrace();
         }
 
+        JCMethodMap.fill(javaclasses);
         this.jcReduced = new JCReduced(javaclasses);
     }
 
@@ -136,8 +139,7 @@ public class JCReducedFile extends JCFile {
         this.writeShort(this.offsetToCode);
         this.offsetToCode += method.getByteCode().length;
 
-        this.writeByte(method.getClassId());
-        this.writeByte(method.getId());
+        this.writeShort(Util.getShort(method.getClassId(), method.getId()));
         this.writeByte(method.getFlags());
         this.writeByte(method.getNumberOfArguments());
         this.writeByte(method.getMaximumLocals());

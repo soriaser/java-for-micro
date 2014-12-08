@@ -25,6 +25,9 @@ public class JCReducedMethod {
     private boolean isMain;
 
     public JCReducedMethod(Method method, byte id, byte idc) {
+        this.id  = id;
+        this.idc = idc;
+
         this.code = new JCReducedCode(method.getCode().getCode());
 
         if (method.getCode().getMaxLocals() > 255) {
@@ -40,19 +43,16 @@ public class JCReducedMethod {
         this.stack = (byte) method.getCode().getMaxStack();
 
         this.isInit = false;
-        if (method.getName().equals("<init>")) {
+        if (method.getName().equals(JCReducedConstants.API_METHOD_INIT)) {
             this.isInit = true;
         }
 
         this.isMain = false;
-        if (method.getName().equals("main")) {
+        if (method.getName().equals(JCReducedConstants.API_METHOD_MAIN)) {
             this.isMain = true;
         }
 
         this.arguments = JCParser.getNumberOfArguments(method);
-
-        this.id  = id;
-        this.idc = idc;
     }
 
     public byte[] getByteCode() {
@@ -95,6 +95,10 @@ public class JCReducedMethod {
 
     public boolean isMain() {
         return this.isMain;
+    }
+
+    public void setId(byte id) {
+        this.id = id;
     }
 
 }

@@ -149,4 +149,5 @@ public class JCReduced {
     public byte getVersion() {
         return VERSION;
     }
+
 }

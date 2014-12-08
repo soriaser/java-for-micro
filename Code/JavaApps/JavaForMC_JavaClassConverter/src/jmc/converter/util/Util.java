@@ -19,4 +19,28 @@ public class Util {
         return str;
     }
 
+    public static short getShort(byte highByte, byte lowByte) {
+        return (short) (((highByte & 0xFF) << 8) | (lowByte & 0xFF));
+    }
+
+    public static short revert(short value) {
+        short tmp = value;
+
+        value  = (short) ((tmp & 0x00FF) << 8);
+        value += (short) ((tmp & 0xFF00) >> 8);
+
+        return value;
+    }
+
+    public static int revert(int value) {
+        int tmp = value;
+
+        value  = (int) ((tmp & 0x000000FF) << 24);
+        value += (int) ((tmp & 0x0000FF00) <<  8);
+        value += (int) ((tmp & 0x00FF0000) >>  8);
+        value += (int) ((tmp & 0xFF000000) >> 24);
+
+        return value;
+    }
+
 }

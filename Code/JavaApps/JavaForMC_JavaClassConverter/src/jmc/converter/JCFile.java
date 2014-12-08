@@ -15,8 +15,6 @@ public class JCFile {
 
     protected BufferedWriter oFileBuffer = null;
 
-    protected boolean isLittleEndian = false;
-
     public JCFile(String pathAndFileName) {
         this.oFile = new File(pathAndFileName);
     }
@@ -78,8 +76,8 @@ public class JCFile {
     }
 
     public void writeShort(short value) {
-        if (this.isLittleEndian) {
-            value = this.revert(value);
+        if (JCConverter.isLittleEndian) {
+            value = Util.revert(value);
         }
 
         this.writeByte((byte) (value >> 8));
@@ -87,8 +85,8 @@ public class JCFile {
     }
 
     public void writeInt(int value) {
-        if (this.isLittleEndian) {
-            value = this.revert(value);
+        if (JCConverter.isLittleEndian) {
+            value = Util.revert(value);
         }
 
         this.writeByte((byte) (value >> 24));
@@ -97,44 +95,8 @@ public class JCFile {
         this.writeByte((byte) (value >>  0));        
     }
 
-    public void setLittleEndian() {
-        this.isLittleEndian = true;
-    }
-
-    public void setBigEndian() {
-        this.isLittleEndian = false;
-    }
-
     public int getSize() {
         return this.size;
-    }
-
-    public boolean isLittleEndian() {
-        return this.isLittleEndian;
-    }
-
-    public boolean isBigEndian() {
-        return !this.isLittleEndian;
-    }
-
-    private short revert(short value) {
-        short tmp = value;
-
-        value  = (short) ((tmp & 0x00FF) << 8);
-        value += (short) ((tmp & 0xFF00) >> 8);
-
-        return value;
-    }
-
-    private int revert(int value) {
-        int tmp = value;
-
-        value  = (int) ((tmp & 0x000000FF) << 24);
-        value += (int) ((tmp & 0x0000FF00) <<  8);
-        value += (int) ((tmp & 0x00FF0000) >>  8);
-        value += (int) ((tmp & 0xFF000000) >> 24);
-
-        return value;
     }
 
 }

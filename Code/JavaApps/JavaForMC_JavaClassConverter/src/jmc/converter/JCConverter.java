@@ -2,6 +2,8 @@ package jmc.converter;
 
 public class JCConverter {
 
+    public static boolean isLittleEndian = false;
+
     /**
      * Starts class to JMC converter.
      *
@@ -10,7 +12,6 @@ public class JCConverter {
     public static void main(String[] args) {
         // TODO: Add support for more than one *.class file
         String files[] = new String[1];
-        boolean isLittleEndian = false;
 
         // Read options
         for (int option = 0; option < args.length; option++) {
@@ -38,11 +39,6 @@ public class JCConverter {
         }
 
         JCReducedFile JCRFile = new JCReducedFile(files, 0);
-
-        if (isLittleEndian) {
-            JCRFile.setLittleEndian();
-        }
-
         JCRFile.create();
     }
 }
