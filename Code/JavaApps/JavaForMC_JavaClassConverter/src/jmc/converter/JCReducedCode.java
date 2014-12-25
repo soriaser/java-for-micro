@@ -13,6 +13,7 @@ public class JCReducedCode extends JCCode {
 
     private void translate(byte[] code) {
         int offset = 0;
+        short index = 0;
 
         while (offset < code.length) {
             switch (code[offset]) {
@@ -30,11 +31,21 @@ public class JCReducedCode extends JCCode {
             case (byte) Constants.INVOKEVIRTUAL:
             case (byte) Constants.INVOKESTATIC:
                 // Same bytecode
-                this.appendByte(code[offset]);
-
-                // Go to index and change it by corresponding id
-                short index = Util.getShort(code[offset++], code[offset++]);
+                this.appendByte(code[offset++]);
+                // Get constant pool index
+                offset++;
+                index = Util.getShort(code[offset - 1], code[offset]);
+                // Replace index if required
                 this.appendShort(JCMethodMap.getMethodId(index));
+                break;
+            case (byte) Constants.PUTSTATIC:
+             // Same bytecode
+                this.appendByte(code[offset++]);
+                // Get constant pool index
+                offset++;
+                index = Util.getShort(code[offset - 1], code[offset]);
+                // Replace index if required
+                this.appendShort(JCFieldMap.getFieldId(index));
                 break;
             default:
                 this.appendByte(code[offset]);

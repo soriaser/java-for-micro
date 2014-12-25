@@ -9,7 +9,7 @@ public class JCCode {
     private byte[] code;
 
     public JCCode(int size) {
-        this.code = new byte[code.length];
+        this.code = new byte[size];
         this.offset = 0;
     }
 

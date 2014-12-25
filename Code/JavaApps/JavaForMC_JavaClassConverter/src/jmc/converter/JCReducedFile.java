@@ -31,6 +31,7 @@ public class JCReducedFile extends JCFile {
             exception.printStackTrace();
         }
 
+        JCFieldMap.fill(javaclasses);
         JCMethodMap.fill(javaclasses);
         this.jcReduced = new JCReduced(javaclasses);
     }
