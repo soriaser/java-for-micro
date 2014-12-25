@@ -38,8 +38,9 @@ public class JCReducedCode extends JCCode {
                 // Replace index if required
                 this.appendShort(JCMethodMap.getMethodId(index));
                 break;
-            case (byte) Constants.PUTSTATIC:
-             // Same bytecode
+            case (byte) Constants.PUTFIELD:
+            case (byte) Constants.GETFIELD:
+                // Same bytecode
                 this.appendByte(code[offset++]);
                 // Get constant pool index
                 offset++;
