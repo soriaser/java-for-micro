@@ -19,12 +19,8 @@ public class Sender implements SerialPortEventListener {
     private int Offset = 0;
 
     private int BaudRate = 2400;
-    
-    private byte Retries = 0;
 
     private final static byte RX_CONTINUE = (byte) 0x61;
-
-    private final static byte MAX_RETRIES = 2;
 
     private final static int TIME = 1000;
 
@@ -33,25 +29,8 @@ public class Sender implements SerialPortEventListener {
         public void actionPerformed(ActionEvent action) {
             // Timer triggered, stop it
             TimerSend.stop();
-
-            if (Retries < MAX_RETRIES) {
-                // If timer has been triggered means that resend is required.
-                // Offset is decreased to resend previous byte
-                Offset--;
-                // Send again
-                sendNext();
-                // Increase retries
-                Retries++;
-            } else {
-                System.out.print("\n");
-                System.out.print("Retries exceeding!! Port is closed!!\n");
-
-                try {
-                    Port.closePort();
-                } catch (SerialPortException e) {
-                    e.printStackTrace();
-                }
-            }
+            // Send next even if response has not been received
+            sendNext();
         }
     });
 
@@ -67,18 +46,19 @@ public class Sender implements SerialPortEventListener {
             this.Port.writeByte(this.Data[this.Offset]);
 
             // Print bytes
-            if (this.Retries == 0) {
-                if ((this.Offset % 16) == 0) {
-                    System.out.print("\n");
-                    System.out.print("-> ");
-                }
-                System.out.printf("0x%02X ", this.Data[this.Offset]);
+            if ((this.Offset % 16) == 0) {
+                System.out.print("\n");
+                System.out.print("-> ");
             }
+            System.out.printf("0x%02X ", this.Data[this.Offset]);
 
             // Increase data offset
             this.Offset++;
-            // Start timer to allow resend in case of send error
-            TimerSend.start();
+
+            if (this.Offset < this.Data.length) {
+                // Start timer to allow resend in case of send error
+                TimerSend.start();
+            }
         } catch (SerialPortException e) {
             System.out.println(e);
         } catch (Exception e) {
@@ -130,11 +110,9 @@ public class Sender implements SerialPortEventListener {
                     System.out.print("\n");
                     System.out.printf("<- 0x%02X\n", buffer[0]);
                     // Close port
+                    this.Port.setEventsMask(0x00);
                     this.Port.closePort();
                 }
-
-                // Reset retries
-                Retries = 0;
             }
             catch (SerialPortException e) {
                 System.out.println(e);
