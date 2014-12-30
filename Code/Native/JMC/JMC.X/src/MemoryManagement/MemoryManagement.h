@@ -16,6 +16,8 @@ extern "C" {
 #include "MemoryManagement_PIC18F4520.h"
 #endif // PLATFORM
 
+extern uint8_t  Mm_GetU08(uint32_t address);
+extern uint16_t Mm_GetU16(uint32_t address);
 extern void Mm_SetU08(uint32_t address, uint8_t value);
 extern void Mm_SetU16(uint32_t address, uint16_t value);
 
