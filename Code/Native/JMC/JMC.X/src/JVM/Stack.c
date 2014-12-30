@@ -2,6 +2,7 @@
 #include "Heap.h"
 #include "JavaClass.h"
 #include "Stack.h"
+#include "MemoryManagement.h"
 
 uint16_t *Stack_Pointer;
 uint16_t *Stack_CurrentPointer;
