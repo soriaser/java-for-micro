@@ -7,6 +7,7 @@
 
 #include "Common.h"
 #include "JavaClass.h"
+#include "MemoryManagement.h"
 #include "JVM.h"
 #include "Loader.h"
 #include "SerialPort.h"
