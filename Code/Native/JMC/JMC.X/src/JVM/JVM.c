@@ -108,6 +108,11 @@ void Jvm_RunMethod(uint16_t index)
             case BC_ISTORE_3:
                 localVariables[bytecode - BC_ISTORE_0] = Stack_Pop();
                 break;
+            case BC_GETFIELD:
+                Stack_Push(((uint32_t *) Heap_GetHeaderAddress(Stack_Pop()))
+                        [1 + nextcodes.word]);
+                pcIncrement = 3;
+                break;
             case BC_PUTFIELD:
                 aux1 = Stack_Pop();
                 ((uint32_t *) Heap_GetHeaderAddress(Stack_Pop()))
