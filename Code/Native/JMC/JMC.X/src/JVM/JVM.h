@@ -19,6 +19,7 @@ extern "C" {
 #define BC_ICONST_3         0x06
 #define BC_ICONST_4         0x07
 #define BC_ICONST_5         0x08
+#define BC_SIPUSH           0x11
 #define BC_ILOAD            0x15
 #define BC_ILOAD_0          0x1A
 #define BC_ILOAD_1          0x1B
@@ -33,6 +34,7 @@ extern "C" {
 #define BC_GETFIELD         0xB4
 #define BC_PUTFIELD         0xB5
 #define BC_INVOKESPECIAL    0xB7
+#define BC_INVOKESTATIC     0xB8
 
 extern void Jvm_Init(void);
 

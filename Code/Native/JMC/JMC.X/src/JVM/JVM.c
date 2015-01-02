@@ -96,6 +96,10 @@ void Jvm_RunMethod(uint16_t index)
             case BC_ICONST_5:
                 Stack_Push(bytecode - BC_ICONST_0);
                 break;
+            case BC_SIPUSH:
+                Stack_Push(nextcodes.word);
+                pcIncrement = 3;
+                break;
             case BC_ILOAD_0:
             case BC_ILOAD_1:
             case BC_ILOAD_2:
@@ -120,6 +124,7 @@ void Jvm_RunMethod(uint16_t index)
                 pcIncrement = 3;
                 break;
             case BC_INVOKESPECIAL:
+            case BC_INVOKESTATIC:
                 if ((nextcodes.word & BIT_MASK_NATIVE_METHOD) == 0) {
                     // Store offset to current method bytecode
                     aux1 = (uint16_t) pc - (uint16_t) JavaClass_Data;
