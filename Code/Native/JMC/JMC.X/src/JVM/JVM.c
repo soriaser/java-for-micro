@@ -153,6 +153,10 @@ void Jvm_RunMethod(uint16_t index)
                         break;
                 }
                 break;
+            case BC_GOTO:
+                pc += nextcodes.word - 3;
+                pcIncrement = 3;
+                break;
             case BC_GETFIELD:
                 Stack_Push(((uint32_t *) Heap_GetHeaderAddress(Stack_Pop()))
                         [1 + nextcodes.word]);

@@ -41,6 +41,7 @@ extern "C" {
 #define BC_IF_ICMPGE        0xA2
 #define BC_IF_ICMPGT        0xA3
 #define BC_IF_ICMPLE        0xA4
+#define BC_GOTO             0xA7
 #define BC_IRETURN          0xAC
 #define BC_RETURN           0xB1
 #define BC_GETFIELD         0xB4
