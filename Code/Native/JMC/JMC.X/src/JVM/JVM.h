@@ -33,7 +33,7 @@ extern void Jvm_Init(void);
 
 extern void Jvm_Main(void);
 
-extern void Jvm_RunMethod(javaclass_method_header_t *method);
+extern void Jvm_RunMethod(uint16_t index);
 
 #ifdef	__cplusplus
 }

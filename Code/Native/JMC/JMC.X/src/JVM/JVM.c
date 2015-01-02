@@ -41,28 +41,30 @@ void Jvm_Main(void)
                 method)->flags));
 
         if (flags & JAVACLASS_METHOD_FLAG_INIT) {
-            Jvm_RunMethod(method);
+            Jvm_RunMethod(index);
+            break;
         }
     }
 
     // Get Main method
-    method = JavaClass_GetMethod(JavaClass_GetMainMethodIndex());
-    Jvm_RunMethod(method);
+    Jvm_RunMethod(JavaClass_GetMainMethodIndex());
 }
 
-void Jvm_RunMethod(javaclass_method_header_t *methodHeader)
+void Jvm_RunMethod(uint16_t index)
 {
     uint8_t  pcIncrement;
     uint8_t  bytecode;
     ushort_t nextcodes;
-    uint16_t tmp;
+    uint16_t aux1;
+    uint16_t aux2;
     uint32_t pc;
 
-    // Copy of method header in RAM
-    javaclass_method_header_t method;
+    javaclass_method_header_t *method_ptr;
+    javaclass_method_header_t  method;
 
+    method_ptr = JavaClass_GetMethod(index);
     // Load method header into RAM in order to improve performance
-    Mm_ReadNVM((uint32_t) methodHeader, sizeof(javaclass_method_header_t),
+    Mm_ReadNVM((uint32_t) method_ptr, sizeof(javaclass_method_header_t),
             (uint8_t *) &method);
 
     // Get address to the method code
@@ -79,8 +81,8 @@ void Jvm_RunMethod(javaclass_method_header_t *methodHeader)
     do {
         bytecode = Mm_GetU08(pc);
 
-        nextcodes.byte_h = Mm_GetU08(pc + 1);
-        nextcodes.byte_l = Mm_GetU08(pc + 2);
+        nextcodes.byte_l = Mm_GetU08(pc + 1);
+        nextcodes.byte_h = Mm_GetU08(pc + 2);
 
         pcIncrement = 1;
 
@@ -101,19 +103,39 @@ void Jvm_RunMethod(javaclass_method_header_t *methodHeader)
                 Stack_Push(localVariables[bytecode - BC_ILOAD_0]);
                 break;
             case BC_PUTFIELD:
-                tmp = Stack_Pop();
+                aux1 = Stack_Pop();
                 ((uint32_t *) Heap_GetHeaderAddress(Stack_Pop()))
-                        [1 + nextcodes.word] = tmp;
+                        [1 + nextcodes.word] = aux1;
                 pcIncrement = 3;
                 break;
             case BC_INVOKESPECIAL:
                 if ((nextcodes.word & BIT_MASK_NATIVE_METHOD) == 0) {
-                    // TODO: execute not native method
-                } else {
-                    Api_ExecuteNativeMethod(nextcodes.byte_h & API_ID_MASK);
-                }
+                    // Store offset to current method bytecode
+                    aux1 = (uint16_t) pc - (uint16_t) JavaClass_Data;
+                    // Get pointer and method to call
+                    method_ptr = JavaClass_GetMethod(nextcodes.word);
+                    Mm_ReadNVM((uint32_t) method_ptr,
+                        sizeof(javaclass_method_header_t), (uint8_t *) &method);
 
-                pcIncrement = 3;
+                    Stack_Add(-method.arguments);
+                    aux2 = Stack_CurrentPointer - localVariables;
+                    localVariables = Stack_CurrentPointer + 1;
+
+                    Heap_GetBytes(sizeof(uint16_t) * (method.locals + method.stack +
+                        method.arguments + 3));
+
+                    Stack_Add(method.locals);
+                    Stack_Push(aux1);
+                    Stack_Push(index);
+                    Stack_Push(aux2);
+
+                    index = nextcodes.word;
+                    pc = (uint32_t) (JavaClass_Data + method.code);
+                    pcIncrement = 0;
+                } else {
+                    Api_ExecuteNativeMethod(nextcodes.byte_l & API_ID_MASK);
+                    pcIncrement = 3;
+                }
                 break;
         }
 
