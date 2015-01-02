@@ -1,5 +1,4 @@
 #include "Common.h"
-
 #include "Heap.h"
 
 #define HEAP_ID_FREE 0
@@ -25,4 +24,32 @@ void Heap_GetBytes(uint16_t bytes)
     heap = (heap_t *) &Heap[Heap_BaseOffset];
     heap->id = HEAP_ID_FREE;
     heap->size = size - bytes;
+}
+
+heap_t *Heap_GetHeader(uint8_t id)
+{
+    uint16_t offset = Heap_BaseOffset;
+
+    while (offset < sizeof(Heap)) {
+        heap_t *heap = (heap_t *) &Heap[offset];
+
+        if (heap->id == id) {
+            return heap;
+        }
+
+        offset += heap->size + sizeof(heap_t);
+    }
+
+    return NULL;
+}
+
+void *Heap_GetHeaderAddress(uint8_t id)
+{
+    heap_t *heap = Heap_GetHeader(id);
+
+    if (heap == NULL) {
+        EndlessLoop();
+    }
+
+    return (heap + 1);
 }

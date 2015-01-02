@@ -100,6 +100,12 @@ void Jvm_RunMethod(javaclass_method_header_t *methodHeader)
             case BC_ILOAD_3:
                 Stack_Push(localVariables[bytecode - BC_ILOAD_0]);
                 break;
+            case BC_PUTFIELD:
+                tmp = Stack_Pop();
+                ((uint32_t *) Heap_GetHeaderAddress(Stack_Pop()))
+                        [1 + nextcodes.word] = tmp;
+                pcIncrement = 3;
+                break;
             case BC_INVOKESPECIAL:
                 if ((nextcodes.word & BIT_MASK_NATIVE_METHOD) == 0) {
                     // TODO: execute not native method
