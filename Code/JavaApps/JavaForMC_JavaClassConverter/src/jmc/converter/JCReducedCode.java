@@ -27,6 +27,12 @@ public class JCReducedCode extends JCCode {
             case Constants.ACONST_NULL:
                 this.appendByte((byte) Constants.ICONST_0);
                 break;
+            case (byte) Constants.IFNULL:
+                this.appendByte((byte) Constants.IFEQ);
+                break;
+            case (byte) Constants.IFNONNULL:
+                this.appendByte((byte) Constants.IFNE);
+                break;
             case (byte) Constants.INVOKESPECIAL:
             case (byte) Constants.INVOKEVIRTUAL:
             case (byte) Constants.INVOKESTATIC:

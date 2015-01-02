@@ -112,6 +112,47 @@ void Jvm_RunMethod(uint16_t index)
             case BC_ISTORE_3:
                 localVariables[bytecode - BC_ISTORE_0] = Stack_Pop();
                 break;
+            case BC_IFEQ:
+            case BC_IFNE:
+            case BC_IFLT:
+            case BC_IFGE:
+            case BC_IFGT:
+            case BC_IFLE:
+            case BC_IF_ICMPEQ:
+            case BC_IF_ICMPNE:
+            case BC_IF_ICMPLT:
+            case BC_IF_ICMPGE:
+            case BC_IF_ICMPGT:
+            case BC_IF_ICMPLE:
+                if ((BC_IFLE >= bytecode) && (BC_IFEQ <= bytecode)) {
+                    aux2 = 0;
+                    bytecode -= BC_IFEQ - BC_IF_ICMPEQ;
+                } else {
+                    aux2 = Stack_Pop();
+                }
+
+                aux1 = Stack_Pop();
+                switch (bytecode) {
+                    case BC_IF_ICMPEQ:
+                        aux1 = (aux1 == aux2);
+                        break;
+                    case BC_IF_ICMPNE:
+                        aux1 = (aux1 != aux2);
+                        break;
+                    case BC_IF_ICMPLT:
+                        aux1 = (aux1 < aux2);
+                        break;
+                    case BC_IF_ICMPGE:
+                        aux1 = (aux1 >= aux2);
+                        break;
+                    case BC_IF_ICMPGT:
+                        aux1 = (aux1 > aux2);
+                        break;
+                    case BC_IF_ICMPLE:
+                        aux1 = (aux1 >= aux2);
+                        break;
+                }
+                break;
             case BC_GETFIELD:
                 Stack_Push(((uint32_t *) Heap_GetHeaderAddress(Stack_Pop()))
                         [1 + nextcodes.word]);
