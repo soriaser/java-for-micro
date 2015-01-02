@@ -132,6 +132,7 @@ void Jvm_RunMethod(uint16_t index)
                 }
 
                 aux1 = Stack_Pop();
+
                 switch (bytecode) {
                     case BC_IF_ICMPEQ:
                         aux1 = (aux1 == aux2);
@@ -151,6 +152,13 @@ void Jvm_RunMethod(uint16_t index)
                     case BC_IF_ICMPLE:
                         aux1 = (aux1 >= aux2);
                         break;
+                }
+
+                if (aux1) {
+                    pc += nextcodes.word;
+                    pcIncrement = 0;
+                } else {
+                    pcIncrement = 3;
                 }
                 break;
             case BC_GOTO:
