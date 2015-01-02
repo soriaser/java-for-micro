@@ -102,6 +102,12 @@ void Jvm_RunMethod(uint16_t index)
             case BC_ILOAD_3:
                 Stack_Push(localVariables[bytecode - BC_ILOAD_0]);
                 break;
+            case BC_ISTORE_0:
+            case BC_ISTORE_1:
+            case BC_ISTORE_2:
+            case BC_ISTORE_3:
+                localVariables[bytecode - BC_ISTORE_0] = Stack_Pop();
+                break;
             case BC_PUTFIELD:
                 aux1 = Stack_Pop();
                 ((uint32_t *) Heap_GetHeaderAddress(Stack_Pop()))

@@ -24,6 +24,10 @@ extern "C" {
 #define BC_ILOAD_1          0x1B
 #define BC_ILOAD_2          0x1C
 #define BC_ILOAD_3          0x1D
+#define BC_ISTORE_0         0x3B
+#define BC_ISTORE_1         0x3C
+#define BC_ISTORE_2         0x3D
+#define BC_ISTORE_3         0x3E
 #define BC_IRETURN          0xAC
 #define BC_RETURN           0xB1
 #define BC_PUTFIELD         0xB5
