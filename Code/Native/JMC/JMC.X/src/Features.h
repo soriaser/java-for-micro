@@ -16,6 +16,9 @@ extern "C" {
 
 #define BAUDRATE 2400
 
+#define FOSC    _XTAL_FREQ
+#define FCPU    (FOSC / 4)
+
 #define JAVACLASS_MAX_SIZE_DATA     1024
 #define JVM_MAX_SIZE_HEAP           1024
 

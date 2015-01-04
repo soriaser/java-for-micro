@@ -14,10 +14,7 @@ extern "C" {
 
 #include "Common.h"
 
-#define Timer_T0_Init() \
-    INTCON = 0xC0; \
-    TMR0IE = 1; \
-    T0CON = 0x40
+#define TIMER0_OVERFLOW_USEC ((256 * 1000000) / FCPU)
 
 #define Timer_T0_Reset() (TMR0 = 0)
 
@@ -27,8 +24,9 @@ extern "C" {
     TMR0ON = 0; \
     Timer_T0_Reset()
     
+extern void Timer_T0_Init(uint8_t interruption);
 
-void Timer_T0_ISR(void);
+extern void Timer_T0_ISR(void);
 
 
 #ifdef	__cplusplus
