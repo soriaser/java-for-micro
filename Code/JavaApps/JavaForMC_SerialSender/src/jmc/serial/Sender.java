@@ -58,6 +58,9 @@ public class Sender implements SerialPortEventListener {
             if (this.Offset < this.Data.length) {
                 // Start timer to allow resend in case of send error
                 TimerSend.start();
+            } else {
+                this.Port.setEventsMask(0x00);
+                this.Port.closePort();
             }
         } catch (SerialPortException e) {
             System.out.println(e);
