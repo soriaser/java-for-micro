@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="62">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <logicalFolder name="f8" displayName="API" projectFiles="true">
+        <logicalFolder name="f1" displayName="MicroApplicatin" projectFiles="true">
+          <itemPath>src/API/MicroApplication/APIMicroApplication.h</itemPath>
+        </logicalFolder>
+        <itemPath>src/API/API.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f5" displayName="Java" projectFiles="true">
+        <itemPath>src/Java/JavaClass.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f7" displayName="JVM" projectFiles="true">
+        <itemPath>src/JVM/JVM.h</itemPath>
+        <itemPath>src/JVM/Heap.h</itemPath>
+        <itemPath>src/JVM/Stack.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f4" displayName="Loader" projectFiles="true">
+        <itemPath>src/Loader/Loader.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f2" displayName="MemoryManagement" projectFiles="true">
+        <itemPath>src/MemoryManagement/MemoryManagement.h</itemPath>
+        <itemPath>src/MemoryManagement/PIC18F4520/MemoryManagement_PIC18F4520.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f1" displayName="Platform" projectFiles="true">
+        <itemPath>src/Platform/Platform.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f3" displayName="SerialPort" projectFiles="true">
+        <itemPath>src/SerialPort/SerialPort.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f6" displayName="Timer" projectFiles="true">
+        <itemPath>src/Timer/Timer.h</itemPath>
+      </logicalFolder>
+      <itemPath>src/Common.h</itemPath>
+      <itemPath>src/Features.h</itemPath>
+      <itemPath>src/InitializeArray.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="LinkerScript"
+                   displayName="Linker Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <logicalFolder name="f7" displayName="API" projectFiles="true">
+        <logicalFolder name="f1" displayName="MicroApplication" projectFiles="true">
+          <itemPath>src/API/MicroApplication/APIMicroApplication.c</itemPath>
+        </logicalFolder>
+        <itemPath>src/API/API.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f4" displayName="Java" projectFiles="true">
+        <itemPath>src/Java/JavaClass.c</itemPath>
+        <itemPath>src/Java/JavaClassNVM.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f6" displayName="JVM" projectFiles="true">
+        <itemPath>src/JVM/JVM.c</itemPath>
+        <itemPath>src/JVM/Heap.c</itemPath>
+        <itemPath>src/JVM/Stack.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f2" displayName="Loader" projectFiles="true">
+        <itemPath>src/Loader/Loader.c</itemPath>
+        <itemPath>src/Loader/LoaderNVM.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f3" displayName="MemoryManagement" projectFiles="true">
+        <itemPath>src/MemoryManagement/MemoryManagement.c</itemPath>
+        <itemPath>src/MemoryManagement/PIC18F4520/MemoryManagement_PIC18F4520.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f1" displayName="SerialPort" projectFiles="true">
+        <itemPath>src/SerialPort/SerialPort.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f5" displayName="Timer" projectFiles="true">
+        <itemPath>src/Timer/Timer.c</itemPath>
+      </logicalFolder>
+      <itemPath>src/Main.c</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>src</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="default" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <targetDevice>PIC18F4520</targetDevice>
+        <targetHeader></targetHeader>
+        <targetPluginBoard></targetPluginBoard>
+        <platformTool>VSMViewerPlatformTool</platformTool>
+        <languageToolchain>XC8</languageToolchain>
+        <languageToolchainVersion>1.33</languageToolchainVersion>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+        <archiverTool>
+        </archiverTool>
+        <loading>
+          <useAlternateLoadableFile>false</useAlternateLoadableFile>
+          <parseOnProdLoad>false</parseOnProdLoad>
+          <alternateLoadableFile></alternateLoadableFile>
+        </loading>
+      </compileType>
+      <makeCustomizationType>
+        <makeCustomizationPreStepEnabled>false</makeCustomizationPreStepEnabled>
+        <makeCustomizationPreStep></makeCustomizationPreStep>
+        <makeCustomizationPostStepEnabled>false</makeCustomizationPostStepEnabled>
+        <makeCustomizationPostStep></makeCustomizationPostStep>
+        <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
+        <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
+        <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
+      </makeCustomizationType>
+      <HI-TECH-COMP>
+        <property key="asmlist" value="true"/>
+        <property key="define-macros" value=""/>
+        <property key="extra-include-directories"
+                  value="src;src\JVM;src\Java;src\Timer;src\Loader;src\Platform;src\SerialPort;src\MemoryManagement;src\MemoryManagement\PIC18F4520;src\API;src\API\MicroApplication"/>
+        <property key="identifier-length" value="255"/>
+        <property key="operation-mode" value="free"/>
+        <property key="opt-xc8-compiler-strict_ansi" value="false"/>
+        <property key="optimization-assembler" value="true"/>
+        <property key="optimization-assembler-files" value="true"/>
+        <property key="optimization-debug" value="false"/>
+        <property key="optimization-global" value="true"/>
+        <property key="optimization-invariant-enable" value="false"/>
+        <property key="optimization-invariant-value" value="16"/>
+        <property key="optimization-level" value="9"/>
+        <property key="optimization-set" value="default"/>
+        <property key="optimization-speed" value="false"/>
+        <property key="preprocess-assembler" value="true"/>
+        <property key="undefine-macros" value=""/>
+        <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
+        <property key="verbose" value="false"/>
+        <property key="warning-level" value="0"/>
+        <property key="what-to-do" value="ignore"/>
+        <appendMe value="-L-pnvm=4000h"/>
+      </HI-TECH-COMP>
+      <HI-TECH-LINK>
+        <property key="additional-options-checksum" value=""/>
+        <property key="additional-options-code-offset" value=""/>
+        <property key="additional-options-command-line" value=""/>
+        <property key="additional-options-errata" value=""/>
+        <property key="additional-options-extend-address" value="false"/>
+        <property key="additional-options-trace-type" value=""/>
+        <property key="additional-options-use-response-files" value="false"/>
+        <property key="backup-reset-condition-flags" value="false"/>
+        <property key="calibrate-oscillator" value="true"/>
+        <property key="calibrate-oscillator-value" value=""/>
+        <property key="clear-bss" value="true"/>
+        <property key="code-model-external" value="wordwrite"/>
+        <property key="code-model-rom" value=""/>
+        <property key="create-html-files" value="false"/>
+        <property key="data-model-ram" value=""/>
+        <property key="data-model-size-of-double" value="24"/>
+        <property key="data-model-size-of-float" value="24"/>
+        <property key="display-class-usage" value="false"/>
+        <property key="display-hex-usage" value="false"/>
+        <property key="display-overall-usage" value="true"/>
+        <property key="display-psect-usage" value="false"/>
+        <property key="fill-flash-options-addr" value=""/>
+        <property key="fill-flash-options-const" value="0xFF"/>
+        <property key="fill-flash-options-how" value="1"/>
+        <property key="fill-flash-options-inc-const" value="1"/>
+        <property key="fill-flash-options-increment" value=""/>
+        <property key="fill-flash-options-seq" value=""/>
+        <property key="fill-flash-options-what" value="0"/>
+        <property key="format-hex-file-for-download" value="false"/>
+        <property key="initialize-data" value="true"/>
+        <property key="keep-generated-startup.as" value="false"/>
+        <property key="link-in-c-library" value="true"/>
+        <property key="link-in-peripheral-library" value="true"/>
+        <property key="managed-stack" value="false"/>
+        <property key="opt-xc8-linker-file" value="false"/>
+        <property key="opt-xc8-linker-link_startup" value="false"/>
+        <property key="opt-xc8-linker-serial" value=""/>
+        <property key="program-the-device-with-default-config-words" value="true"/>
+      </HI-TECH-LINK>
+      <VSMViewerPlatformTool>
+        <property key="design.file"
+                  value="../../../../Circuits/PIC/PIC18F4520/PIC18F4520SerialPort.DSN"/>
+        <property key="target.ip.address" value="localhost"/>
+        <property key="target.ip.port" value="8000"/>
+      </VSMViewerPlatformTool>
+      <XC8-config-global>
+        <property key="advanced-elf" value="true"/>
+        <property key="output-file-format" value="+mcof,-elf"/>
+        <property key="stack-size-high" value="auto"/>
+        <property key="stack-size-low" value="auto"/>
+        <property key="stack-size-main" value="auto"/>
+        <property key="stack-type" value="compiled"/>
+      </XC8-config-global>
+    </conf>
+  </confs>
+</configurationDescriptor>

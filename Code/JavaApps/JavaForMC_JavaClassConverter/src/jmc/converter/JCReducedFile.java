@@ -12,7 +12,7 @@ public class JCReducedFile extends JCFile {
 
     private final static String EXTENSION = "jcr";
 
-    private final static short JCR_HEADER_SIZE = 15;
+    private final static short JCR_HEADER_SIZE = 16;
 
     private JCReduced jcReduced = null;
 
@@ -78,6 +78,7 @@ public class JCReducedFile extends JCFile {
      *         uint8_t  classes;
      *         uint8_t  fields;
      *         uint8_t  main;
+     *         uint8_t  onLoad;
      *         uint16_t offsetClasses;
      *         uint16_t offsetConstants;
      *         uint16_t offsetStrings;
@@ -93,6 +94,7 @@ public class JCReducedFile extends JCFile {
         this.writeByte (this.jcReduced.getNumberOfClasses());
         this.writeByte (this.jcReduced.getNumberOfStaticFields());
         this.writeByte (this.jcReduced.getMainMethodIndex());
+        this.writeByte (this.jcReduced.getOnLoadMethodIndex());
 
         offset = JCR_HEADER_SIZE;
         // Offset to Classes

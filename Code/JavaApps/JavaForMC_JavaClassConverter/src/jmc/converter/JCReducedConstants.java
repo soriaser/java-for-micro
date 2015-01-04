@@ -5,6 +5,7 @@ public interface JCReducedConstants {
     public static final String API_METHOD_GETPORTREGISTRY = "getPortRegistry";
     public static final String API_METHOD_INIT = "<init>";
     public static final String API_METHOD_MAIN = "main";
+    public static final String API_METHOD_ONLOAD = "onLoad";
     public static final String API_METHOD_SETPINTOONE = "setPinToOne";
     public static final String API_METHOD_SETPINTOZERO = "setPinToZero";
     public static final String API_METHOD_SLEEP = "Sleep";
