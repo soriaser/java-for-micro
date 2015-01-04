@@ -1,6 +1,7 @@
 #include "Common.h"
 #include "API.h"
 #include "APIMicroApplication.h"
+#include "APIPortRegistry.h"
 #include "Stack.h"
 
 #define API_ID_MICROAPPLICATION_INIT            0x00
@@ -20,6 +21,9 @@ void Api_ExecuteNativeMethod(uint8_t id)
             break;
         case API_ID_MICROAPPLICATION_SLEEP:
             API_MicroApplication_Sleep(value);
+            break;
+        case API_ID_PORTREGISTRY_GETPORTREGISTRY:
+            Api_PortRegistry_GetPortRegistry(value);
             break;
     }
 
