@@ -25,6 +25,12 @@ void Api_ExecuteNativeMethod(uint8_t id)
         case API_ID_PORTREGISTRY_GETPORTREGISTRY:
             Api_PortRegistry_GetPortRegistry(value);
             break;
+        case API_ID_PORTREGISTRY_SETPINTOZERO:
+            Api_PortRegistry_SetPinToZero((uint8_t) value);
+            break;
+        case API_ID_PORTREGISTRY_SETPINTOONE:
+            Api_PortRegistry_SetPinToOne((uint8_t) value);
+            break;
     }
 
     Stack_Push(value);
