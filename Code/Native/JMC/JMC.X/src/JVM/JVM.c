@@ -46,7 +46,8 @@ void Jvm_Main(void)
         }
     }
 
-    // Get Main method
+    // Execute onLoad and Main method
+    Jvm_RunMethod(JavaClass_GetOnLoadMethodIndex());
     Jvm_RunMethod(JavaClass_GetMainMethodIndex());
 }
 
