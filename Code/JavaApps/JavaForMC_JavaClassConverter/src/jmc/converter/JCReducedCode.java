@@ -17,6 +17,11 @@ public class JCReducedCode extends JCCode {
 
         while (offset < code.length) {
             switch (code[offset]) {
+            case Constants.SIPUSH:
+                this.appendByte(code[offset++]);
+                offset++;
+                this.appendShort(Util.getShort(code[offset - 1], code[offset]));
+                break;
             case Constants.ALOAD_0:
             case Constants.ALOAD_1:
             case Constants.ALOAD_2:
