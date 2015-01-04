@@ -146,16 +146,6 @@ public class JCReduced {
         return (byte) this.jcReducedStrings.length;
     }
 
-    public byte getOnLoadMethodIndex() {
-        for (int ii = 0; ii < this.jcReducedMethods.length; ii++) {
-            if (this.jcReducedMethods[ii].isOnLoad()) {
-                return this.jcReducedMethods[ii].getId();
-            }
-        }
-
-        throw new InternalError("OnLoad method does not found");
-    }
-
     public byte getVersion() {
         return VERSION;
     }

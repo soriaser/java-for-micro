@@ -24,8 +24,6 @@ public class JCReducedMethod {
 
     private boolean isMain;
 
-    private boolean isOnLoad;
-
     public JCReducedMethod(Method method, byte id, byte idc) {
         this.id  = id;
         this.idc = idc;
@@ -45,21 +43,13 @@ public class JCReducedMethod {
         this.stack = (byte) method.getCode().getMaxStack();
 
         this.isInit = false;
-        if ((method.getName().equals(JCReducedConstants.API_METHOD_INIT)) &&
-                (method.getSignature().equals("()V"))) {
+        if (method.getName().equals(JCReducedConstants.API_METHOD_INIT)) {
             this.isInit = true;
         }
 
         this.isMain = false;
-        if ((method.getName().equals(JCReducedConstants.API_METHOD_MAIN)) &&
-                (method.getSignature().equals("()V"))) {
+        if (method.getName().equals(JCReducedConstants.API_METHOD_MAIN)) {
             this.isMain = true;
-        }
-
-        this.isOnLoad = false;
-        if ((method.getName().equals(JCReducedConstants.API_METHOD_ONLOAD)) &&
-                (method.getSignature().equals("([BSS)V"))) {
-            this.isOnLoad = true;
         }
 
         this.arguments = JCParser.getNumberOfArguments(method);
@@ -105,10 +95,6 @@ public class JCReducedMethod {
 
     public boolean isMain() {
         return this.isMain;
-    }
-
-    public boolean isOnLoad() {
-        return this.isOnLoad;
     }
 
     public void setId(byte id) {
