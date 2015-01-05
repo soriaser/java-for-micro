@@ -10,6 +10,8 @@
 #define API_ID_PORTREGISTRY_GETPORTREGISTRY     0x03
 #define API_ID_PORTREGISTRY_SETPINTOZERO        0x06
 #define API_ID_PORTREGISTRY_SETPINTOONE         0x07
+#define API_ID_PORTREGISTRY_SETINPUTPIN         0x09
+#define API_ID_PORTREGISTRY_SETOUTPUTPIN        0x0A
 
 void Api_ExecuteNativeMethod(uint8_t id)
 {
@@ -30,6 +32,12 @@ void Api_ExecuteNativeMethod(uint8_t id)
             break;
         case API_ID_PORTREGISTRY_SETPINTOONE:
             Api_PortRegistry_SetPinToOne((uint8_t) value);
+            break;
+        case API_ID_PORTREGISTRY_SETINPUTPIN:
+            Api_PortRegistry_SetInputPin((uint8_t) value);
+            break;
+        case API_ID_PORTREGISTRY_SETOUTPUTPIN:
+            Api_PortRegistry_SetOutputPin((uint8_t) value);
             break;
     }
 

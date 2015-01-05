@@ -18,6 +18,14 @@ extern "C" {
 
 #define API_PORTREGISTRY_SETZERO    0x00
 #define API_PORTREGISTRY_SETONE     0x01
+#define API_PORTREGISTRY_SETOUTPUT  0x02
+#define API_PORTREGISTRY_SETINPUT   0x03
+
+#define Api_PortRegistry_SetInputPin(pin) \
+    Api_PortRegistry_SetPin(pin, API_PORTREGISTRY_SETINPUT)
+
+#define Api_PortRegistry_SetOutputPin(pin) \
+    Api_PortRegistry_SetPin(pin, API_PORTREGISTRY_SETOUTPUT)
 
 #define Api_PortRegistry_SetPinToOne(pin) \
     Api_PortRegistry_SetPin(pin, API_PORTREGISTRY_SETONE)
@@ -26,6 +34,8 @@ extern "C" {
     Api_PortRegistry_SetPin(pin, API_PORTREGISTRY_SETZERO)
 
 extern uint8_t *Api_PortRegistry_Port;
+
+extern uint8_t *Api_PortRegistry_Tris;
 
 extern void Api_PortRegistry_GetPortRegistry(uint8_t port);
 
