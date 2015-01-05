@@ -17,7 +17,7 @@ public final class PortRegistry {
 
     public native void setInputPin(byte pin);
 
-    public native void setOuputPin(byte pin);
+    public native void setOutputPin(byte pin);
 
     public native void setIO(byte directions);
 
