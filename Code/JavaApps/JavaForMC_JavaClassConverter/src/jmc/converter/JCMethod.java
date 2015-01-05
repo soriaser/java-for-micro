@@ -36,6 +36,14 @@ public class JCMethod extends JCFieldOrMethod {
                 if (type.equals("(B)V")) {
                     this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_SETPINTOONE;
                 }
+            } else if (name.equals(JCReducedConstants.API_METHOD_SETINPUTPIN)) {
+                if (type.equals("(B)V")) {
+                    this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_SETINPUTPIN;
+                }
+            } else if (name.equals(JCReducedConstants.API_METHOD_SETOUTPUTPIN)) {
+                if (type.equals("(B)V")) {
+                    this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_SETOUTPUTPIN;
+                }
             }
         }
     }
