@@ -18,7 +18,7 @@ void API_MicroApplication_Sleep(uint16_t value)
 
         if (0x00 >= counter) {
             Timer_T0_Stop();
-            break;
+            return;
         }
     }
 }
