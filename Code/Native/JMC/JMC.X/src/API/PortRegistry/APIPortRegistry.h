@@ -22,16 +22,16 @@ extern "C" {
 #define API_PORTREGISTRY_SETINPUT   0x03
 
 #define Api_PortRegistry_SetInputPin(pin) \
-    Api_PortRegistry_SetPin(pin, API_PORTREGISTRY_SETINPUT)
+    Api_PortRegistry_SetPin((0x01 << pin), API_PORTREGISTRY_SETINPUT)
 
 #define Api_PortRegistry_SetOutputPin(pin) \
-    Api_PortRegistry_SetPin(pin, API_PORTREGISTRY_SETOUTPUT)
+    Api_PortRegistry_SetPin((0x01 << pin), API_PORTREGISTRY_SETOUTPUT)
 
 #define Api_PortRegistry_SetPinToOne(pin) \
-    Api_PortRegistry_SetPin(pin, API_PORTREGISTRY_SETONE)
+    Api_PortRegistry_SetPin((0x01 << pin), API_PORTREGISTRY_SETONE)
 
 #define Api_PortRegistry_SetPinToZero(pin) \
-    Api_PortRegistry_SetPin(pin, API_PORTREGISTRY_SETZERO)
+    Api_PortRegistry_SetPin((0x01 << pin), API_PORTREGISTRY_SETZERO)
 
 extern uint8_t *Api_PortRegistry_Port;
 

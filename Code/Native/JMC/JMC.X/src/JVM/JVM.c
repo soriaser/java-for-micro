@@ -11,7 +11,7 @@
 uint16_t *localVariables;
 
 typedef union {
-  uint16_t word;
+  int16_t word;
 
   struct {
     uint8_t byte_l;

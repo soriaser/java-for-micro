@@ -13,14 +13,17 @@ public class JCReducedCode extends JCCode {
 
     private void translate(byte[] code) {
         int offset = 0;
-        short index = 0;
+        int increment = 0;
+        int tmp = 0;
 
         while (offset < code.length) {
+            increment = 1;
+
             switch (code[offset]) {
             case Constants.SIPUSH:
-                this.appendByte(code[offset++]);
-                offset++;
-                this.appendShort(Util.getShort(code[offset - 1], code[offset]));
+                this.appendByte(code[offset]);
+                this.appendShort(getNextBytes(code, offset, 2));
+                increment = 3;
                 break;
             case Constants.ALOAD_0:
             case Constants.ALOAD_1:
@@ -34,38 +37,66 @@ public class JCReducedCode extends JCCode {
                 break;
             case (byte) Constants.IFNULL:
                 this.appendByte((byte) Constants.IFEQ);
+                this.appendShort(getNextBytes(code, offset, 2));
+                increment = 3;
                 break;
             case (byte) Constants.IFNONNULL:
                 this.appendByte((byte) Constants.IFNE);
+                this.appendShort(getNextBytes(code, offset, 2));
+                increment = 3;
+                break;
+            case (byte) Constants.IFEQ:
+            case (byte) Constants.IFNE:
+            case (byte) Constants.IFLT:
+            case (byte) Constants.IFGE:
+            case (byte) Constants.IFGT:
+            case (byte) Constants.IFLE:
+            case (byte) Constants.IF_ICMPEQ:
+            case (byte) Constants.IF_ICMPNE:
+            case (byte) Constants.IF_ICMPLT:
+            case (byte) Constants.IF_ICMPGE:
+            case (byte) Constants.IF_ICMPGT:
+            case (byte) Constants.IF_ICMPLE:
+            case (byte) Constants.GOTO:
+                this.appendByte(code[offset]);
+                this.appendShort(getNextBytes(code, offset, 2));
+                increment = 3;
                 break;
             case (byte) Constants.INVOKESPECIAL:
             case (byte) Constants.INVOKEVIRTUAL:
             case (byte) Constants.INVOKESTATIC:
                 // Same bytecode
-                this.appendByte(code[offset++]);
+                this.appendByte(code[offset]);
                 // Get constant pool index
-                offset++;
-                index = Util.getShort(code[offset - 1], code[offset]);
+                tmp = getNextBytes(code, offset, 2);
                 // Replace index if required
-                this.appendShort(JCMethodMap.getMethodId(index));
+                this.appendShort(JCMethodMap.getMethodId((short) tmp));
+
+                increment = 3;
                 break;
             case (byte) Constants.PUTFIELD:
             case (byte) Constants.GETFIELD:
                 // Same bytecode
-                this.appendByte(code[offset++]);
+                this.appendByte(code[offset]);
                 // Get constant pool index
-                offset++;
-                index = Util.getShort(code[offset - 1], code[offset]);
+                tmp = getNextBytes(code, offset, 2);
                 // Replace index if required
-                this.appendShort(JCFieldMap.getFieldId(index));
+                this.appendShort(JCFieldMap.getFieldId((short) tmp));
+
+                increment = 3;
                 break;
             default:
                 this.appendByte(code[offset]);
                 break;
             }
 
-            offset++;
+            offset += increment;
         }
+    }
+
+    private short getNextBytes(byte[] code, int offset, int bytes) {
+        offset++;
+        return Util.getShort(code[offset], code[offset + 1]);
     }
 
 }
