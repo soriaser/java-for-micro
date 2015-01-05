@@ -177,6 +177,7 @@ void Jvm_RunMethod(uint16_t index)
                         [1 + nextcodes.word] = aux1;
                 pcIncrement = 3;
                 break;
+            case BC_INVOKEVIRTUAL:
             case BC_INVOKESPECIAL:
             case BC_INVOKESTATIC:
                 if ((nextcodes.word & BIT_MASK_NATIVE_METHOD) == 0) {
