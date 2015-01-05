@@ -46,6 +46,7 @@ extern "C" {
 #define BC_RETURN           0xB1
 #define BC_GETFIELD         0xB4
 #define BC_PUTFIELD         0xB5
+#define BC_INVOKEVIRTUAL    0xB6
 #define BC_INVOKESPECIAL    0xB7
 #define BC_INVOKESTATIC     0xB8
 
