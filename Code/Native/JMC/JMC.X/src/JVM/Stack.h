@@ -29,6 +29,8 @@ extern uint16_t *Stack_BasePointer;
 
 extern void Stack_Init(void);
 
+extern uint8_t Stack_IsIdInUse(uint16_t id);
+
 #ifdef	__cplusplus
 }
 #endif

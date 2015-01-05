@@ -9,7 +9,6 @@ void API_MicroApplication_Sleep(uint16_t value)
     Timer_T0_Init(0x00);
 
     while (0x01) {
-        Timer_T0_Reset();
         Timer_T0_Start();
 
         while (!TMR0IF) {}
@@ -18,6 +17,7 @@ void API_MicroApplication_Sleep(uint16_t value)
 
         if (0x00 >= counter) {
             Timer_T0_Stop();
+            Timer_T0_Reset();
             return;
         }
     }

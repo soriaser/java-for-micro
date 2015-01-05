@@ -18,3 +18,16 @@ void Stack_Init(void)
 
     Stack_CurrentPointer += JavaClass_GetNumberStaticFields();
 }
+
+uint8_t Stack_IsIdInUse(uint16_t id)
+{
+    uint16_t ii = 0;
+
+    for (;ii < (Stack_CurrentPointer - Stack_Pointer + 1); ii++) {
+        if (Stack_Pointer[ii] == id) {
+            return 0x01;
+        }
+    }
+
+    return 0x00;
+}
