@@ -7,11 +7,11 @@
 void Timer_T0_Init(uint8_t interruption)
 {
     if (interruption) {
-        INTCON = 0xC0;
+        INTCON |= 0xC0;
         TMR0IE = 1;
     }
 
-    T0CON = 0x48;
+    T0CON |= 0x48;
 }
 
 void Timer_T0_ISR(void)
