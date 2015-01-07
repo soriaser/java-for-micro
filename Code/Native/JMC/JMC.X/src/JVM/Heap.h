@@ -28,6 +28,8 @@ extern void *Heap_GetHeaderAddress(uint8_t id);
 
 extern void Heap_Init(void);
 
+extern void Heap_SetBytes(uint16_t bytes);
+
 #ifdef	__cplusplus
 }
 #endif

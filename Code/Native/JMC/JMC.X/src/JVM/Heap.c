@@ -115,3 +115,18 @@ void *Heap_GetHeaderAddress(uint8_t id)
 
     return (heap + 1);
 }
+
+void Heap_SetBytes(uint16_t bytes)
+{
+    heap_t *heap = (heap_t *) &Heap[Heap_BaseOffset];
+    uint16_t size = heap->size;
+
+    if ((Heap_BaseOffset < bytes) || (HEAP_ID_FREE != heap->id)) {
+        EndlessLoop();
+    }
+
+    Heap_BaseOffset -= bytes;
+    heap = (heap_t *) &Heap[Heap_BaseOffset];
+    heap->id = HEAP_ID_FREE;
+    heap->size = size + bytes;
+}

@@ -88,6 +88,8 @@ void Jvm_RunMethod(uint16_t index)
         pcIncrement = 1;
 
         switch (bytecode) {
+            case BC_NOP:
+                break;
             case BC_ICONST_M1:
             case BC_ICONST_0:
             case BC_ICONST_1:
@@ -112,6 +114,72 @@ void Jvm_RunMethod(uint16_t index)
             case BC_ISTORE_2:
             case BC_ISTORE_3:
                 localVariables[bytecode - BC_ISTORE_0] = Stack_Pop();
+                break;
+            case BC_DUP:
+                Stack_Push(Stack_CurrentPointer[0]);
+                break;
+            case BC_IADD:
+            case BC_ISUB:
+            case BC_IMUL:
+            case BC_IDIV:
+            case BC_IREM:
+            case BC_INEG:
+            case BC_ISHL:
+            case BC_ISHR:
+            case BC_IUSHR:
+            case BC_IAND:
+            case BC_IOR:
+            case BC_IXOR:
+            case BC_IINC:
+                if (BC_INEG == bytecode) {
+                    aux1 = -Stack_Pop();
+                    Stack_Push(aux1);
+                } else if (BC_IINC == bytecode) {
+                    localVariables[nextcodes.byte_h] = nextcodes.byte_h +
+                            nextcodes.byte_l;
+                    pcIncrement = 3;
+                } else {
+                    aux1 = Stack_Pop();
+                    aux2 = Stack_Pop();
+
+                    switch (bytecode) {
+                        case BC_IADD:
+                            aux2 += aux1;
+                            break;
+                        case BC_ISUB:
+                            aux2 -= aux1;
+                            break;
+                        case BC_IMUL:
+                            aux2 *= aux1;
+                            break;
+                        case BC_IDIV:
+                            aux2 /= aux1;
+                            break;
+                        case BC_IREM:
+                            aux2 %= aux1;
+                            break;
+                        case BC_ISHL:
+                            aux2 <<= aux1;
+                            break;
+                        case BC_ISHR:
+                            aux2 >>= aux1;
+                            break;
+                        case BC_IUSHR:
+                            aux2 = aux2 >> aux1;
+                            break;
+                        case BC_IAND:
+                            aux2 &= aux1;
+                            break;
+                        case BC_IOR:
+                            aux2 |= aux1;
+                            break;
+                        case BC_IXOR:
+                            aux2 ^= aux1;
+                            break;
+                    }
+
+                    Stack_Push(aux2);
+                }
                 break;
             case BC_IFEQ:
             case BC_IFNE:
@@ -165,6 +233,35 @@ void Jvm_RunMethod(uint16_t index)
             case BC_GOTO:
                 pc += nextcodes.word - 3;
                 pcIncrement = 3;
+                break;
+            case BC_IRETURN:
+                aux1 = Stack_Pop();
+            case BC_RETURN:
+                if (!Stack_IsEmpty()) {
+                    uint8_t  oldLocals  = method.locals;
+                    uint8_t  oldUnsteal = method.locals + method.stack +
+                        method.arguments + 3;
+                    uint16_t oldLocalsOffset = Stack_Pop();
+
+                    index = Stack_Pop();
+                    method_ptr = JavaClass_GetMethod(index);
+                    Mm_ReadNVM((uint32_t) method_ptr,
+                        sizeof(javaclass_method_header_t), (uint8_t *) &method);
+
+                    pc = (uint32_t) (JavaClass_Data + Stack_Pop());
+                    pcIncrement = 3;
+
+                    Stack_Add(-oldLocals);
+                    localVariables = Stack_CurrentPointer - oldLocalsOffset;
+
+                    Heap_SetBytes(sizeof(uint16_t) * oldUnsteal);
+
+                    if (BC_IRETURN == bytecode) {
+                        Stack_Push(aux1);
+                    }
+
+                    bytecode = BC_NOP;
+                }
                 break;
             case BC_GETFIELD:
                 Stack_Push(((uint32_t *) Heap_GetHeaderAddress(Stack_Pop()))

@@ -21,6 +21,9 @@ extern uint16_t *Stack_BasePointer;
 #define Stack_Add(value) \
     (Stack_CurrentPointer += value)
 
+#define Stack_IsEmpty() \
+    (Stack_CurrentPointer == Stack_BasePointer)
+
 #define Stack_Push(value) \
     (*(++Stack_CurrentPointer) = value)
 

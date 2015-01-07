@@ -12,6 +12,7 @@
 extern "C" {
 #endif
 
+#define BC_NOP              0x00
 #define BC_ICONST_M1        0x02
 #define BC_ICONST_0         0x03
 #define BC_ICONST_1         0x04
@@ -29,6 +30,20 @@ extern "C" {
 #define BC_ISTORE_1         0x3C
 #define BC_ISTORE_2         0x3D
 #define BC_ISTORE_3         0x3E
+#define BC_DUP              0x59
+#define BC_IADD             0x60
+#define BC_ISUB             0x64
+#define BC_IMUL             0x68
+#define BC_IDIV             0x6C
+#define BC_IREM             0x70
+#define BC_INEG             0x74
+#define BC_ISHL             0x78
+#define BC_ISHR             0x7A
+#define BC_IUSHR            0x7C
+#define BC_IAND             0x7E
+#define BC_IOR              0x80
+#define BC_IXOR             0x82
+#define BC_IINC             0x84
 #define BC_IFEQ             0x99
 #define BC_IFNE             0x9A
 #define BC_IFLT             0x9B
