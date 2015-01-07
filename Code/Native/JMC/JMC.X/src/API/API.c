@@ -8,6 +8,7 @@
 #define API_ID_MICROAPPLICATION_MAIN            0x01
 #define API_ID_MICROAPPLICATION_SLEEP           0x02
 #define API_ID_PORTREGISTRY_GETPORTREGISTRY     0x03
+#define API_ID_PORTREGISTRY_SETEVENT            0x04
 #define API_ID_PORTREGISTRY_SETPINTOZERO        0x06
 #define API_ID_PORTREGISTRY_SETPINTOONE         0x07
 #define API_ID_PORTREGISTRY_SETINPUTPIN         0x09
@@ -26,6 +27,9 @@ void Api_ExecuteNativeMethod(uint8_t id)
             break;
         case API_ID_PORTREGISTRY_GETPORTREGISTRY:
             Api_PortRegistry_GetPortRegistry(value);
+            break;
+        case API_ID_PORTREGISTRY_SETEVENT:
+            Api_PortRegistry_SetEvent(value);
             break;
         case API_ID_PORTREGISTRY_SETPINTOZERO:
             Api_PortRegistry_SetPinToZero((uint8_t) value);

@@ -12,6 +12,9 @@
 extern "C" {
 #endif
 
+#define API_PORTREGISTRY_EVENT_INT0 0x00
+#define API_PORTREGISTRY_EVENT_INT1 0x01
+
 #define API_PORTREGISTRY_PORTA      0x00
 #define API_PORTREGISTRY_PORTB      0x01
 #define API_PORTREGISTRY_PORTC      0x02
@@ -37,7 +40,11 @@ extern uint8_t *Api_PortRegistry_Port;
 
 extern uint8_t *Api_PortRegistry_Tris;
 
+extern uint8_t Api_PortRegistry_Events;
+
 extern void Api_PortRegistry_GetPortRegistry(uint8_t port);
+
+extern void Api_PortRegistry_SetEvent(uint8_t event);
 
 extern void Api_PortRegistry_SetPin(uint8_t pin, uint8_t type);
 

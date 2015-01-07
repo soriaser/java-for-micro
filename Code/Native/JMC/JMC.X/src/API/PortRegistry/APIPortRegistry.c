@@ -5,6 +5,8 @@ uint8_t *Api_PortRegistry_Port = NULL;
 
 uint8_t *Api_PortRegistry_Tris = NULL;
 
+uint8_t Api_PortRegistry_Events = 0x00;
+
 void Api_PortRegistry_GetPortRegistry(uint8_t port)
 {
     switch (port) {
@@ -20,6 +22,17 @@ void Api_PortRegistry_GetPortRegistry(uint8_t port)
             Api_PortRegistry_Port = (uint8_t *) &PORTC;
             Api_PortRegistry_Tris = (uint8_t *) &TRISC;
             break;
+    }
+}
+
+void Api_PortRegistry_SetEvent(uint8_t event)
+{
+    Api_PortRegistry_Events = event;
+
+    if (API_PORTREGISTRY_EVENT_INT0 & Api_PortRegistry_Events) {
+        INTCON  |= 0x10;
+        INTCON2 |= 0x80;
+        INTEDG0  = 1;
     }
 }
 
