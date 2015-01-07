@@ -27,6 +27,14 @@ public class JCField extends JCFieldOrMethod {
                 if (type.equals("(B)Ljava/mc/ports/PortRegistry;")) {
                     this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_GETPORTREGISTRY;
                 }
+            } else if (name.equals(JCReducedConstants.API_METHOD_SETEVENT)) {
+                if (type.equals("(B)V")) {
+                    this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_SETEVENT;
+                }
+            }  else if (name.equals(JCReducedConstants.API_METHOD_CLEAREVENT)) {
+                if (type.equals("(B)V")) {
+                    this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_CLEAREVENT;
+                }
             } else if (name.equals(JCReducedConstants.API_METHOD_SETPINTOZERO)) {
                 if (type.equals("(B)V")) {
                     this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_SETPINTOZERO;
@@ -34,6 +42,14 @@ public class JCField extends JCFieldOrMethod {
             } else if (name.equals(JCReducedConstants.API_METHOD_SETPINTOONE)) {
                 if (type.equals("(B)V")) {
                     this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_SETPINTOONE;
+                }
+            } else if (name.equals(JCReducedConstants.API_METHOD_SETINPUTPIN)) {
+                if (type.equals("(B)V")) {
+                    this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_SETINPUTPIN;
+                }
+            } else if (name.equals(JCReducedConstants.API_METHOD_SETOUTPUTPIN)) {
+                if (type.equals("(B)V")) {
+                    this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_SETOUTPUTPIN;
                 }
             }
         }

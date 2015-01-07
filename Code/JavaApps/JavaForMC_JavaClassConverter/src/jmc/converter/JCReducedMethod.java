@@ -8,6 +8,8 @@ public class JCReducedMethod {
 
     private final static byte FLAG_INIT_METHOD = 0x01;
 
+    private final static byte FLAG_ONEVENT_METHOD = 0x02;
+
     private JCReducedCode code;
 
     private byte arguments;
@@ -25,6 +27,8 @@ public class JCReducedMethod {
     private boolean isMain;
 
     private boolean isOnLoad;
+
+    private boolean isOnEvent;
 
     public JCReducedMethod(Method method, byte id, byte idc) {
         this.id  = id;
@@ -62,6 +66,12 @@ public class JCReducedMethod {
             this.isOnLoad = true;
         }
 
+        this.isOnEvent = false;
+        if ((method.getName().equals(JCReducedConstants.API_METHOD_ONEVENT)) &&
+                (method.getSignature().equals("(B)V"))) {
+            this.isOnEvent = true;
+        }
+
         this.arguments = JCParser.getNumberOfArguments(method);
     }
 
@@ -78,6 +88,10 @@ public class JCReducedMethod {
 
         if (this.isInit) {
             flags |= FLAG_INIT_METHOD;
+        }
+
+        if (this.isOnEvent) {
+            flags |= FLAG_ONEVENT_METHOD;
         }
 
         return flags;
@@ -105,6 +119,10 @@ public class JCReducedMethod {
 
     public boolean isMain() {
         return this.isMain;
+    }
+
+    public boolean isOnEvent() {
+        return this.isOnEvent;
     }
 
     public boolean isOnLoad() {
