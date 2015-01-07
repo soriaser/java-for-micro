@@ -12,7 +12,10 @@
 extern "C" {
 #endif
 
-#define JAVACLASS_METHOD_FLAG_INIT 0x01
+#define JAVACLASS_METHOD_FLAG_INIT      0x01
+#define JAVACLASS_METHOD_FLAG_ONEVENT   0x02
+
+#define JAVACLASS_METHOD_ID_UNKNOWN     0xFFFF
 
 typedef struct javaclass_class {
   uint8_t super;
@@ -71,6 +74,8 @@ extern NVMDATA uint8_t  JavaClass_Data[JAVACLASS_MAX_SIZE_DATA];
 
 #define JavaClass_GetVersion() \
     (Mm_GetU08((uint32_t) &((javaclass_header_t *) JavaClass_Data)->version))
+
+extern uint16_t JavaClass_GetOnEventId(void);
 
 extern void JavaClass_Init(void);
 
