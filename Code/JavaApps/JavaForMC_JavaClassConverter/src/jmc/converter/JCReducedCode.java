@@ -45,6 +45,7 @@ public class JCReducedCode extends JCCode {
                 this.appendShort(getNextBytes(code, offset, 2));
                 increment = 3;
                 break;
+            case (byte) Constants.IINC:
             case (byte) Constants.IFEQ:
             case (byte) Constants.IFNE:
             case (byte) Constants.IFLT:
@@ -61,6 +62,11 @@ public class JCReducedCode extends JCCode {
                 this.appendByte(code[offset]);
                 this.appendShort(getNextBytes(code, offset, 2));
                 increment = 3;
+                break;
+            case (byte) Constants.I2B:
+            case (byte) Constants.I2C:
+            case (byte) Constants.I2S:
+                this.appendByte((byte) Constants.NOP);
                 break;
             case (byte) Constants.INVOKESPECIAL:
             case (byte) Constants.INVOKEVIRTUAL:
