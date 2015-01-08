@@ -29,7 +29,6 @@ typedef struct javaclass_header {
   uint8_t  classes;
   uint8_t  fields;
   uint8_t  main;
-  uint8_t  onLoad;
   uint16_t offsetClasses;
   uint16_t offsetConstants;
   uint16_t offsetStrings;
@@ -69,13 +68,10 @@ extern NVMDATA uint8_t  JavaClass_Data[JAVACLASS_MAX_SIZE_DATA];
     ((javaclass_method_header_t *) (JavaClass_Data + \
     JavaClass_GetOffsetMethods() + (sizeof(javaclass_method_header_t) * index)))
 
-#define JavaClass_GetOnLoadMethodIndex() \
-    (Mm_GetU08((uint32_t) &((javaclass_header_t *) JavaClass_Data)->onLoad))
-
 #define JavaClass_GetVersion() \
     (Mm_GetU08((uint32_t) &((javaclass_header_t *) JavaClass_Data)->version))
 
-extern uint16_t JavaClass_GetOnEventId(void);
+extern uint16_t JavaClass_GetOnEventIndex(void);
 
 extern void JavaClass_Init(void);
 

@@ -4,7 +4,7 @@
 
 #define JAVACLASS_HEADER_VERSION 0x01
 
-uint16_t JavaClass_GetOnEventId(void)
+uint16_t JavaClass_GetOnEventIndex(void)
 {
     uint8_t flags = 0;
     uint8_t index = 0;
