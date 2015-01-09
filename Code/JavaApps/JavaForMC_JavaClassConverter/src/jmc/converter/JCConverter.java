@@ -40,5 +40,7 @@ public class JCConverter {
 
         JCReducedFile JCRFile = new JCReducedFile(files, 0);
         JCRFile.create();
+
+        System.out.println("JCRFile successfully created");
     }
 }
