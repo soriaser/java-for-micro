@@ -25,6 +25,15 @@ public class JCReducedCode extends JCCode {
                 this.appendShort(getNextBytes(code, offset, 2));
                 increment = 3;
                 break;
+            case Constants.ASTORE:
+                this.appendByte((byte) Constants.ISTORE);
+                break;
+            case Constants.ASTORE_0:
+            case Constants.ASTORE_1:
+            case Constants.ASTORE_2:
+            case Constants.ASTORE_3:
+                this.appendByte((byte) (code[offset] - 0x10));
+                break;
             case Constants.ALOAD_0:
             case Constants.ALOAD_1:
             case Constants.ALOAD_2:
