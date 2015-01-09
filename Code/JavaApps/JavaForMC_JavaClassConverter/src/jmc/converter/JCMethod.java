@@ -19,10 +19,10 @@ public class JCMethod extends JCFieldOrMethod {
                     this.id = JCReducedConstants.ID_METHOD_MICROAPPLICATION_SLEEP;
                 }
             }
-        } else if (namePackage.equals(JCReducedConstants.API_PACKAGE_PORTREGISTRY)) {
-            if (name.equals(JCReducedConstants.API_METHOD_GETPORTREGISTRY)) {
-                if (type.equals("(B)Ljava/mc/ports/PortRegistry;")) {
-                    this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_GETPORTREGISTRY;
+        } else if (namePackage.equals(JCReducedConstants.API_PACKAGE_PORT)) {
+            if (name.equals(JCReducedConstants.API_METHOD_GETPORT)) {
+                if (type.equals("(B)Ljava/mc/ports/Port;")) {
+                    this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_GETPORT;
                 }
             } else if (name.equals(JCReducedConstants.API_METHOD_SETPINTOZERO)) {
                 if (type.equals("(B)V")) {

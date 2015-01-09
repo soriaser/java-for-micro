@@ -1,9 +1,9 @@
 package java.mc.ports;
 
 
-public final class PortRegistry {
+public final class Port {
 
-    public native static PortRegistry getPortRegistry(byte port);
+    public native static Port getPort(byte port);
 
     public native void setEvent(byte event);
 
