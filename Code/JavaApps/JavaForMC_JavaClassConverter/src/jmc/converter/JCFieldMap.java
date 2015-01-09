@@ -19,6 +19,9 @@ public class JCFieldMap {
     }
 
     public static void fill(JavaClass javaclasses[]) {
+        byte fieldsCounterStatic = 0;
+        byte fieldsCounterNonStatic = 0;
+
         for (int ii = 0; ii < javaclasses.length; ii++) {
             ConstantPool pool = javaclasses[ii].getConstantPool();
             Constant constants[] = pool.getConstantPool();
@@ -40,7 +43,13 @@ public class JCFieldMap {
                     for (int kk = 0; kk < fields.length; kk++) {
                         if ((fields[kk].getName().equals(name)) &&
                                 (fields[kk].getSignature().equals(type))) {
-                            id = (byte) kk;
+                            if (fields[kk].isStatic()) {
+                                id = fieldsCounterStatic;
+                                fieldsCounterStatic++;
+                            } else {
+                                id = fieldsCounterNonStatic;
+                                fieldsCounterNonStatic++;
+                            }
                             break;
                         }
                     }

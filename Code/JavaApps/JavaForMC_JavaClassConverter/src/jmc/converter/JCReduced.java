@@ -28,7 +28,7 @@ public class JCReduced {
 
     public JCReduced(JavaClass javaclasses[]) {
         this.jcReducedMethods = new JCReducedMethod[JCParser.getNumberOfMethods(
-                javaclasses, (short) 0xFFFF)];
+                javaclasses, JCParser.ALL_FLAGS)];
 
         this.jcReducedClasses = new JCReducedClass[javaclasses.length];
 
@@ -39,25 +39,16 @@ public class JCReduced {
                 this.jcReducedStringsTypes);
 
         this.jcReducedStaticFields = JCParser.getNumberOfFields(javaclasses,
-                (short) 0xFFFF);
+                (int) Constants.ACC_STATIC);
 
         int method = 0;
 
         for (int ii = 0; ii < javaclasses.length; ii++) {
             this.jcReducedClasses[ii] = new JCReducedClass((byte) ii);
 
-            int numberOfNonStaticFields =
-                    JCParser.getNumberOfFields(javaclasses[ii], (short) 0xFFFF)
-                    - JCParser.getNumberOfFields(javaclasses[ii],
-                            Constants.ACC_STATIC);
-
-            if (numberOfNonStaticFields > 255) {
-                String message  = "Number of non static fields exceed maximum";
-                       message += "allowed";
-                throw new InternalError(message);
-            }
-
-            this.jcReducedClasses[ii].setFields((byte) numberOfNonStaticFields);
+            this.jcReducedClasses[ii].setStaticFields(
+                    JCParser.getNumberOfFields(javaclasses[ii],
+                            Constants.ACC_STATIC));
 
             if (!(javaclasses[ii].getSuperclassName().equals(
                     JCReducedConstants.API_PACKAGE_MICROAPPLICATION)) && 
@@ -144,16 +135,6 @@ public class JCReduced {
 
     public short getNumberOfStrings() {
         return (byte) this.jcReducedStrings.length;
-    }
-
-    public byte getOnLoadMethodIndex() {
-        for (int ii = 0; ii < this.jcReducedMethods.length; ii++) {
-            if (this.jcReducedMethods[ii].isOnLoad()) {
-                return this.jcReducedMethods[ii].getId();
-            }
-        }
-
-        throw new InternalError("OnLoad method does not found");
     }
 
     public byte getVersion() {

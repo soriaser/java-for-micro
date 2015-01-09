@@ -12,7 +12,8 @@
 extern "C" {
 #endif
 
-#define API_ID_MASK 0x7F
+#define API_BIT_MASK_NATIVE_METHOD  (uint16_t) 0x8000
+#define API_ID_MASK                 0x7F
 
 extern void Api_ExecuteNativeMethod(uint8_t id);
 

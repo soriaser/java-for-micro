@@ -24,6 +24,16 @@ typedef unsigned short long uint24_t;
 typedef signed long int32_t;
 typedef unsigned long uint32_t;
 
+typedef union {
+  int16_t word;
+
+  struct {
+    int8_t byte_l;
+    int8_t byte_h;
+  };
+
+} word_t;
+
 #define NVMDATA const
 
 #ifndef NULL

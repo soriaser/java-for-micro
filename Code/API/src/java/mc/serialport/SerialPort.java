@@ -1,7 +1,5 @@
 package java.mc.serialport;
 
-import java.mc.MicroApplicationException;
-
 /**
  * Serial Port receiver and transmitter functionality if microcontroller is
  * connected to required pins.
@@ -50,8 +48,7 @@ public final class SerialPort {
      * </li>
      * </ul> 
      */
-    public native static SerialPort getSerialPort()
-            throws MicroApplicationException;
+    public native static SerialPort getSerialPort();
 
     /**
      * Enables receive and transmit data functionality.

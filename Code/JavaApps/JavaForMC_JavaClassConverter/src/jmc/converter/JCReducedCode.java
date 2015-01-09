@@ -80,6 +80,8 @@ public class JCReducedCode extends JCCode {
 
                 increment = 3;
                 break;
+            case (byte) Constants.PUTSTATIC:
+            case (byte) Constants.GETSTATIC:
             case (byte) Constants.PUTFIELD:
             case (byte) Constants.GETFIELD:
                 // Same bytecode

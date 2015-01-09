@@ -17,10 +17,10 @@ extern "C" {
 #endif // PLATFORM
 
 extern void Mm_CopyRam(uint8_t *destination, uint8_t *source, uint16_t size);
-extern uint8_t  Mm_GetU08(uint32_t address);
-extern uint16_t Mm_GetU16(uint32_t address);
-extern void Mm_SetU08(uint32_t address, uint8_t value);
-extern void Mm_SetU16(uint32_t address, uint16_t value);
+extern uint8_t  Mm_GetU08(mm_address_t address);
+extern uint16_t Mm_GetU16(mm_address_t address);
+extern void Mm_SetU08(mm_address_t address, uint8_t value);
+extern void Mm_SetU16(mm_address_t address, uint16_t value);
 
 #ifdef	__cplusplus
 }

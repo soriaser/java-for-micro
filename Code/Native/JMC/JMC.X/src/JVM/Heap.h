@@ -14,21 +14,21 @@ extern "C" {
 
 typedef struct {
   uint8_t  id;
-  uint8_t ref;
+  uint8_t  ref;
   uint16_t size;
 } heap_t;
 
 extern uint8_t Heap[JVM_MAX_SIZE_HEAP];
 
-extern void Heap_GetBytes(uint16_t bytes);
+extern void    Heap_GetBytes(uint16_t bytes);
 
-extern heap_t *Heap_GetHeader(uint8_t id);
+//extern heap_t *Heap_GetHeader(uint8_t id);
 
-extern void *Heap_GetHeaderAddress(uint8_t id);
+//extern void   *Heap_GetHeaderAddress(uint8_t id);
 
-extern void Heap_Init(void);
+extern void    Heap_Init(void);
 
-extern void Heap_SetBytes(uint16_t bytes);
+extern void    Heap_SetBytes(uint16_t bytes);
 
 #ifdef	__cplusplus
 }

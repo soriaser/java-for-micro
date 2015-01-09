@@ -49,27 +49,27 @@ extern NVMDATA uint16_t JavaClass_DataSize;
 extern NVMDATA uint8_t  JavaClass_Data[JAVACLASS_MAX_SIZE_DATA];
 
 #define JavaClass_GetOffsetMethods() \
-    (Mm_GetU16((uint32_t) &((javaclass_header_t *) \
+    (Mm_GetU16((mm_address_t) &((javaclass_header_t *) \
         JavaClass_Data)->offsetMethods))
 
 #define JavaClass_GetNumberConstants() \
-    (Mm_GetU16((uint32_t) &((javaclass_header_t *) JavaClass_Data)->constants))
+    (Mm_GetU16((mm_address_t) &((javaclass_header_t *) JavaClass_Data)->constants))
 
 #define JavaClass_GetNumberStaticFields() \
-    (Mm_GetU08((uint32_t) &((javaclass_header_t *) JavaClass_Data)->fields))
+    (Mm_GetU08((mm_address_t) &((javaclass_header_t *) JavaClass_Data)->fields))
 
 #define JavaClass_GetNumberMethods() \
-    (Mm_GetU08((uint32_t) &((javaclass_header_t *) JavaClass_Data)->methods))
+    (Mm_GetU08((mm_address_t) &((javaclass_header_t *) JavaClass_Data)->methods))
 
 #define JavaClass_GetMainMethodIndex() \
-    (Mm_GetU08((uint32_t) &((javaclass_header_t *) JavaClass_Data)->main))
+    (Mm_GetU08((mm_address_t) &((javaclass_header_t *) JavaClass_Data)->main))
 
 #define JavaClass_GetMethod(index) \
     ((javaclass_method_header_t *) (JavaClass_Data + \
     JavaClass_GetOffsetMethods() + (sizeof(javaclass_method_header_t) * index)))
 
 #define JavaClass_GetVersion() \
-    (Mm_GetU08((uint32_t) &((javaclass_header_t *) JavaClass_Data)->version))
+    (Mm_GetU08((mm_address_t) &((javaclass_header_t *) JavaClass_Data)->version))
 
 extern uint16_t JavaClass_GetOnEventIndex(void);
 

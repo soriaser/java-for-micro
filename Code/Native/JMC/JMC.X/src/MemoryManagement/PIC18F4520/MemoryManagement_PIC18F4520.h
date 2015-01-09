@@ -12,10 +12,10 @@
 extern "C" {
 #endif
 
-#include "Common.h"
+typedef uint16_t mm_address_t;
 
-extern void Mm_ReadNVM(uint32_t address, uint32_t bytes, uint8_t *data);
-extern void Mm_WriteNVM(uint32_t address, uint32_t bytes, uint8_t *data);
+extern void Mm_ReadNVM(mm_address_t address, mm_address_t bytes, uint8_t *data);
+extern void Mm_WriteNVM(mm_address_t address, mm_address_t bytes, uint8_t *data);
 
 #ifdef	__cplusplus
 }

@@ -12,6 +12,8 @@
 extern "C" {
 #endif
 
+typedef uint16_t stack_slot_t;
+
 extern uint16_t *Stack_Pointer;
 
 extern uint16_t *Stack_CurrentPointer;
@@ -19,7 +21,7 @@ extern uint16_t *Stack_CurrentPointer;
 extern uint16_t *Stack_BasePointer;
 
 #define Stack_Add(value) \
-    (Stack_CurrentPointer += value)
+    (Stack_CurrentPointer += (int8_t) value)
 
 #define Stack_IsEmpty() \
     (Stack_CurrentPointer == Stack_BasePointer)
@@ -32,7 +34,7 @@ extern uint16_t *Stack_BasePointer;
 
 extern void Stack_Init(void);
 
-extern uint8_t Stack_IsIdInUse(uint16_t id);
+//extern uint8_t Stack_IsIdInUse(uint16_t id);
 
 #ifdef	__cplusplus
 }

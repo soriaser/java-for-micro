@@ -38,7 +38,7 @@ public class JCReducedClass {
         return this.isMain;
     }
 
-    public void setFields(byte fields) {
+    public void setStaticFields(byte fields) {
         this.fields = fields;
     }
 

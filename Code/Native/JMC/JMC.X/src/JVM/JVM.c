@@ -5,41 +5,30 @@
 #include "JVM.h"
 #include "MemoryManagement.h"
 #include "Stack.h"
+#include "MemoryManagement_PIC18F4520.h"
 
-#define BIT_MASK_NATIVE_METHOD (uint16_t) 0x8000
+#define JVM_RETURN_INFO_STACK_SIZE 3
 
-uint16_t *localVariables;
-
-typedef union {
-  int16_t word;
-
-  struct {
-    uint8_t byte_l;
-    uint8_t byte_h;
-  };
-
-} ushort_t;
+stack_slot_t *localVariables;
 
 void Jvm_Init(void)
 {
     Heap_Init();
     Stack_Init();
-    Stack_Push(0);
 }
 
 void Jvm_Main(void)
 {
     uint8_t flags = 0;
     uint8_t index = 0;
-    javaclass_method_header_t *method;
 
     // Before to call main method, it is required to call init
     // init method
     for (;index < JavaClass_GetNumberMethods(); index++) {
-        method = JavaClass_GetMethod(index);
-        flags = (Mm_GetU08((uint32_t) &((javaclass_method_header_t *)
-                method)->flags));
-
+        // Get class flags
+        flags = (Mm_GetU08((mm_address_t) &((javaclass_method_header_t *)
+                JavaClass_GetMethod(index))->flags));
+        // Check if method is <init> or <cinit>
         if (flags & JAVACLASS_METHOD_FLAG_INIT) {
             Jvm_RunMethod(index);
             break;
@@ -50,42 +39,52 @@ void Jvm_Main(void)
     Jvm_RunMethod(JavaClass_GetMainMethodIndex());
 }
 
+void Jvm_ProcessArithmeticAndLogicBytecode(uint8_t bytecode)
+{
+
+}
+
 void Jvm_RunMethod(uint16_t index)
 {
-    uint8_t  pcIncrement;
-    uint8_t  bytecode;
-    ushort_t nextcodes;
-    uint16_t aux1;
-    uint16_t aux2;
-    uint32_t pc;
+    uint8_t increment;
+    uint8_t bytecode;
+    word_t  nextcodes;
+    int16_t aux1;
+    int16_t aux2;
+    mm_address_t pc;
 
+    // Method header pointer and struct
     javaclass_method_header_t *method_ptr;
     javaclass_method_header_t  method;
 
+    // Get pointer to current method
     method_ptr = JavaClass_GetMethod(index);
-    // Load method header into RAM in order to improve performance
-    Mm_ReadNVM((uint32_t) method_ptr, sizeof(javaclass_method_header_t),
+    // Load method header into RAM
+    Mm_ReadNVM((mm_address_t) method_ptr, sizeof(javaclass_method_header_t),
             (uint8_t *) &method);
 
     // Get address to the method code
-    pc = (uint32_t) (JavaClass_Data + method.code);
+    pc = (mm_address_t) (JavaClass_Data + method.code);
 
     // Reserve space for locals, stack and arguments
-    Heap_GetBytes(sizeof(uint16_t) * (method.locals + method.stack +
+    Heap_GetBytes(sizeof(stack_slot_t) * (method.locals + method.stack +
             method.arguments));
+    // Establish pointers
     localVariables = Stack_CurrentPointer + 1;
     Stack_CurrentPointer += method.locals;
     Stack_BasePointer = Stack_CurrentPointer;
 
     // Loop to execute and process every bytecode
     do {
+        // Get bytecode and set next increment as one by default
         bytecode = Mm_GetU08(pc);
+        increment = 1;
 
-        nextcodes.byte_l = Mm_GetU08(pc + 1);
-        nextcodes.byte_h = Mm_GetU08(pc + 2);
+        // Store two next bytecodes
+        nextcodes.byte_l = Mm_GetU08((mm_address_t) (pc + 1));
+        nextcodes.byte_h = Mm_GetU08((mm_address_t) (pc + 2));
 
-        pcIncrement = 1;
-
+        // Process bytecode
         switch (bytecode) {
             case BC_NOP:
                 break;
@@ -100,7 +99,7 @@ void Jvm_RunMethod(uint16_t index)
                 break;
             case BC_SIPUSH:
                 Stack_Push(nextcodes.word);
-                pcIncrement = 3;
+                increment = 3;
                 break;
             case BC_ILOAD_0:
             case BC_ILOAD_1:
@@ -117,68 +116,61 @@ void Jvm_RunMethod(uint16_t index)
             case BC_DUP:
                 Stack_Push(Stack_CurrentPointer[0]);
                 break;
+            case BC_IINC:
+                localVariables[nextcodes.byte_l] += (nextcodes.byte_h & 0x00FF);
+                increment = 3;
+                break;
             case BC_IADD:
             case BC_ISUB:
             case BC_IMUL:
             case BC_IDIV:
             case BC_IREM:
-            case BC_INEG:
             case BC_ISHL:
             case BC_ISHR:
             case BC_IUSHR:
             case BC_IAND:
             case BC_IOR:
             case BC_IXOR:
-            case BC_IINC:
-                if (BC_INEG == bytecode) {
-                    aux1 = -Stack_Pop();
-                    Stack_Push(aux1);
-                } else if (BC_IINC == bytecode) {
-                    localVariables[nextcodes.byte_h] = nextcodes.byte_h +
-                            nextcodes.byte_l;
-                    pcIncrement = 3;
-                } else {
-                    aux1 = Stack_Pop();
-                    aux2 = Stack_Pop();
+                aux1 = Stack_Pop();
+                aux2 = Stack_Pop();
 
-                    switch (bytecode) {
-                        case BC_IADD:
-                            aux2 += aux1;
-                            break;
-                        case BC_ISUB:
-                            aux2 -= aux1;
-                            break;
-                        case BC_IMUL:
-                            aux2 *= aux1;
-                            break;
-                        case BC_IDIV:
-                            aux2 /= aux1;
-                            break;
-                        case BC_IREM:
-                            aux2 %= aux1;
-                            break;
-                        case BC_ISHL:
-                            aux2 <<= aux1;
-                            break;
-                        case BC_ISHR:
-                            aux2 >>= aux1;
-                            break;
-                        case BC_IUSHR:
-                            aux2 = aux2 >> aux1;
-                            break;
-                        case BC_IAND:
-                            aux2 &= aux1;
-                            break;
-                        case BC_IOR:
-                            aux2 |= aux1;
-                            break;
-                        case BC_IXOR:
-                            aux2 ^= aux1;
-                            break;
-                    }
-
-                    Stack_Push(aux2);
+                switch (bytecode) {
+                    case BC_IADD:
+                        aux2 += aux1;
+                        break;
+                    case BC_ISUB:
+                        aux2 -= aux1;
+                        break;
+                    case BC_IMUL:
+                        aux2 *= aux1;
+                        break;
+                    case BC_IDIV:
+                        aux2 /= aux1;
+                        break;
+                    case BC_IREM:
+                        aux2 %= aux1;
+                        break;
+                    case BC_ISHL:
+                        aux2 <<= aux1;
+                        break;
+                    case BC_ISHR:
+                        aux2 >>= aux1;
+                        break;
+                    case BC_IUSHR:
+                        aux2 = aux2 >> aux1;
+                        break;
+                    case BC_IAND:
+                        aux2 &= aux1;
+                        break;
+                    case BC_IOR:
+                        aux2 |= aux1;
+                        break;
+                    case BC_IXOR:
+                        aux2 ^= aux1;
+                        break;
                 }
+
+                Stack_Push(aux2);
                 break;
             case BC_IFEQ:
             case BC_IFNE:
@@ -224,37 +216,46 @@ void Jvm_RunMethod(uint16_t index)
 
                 if (aux1) {
                     pc += nextcodes.word;
-                    pcIncrement = 0;
+                    increment = 0;
                 } else {
-                    pcIncrement = 3;
+                    increment = 3;
                 }
                 break;
             case BC_GOTO:
                 pc += nextcodes.word - 3;
-                pcIncrement = 3;
+                increment = 3;
                 break;
             case BC_IRETURN:
                 aux1 = Stack_Pop();
             case BC_RETURN:
+                // Check if stack is empty. If stack is empty, it means that it
+                // is the last return, otherwise it is required to return to
+                // previous code
                 if (!Stack_IsEmpty()) {
-                    uint8_t  oldLocals  = method.locals;
-                    uint8_t  oldUnsteal = method.locals + method.stack +
-                        method.arguments + 3;
-                    uint16_t oldLocalsOffset = Stack_Pop();
+                    uint8_t  locals  = method.locals;
+                    uint8_t  recover = method.locals + method.stack +
+                        method.arguments + JVM_RETURN_INFO_STACK_SIZE;
 
+                    // Get offset to local variable offset stored before
+                    // call this method
+                    uint16_t offset = Stack_Pop();
+                    // Recover index of previous method
                     index = Stack_Pop();
+                    // Recover previous method
                     method_ptr = JavaClass_GetMethod(index);
-                    Mm_ReadNVM((uint32_t) method_ptr,
+                    Mm_ReadNVM((mm_address_t) method_ptr,
                         sizeof(javaclass_method_header_t), (uint8_t *) &method);
+                    // Recover program counter to bytecode of previous method
+                    pc = (mm_address_t) (JavaClass_Data + Stack_Pop());
+                    increment = 3;
 
-                    pc = (uint32_t) (JavaClass_Data + Stack_Pop());
-                    pcIncrement = 3;
+                    // Restore local variables pointer
+                    Stack_Add(-locals);
+                    localVariables = Stack_CurrentPointer - offset;
+                    // Restore heap status
+                    Heap_SetBytes(sizeof(stack_slot_t) * recover);
 
-                    Stack_Add(-oldLocals);
-                    localVariables = Stack_CurrentPointer - oldLocalsOffset;
-
-                    Heap_SetBytes(sizeof(uint16_t) * oldUnsteal);
-
+                    // If method returns some value, it is pushed into stack
                     if (BC_IRETURN == bytecode) {
                         Stack_Push(aux1);
                     }
@@ -262,51 +263,82 @@ void Jvm_RunMethod(uint16_t index)
                     bytecode = BC_NOP;
                 }
                 break;
+            case BC_GETSTATIC:
+                Stack_Push(Stack_Pointer[nextcodes.word]);
+                increment = 3;
+                break;
+            case BC_PUTSTATIC:
+                Stack_Pointer[nextcodes.word] = Stack_Pop();
+                increment = 3;
+                break;
+            /*
             case BC_GETFIELD:
-                Stack_Push(((uint32_t *) Heap_GetHeaderAddress(Stack_Pop()))
-                        [1 + nextcodes.word]);
-                pcIncrement = 3;
+                Stack_Push(((stack_slot_t *) Heap_GetHeaderAddress(Stack_Pop()))
+                        [2 + nextcodes.word]);
+                increment = 3;
                 break;
             case BC_PUTFIELD:
                 aux1 = Stack_Pop();
-                ((uint32_t *) Heap_GetHeaderAddress(Stack_Pop()))
-                        [1 + nextcodes.word] = aux1;
-                pcIncrement = 3;
+                ((stack_slot_t *) Heap_GetHeaderAddress(Stack_Pop()))
+                        [2 + nextcodes.word] = aux1;
+                increment = 3;
                 break;
+            */
             case BC_INVOKEVIRTUAL:
             case BC_INVOKESPECIAL:
             case BC_INVOKESTATIC:
-                if ((nextcodes.word & BIT_MASK_NATIVE_METHOD) == 0) {
+                if ((nextcodes.word & API_BIT_MASK_NATIVE_METHOD) == 0) {
                     // Store offset to current method bytecode
-                    aux1 = (uint16_t) pc - (uint16_t) JavaClass_Data;
+                    aux1 = (uint16_t) (pc - (mm_address_t) JavaClass_Data);
                     // Get pointer and method to call
                     method_ptr = JavaClass_GetMethod(nextcodes.word);
-                    Mm_ReadNVM((uint32_t) method_ptr,
+                    Mm_ReadNVM((mm_address_t) method_ptr,
                         sizeof(javaclass_method_header_t), (uint8_t *) &method);
-
+                    // As arguments to this method has been added to stack,
+                    // pointer is returned back to process this values in
+                    // nex method call
                     Stack_Add(-method.arguments);
+
+                    // Store current difference between stack pointer and
+                    // local variables to restore when return
                     aux2 = Stack_CurrentPointer - localVariables;
+                    // Local variables for next method
                     localVariables = Stack_CurrentPointer + 1;
 
-                    Heap_GetBytes(sizeof(uint16_t) * (method.locals + method.stack +
-                        method.arguments + 3));
+                    // Get stack space for method to call and return info
+                    Heap_GetBytes(sizeof(stack_slot_t) * (method.locals +
+                        method.stack + method.arguments +
+                            JVM_RETURN_INFO_STACK_SIZE));
 
+                    // Add required space for local variables
                     Stack_Add(method.locals);
+                    // Store offsets and current method index value
                     Stack_Push(aux1);
                     Stack_Push(index);
                     Stack_Push(aux2);
 
+                    // Replace index by method index to call
                     index = nextcodes.word;
-                    pc = (uint32_t) (JavaClass_Data + method.code);
-                    pcIncrement = 0;
+                    // Allocate program counter
+                    pc = (mm_address_t) (JavaClass_Data + method.code);
+                    increment = 0;
                 } else {
                     Api_ExecuteNativeMethod(nextcodes.byte_l & API_ID_MASK);
-                    pcIncrement = 3;
+                    increment = 3;
                 }
+                break;
+            default:
+                EndlessLoop();
                 break;
         }
 
-        pc += pcIncrement;
+        pc += increment;
 
     } while((bytecode != BC_IRETURN) && (bytecode != BC_RETURN));
+
+    // Restore Heap pointer removing local variables
+    Stack_Add(-method.locals);
+    // Restore stack stored at the beginning
+    Heap_SetBytes(sizeof(stack_slot_t) * (method.locals + method.stack +
+            method.arguments));
 }

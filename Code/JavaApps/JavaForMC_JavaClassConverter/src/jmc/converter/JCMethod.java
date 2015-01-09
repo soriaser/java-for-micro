@@ -14,10 +14,6 @@ public class JCMethod extends JCFieldOrMethod {
                 if (type.equals("()V")) {
                     this.id = JCReducedConstants.ID_METHOD_MICROAPPLICATION_INIT;
                 }
-            } else if (name.equals(JCReducedConstants.API_METHOD_MAIN)) {
-                if (type.equals("()V")) {
-                    this.id = JCReducedConstants.ID_METHOD_MICROAPPLICATION_MAIN;
-                }
             } else if (name.equals(JCReducedConstants.API_METHOD_SLEEP)) {
                 if (type.equals("(S)V")) {
                     this.id = JCReducedConstants.ID_METHOD_MICROAPPLICATION_SLEEP;

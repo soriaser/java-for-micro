@@ -15,6 +15,7 @@ void Heap_Init(void)
     heap->size = sizeof(Heap) - sizeof(heap_t);
 }
 
+/*
 uint8_t Heap_IsIdInUse(uint16_t id)
 {
     heap_t *heap = NULL;
@@ -66,6 +67,7 @@ void Heap_GarbageCollect(void)
         EndlessLoop();
     }
 }
+*/
 
 void Heap_GetBytes(uint16_t bytes)
 {
@@ -73,7 +75,7 @@ void Heap_GetBytes(uint16_t bytes)
     uint16_t size = heap->size;
 
     if (size < bytes) {
-        Heap_GarbageCollect();
+        //Heap_GarbageCollect();
     }
 
     size = heap->size;
@@ -88,6 +90,7 @@ void Heap_GetBytes(uint16_t bytes)
     heap->size = size - bytes;
 }
 
+/*
 heap_t *Heap_GetHeader(uint8_t id)
 {
     uint16_t offset = Heap_BaseOffset;
@@ -107,14 +110,15 @@ heap_t *Heap_GetHeader(uint8_t id)
 
 void *Heap_GetHeaderAddress(uint8_t id)
 {
-    heap_t *heap = Heap_GetHeader(id);
+    uint8_t *heap = (uint8_t *) Heap_GetHeader(id);
 
     if (heap == NULL) {
         EndlessLoop();
     }
 
-    return (heap + 1);
+    return (void *) heap;
 }
+*/
 
 void Heap_SetBytes(uint16_t bytes)
 {

@@ -59,6 +59,8 @@ extern "C" {
 #define BC_GOTO             0xA7
 #define BC_IRETURN          0xAC
 #define BC_RETURN           0xB1
+#define BC_GETSTATIC        0xB2
+#define BC_PUTSTATIC        0xB3
 #define BC_GETFIELD         0xB4
 #define BC_PUTFIELD         0xB5
 #define BC_INVOKEVIRTUAL    0xB6
@@ -76,4 +78,3 @@ extern void Jvm_RunMethod(uint16_t index);
 #endif
 
 #endif	/* JVM_H */
-

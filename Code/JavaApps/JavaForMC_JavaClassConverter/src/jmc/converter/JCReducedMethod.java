@@ -26,8 +26,6 @@ public class JCReducedMethod {
 
     private boolean isMain;
 
-    private boolean isOnLoad;
-
     private boolean isOnEvent;
 
     public JCReducedMethod(Method method, byte id, byte idc) {
@@ -58,12 +56,6 @@ public class JCReducedMethod {
         if ((method.getName().equals(JCReducedConstants.API_METHOD_MAIN)) &&
                 (method.getSignature().equals("()V"))) {
             this.isMain = true;
-        }
-
-        this.isOnLoad = false;
-        if ((method.getName().equals(JCReducedConstants.API_METHOD_ONLOAD)) &&
-                (method.getSignature().equals("([BSS)V"))) {
-            this.isOnLoad = true;
         }
 
         this.isOnEvent = false;
@@ -123,10 +115,6 @@ public class JCReducedMethod {
 
     public boolean isOnEvent() {
         return this.isOnEvent;
-    }
-
-    public boolean isOnLoad() {
-        return this.isOnLoad;
     }
 
     public void setId(byte id) {

@@ -9,6 +9,8 @@ import org.apache.bcel.generic.Type;
 
 public class JCParser {
 
+    public final static int ALL_FLAGS = (int) 0xFFFFFFFF;
+
     public static byte getNumberOfArguments(Method method) {
         int arguments = 0;
 
@@ -80,7 +82,7 @@ public class JCParser {
         return constants;
     }
 
-    public static byte getNumberOfMethods(JavaClass javaclasses[], short flags) {
+    public static byte getNumberOfMethods(JavaClass javaclasses[], int flags) {
         int methods = 0;
 
         for (int ii = 0; ii < javaclasses.length; ii++) {
@@ -94,13 +96,13 @@ public class JCParser {
         return (byte) methods;
     }
 
-    public static byte getNumberOfMethods(JavaClass javaclass, short flags) {
+    public static byte getNumberOfMethods(JavaClass javaclass, int flags) {
         int methods = 0;
 
         for (int ii = 0; ii < (int) javaclass.getMethods().length; ii++) {
             if (javaclass.getMethods()[ii] != null) {
                 if (((javaclass.getMethods()[ii].getAccessFlags() & flags) ==
-                        flags) || (flags == (short) 0xFFFF)) {
+                        flags) || (flags == ALL_FLAGS)) {
                     methods++;
                 }
             }
@@ -113,7 +115,7 @@ public class JCParser {
         return (byte) methods;
     }
 
-    public static byte getNumberOfFields(JavaClass javaclasses[], short flags) {
+    public static byte getNumberOfFields(JavaClass javaclasses[], int flags) {
         int fields = 0;
 
         for (int ii = 0; ii < javaclasses.length; ii++) {
@@ -127,13 +129,13 @@ public class JCParser {
         return (byte) fields;
     }
 
-    public static byte getNumberOfFields(JavaClass javaclass, short flags) {
+    public static byte getNumberOfFields(JavaClass javaclass, int flags) {
         int fields = 0;
 
         for (int ii = 0; ii < (int) javaclass.getFields().length; ii++) {
             if (javaclass.getFields()[ii] != null) {
                 if (((javaclass.getFields()[ii].getAccessFlags() & flags) ==
-                        flags) || (flags == (short) 0xFFFF)) {
+                        flags) || (flags == ALL_FLAGS)) {
                     fields++;
                 }
             }
