@@ -6,10 +6,11 @@
  */
 
 #include "Common.h"
+#include "Api.h"
 #include "JavaClass.h"
-#include "MemoryManagement.h"
 #include "JVM.h"
 #include "Loader.h"
+#include "MemoryManagement.h"
 #include "SerialPort.h"
 #include "Timer.h"
 
@@ -17,6 +18,11 @@ void interrupt ISR(void)
 {
     if (RCIF) {
         SerialPort_ISR();
+    }
+
+    if (INT0IF) {
+        INT0IF = 0;
+        Api_Events.int0 = 1;
     }
 }
 

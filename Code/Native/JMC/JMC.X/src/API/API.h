@@ -15,6 +15,13 @@ extern "C" {
 #define API_BIT_MASK_NATIVE_METHOD  (uint16_t) 0x8000
 #define API_ID_MASK                 0x7F
 
+typedef struct {
+  unsigned int0:1;
+  unsigned int1:1;
+} api_events_t;
+
+extern api_events_t Api_Events;
+
 extern void Api_ExecuteNativeMethod(uint8_t id);
 
 #ifdef	__cplusplus

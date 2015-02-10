@@ -6,6 +6,7 @@
 #include "MemoryManagement.h"
 #include "Stack.h"
 #include "MemoryManagement_PIC18F4520.h"
+#include "APIPortRegistry.h"
 
 #define JVM_RETURN_INFO_STACK_SIZE 3
 
@@ -29,22 +30,29 @@ void Jvm_Main(void)
         flags = (Mm_GetU08((mm_address_t) &((javaclass_method_header_t *)
                 JavaClass_GetMethod(index))->flags));
         // Check if method is <init> or <cinit>
-        if (flags & JAVACLASS_METHOD_FLAG_INIT) {
-            Jvm_RunMethod(index);
-            break;
+        if ((flags & JAVACLASS_METHOD_FLAG_INIT) ||
+                (flags & JAVACLASS_METHOD_FLAG_CLINIT)) {
+            Jvm_RunMethod(index, 0x00);
+
+            if (flags & JAVACLASS_METHOD_FLAG_INIT) {
+                break;
+            }
         }
     }
 
     // Execute Main method
-    Jvm_RunMethod(JavaClass_GetMainMethodIndex());
+    Jvm_RunMethod(JavaClass_GetMainMethodIndex(), 0x00);
+
+    // If no more to execute, endless loop waiting for event
+    while (0x01) {
+        if (1 == Api_Events.int0) {
+            Api_Events.int0 = 0;
+            Jvm_RunMethod(JavaClass_GetOnEventIndex(), Api_PortRegistry_Events);
+        }
+    }
 }
 
-void Jvm_ProcessArithmeticAndLogicBytecode(uint8_t bytecode)
-{
-
-}
-
-void Jvm_RunMethod(uint16_t index)
+void Jvm_RunMethod(uint16_t index, uint8_t events)
 {
     uint8_t increment;
     uint8_t bytecode;
@@ -71,8 +79,13 @@ void Jvm_RunMethod(uint16_t index)
             method.arguments));
     // Establish pointers
     localVariables = Stack_CurrentPointer + 1;
-    Stack_CurrentPointer += method.locals;
+    Stack_Add(method.locals);
     Stack_BasePointer = Stack_CurrentPointer;
+
+    // If onEvent method is being executed
+    if (JavaClass_GetOnEventIndex() == index) {
+        localVariables[1] = events;
+    }
 
     // Loop to execute and process every bytecode
     do {

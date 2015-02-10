@@ -30,9 +30,13 @@ void Api_PortRegistry_SetEvent(uint8_t event)
     Api_PortRegistry_Events = event;
 
     if (API_PORTREGISTRY_EVENT_INT0 & Api_PortRegistry_Events) {
-        INTCON  |= 0x10;
-        INTCON2 |= 0x80;
-        INTEDG0  = 1;
+        if ((uint8_t *) &PORTB == Api_PortRegistry_Port) {
+            // Set INT0 as input
+            (*Api_PortRegistry_Tris) |= 0x01;
+            // Enable INT0 interruption but interrupt is not thrown.
+            // Interrupt should be checked manually
+            INTCON |= 0x10;
+        }
     }
 }
 
