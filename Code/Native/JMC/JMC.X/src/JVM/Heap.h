@@ -20,11 +20,15 @@ typedef struct {
 
 extern uint8_t Heap[JVM_MAX_SIZE_HEAP];
 
+extern uint8_t Heap_Alloc(uint8_t ref, uint16_t size);
+
 extern void    Heap_GetBytes(uint16_t bytes);
 
-//extern heap_t *Heap_GetHeader(uint8_t id);
+extern heap_t *Heap_GetHeader(uint8_t id);
 
-//extern void   *Heap_GetHeaderAddress(uint8_t id);
+extern void   *Heap_GetHeaderAddress(uint8_t id);
+
+extern uint8_t Heap_GetNewId(void);
 
 extern void    Heap_Init(void);
 

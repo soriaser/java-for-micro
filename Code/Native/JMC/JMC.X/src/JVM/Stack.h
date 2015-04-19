@@ -24,17 +24,16 @@ extern uint16_t *Stack_BasePointer;
     (Stack_CurrentPointer += (int8_t) value)
 
 #define Stack_IsEmpty() \
-    (Stack_CurrentPointer == Stack_BasePointer)
-
-#define Stack_Push(value) \
-    (*(++Stack_CurrentPointer) = value)
+    (Stack_CurrentPointer == Stack_BasePointer)    
 
 #define Stack_Pop() \
     (*(Stack_CurrentPointer--))
 
 extern void Stack_Init(void);
 
-//extern uint8_t Stack_IsIdInUse(uint16_t id);
+extern uint8_t Stack_IsIdInUse(uint16_t id);
+
+extern void Stack_Push(uint16_t value);
 
 #ifdef	__cplusplus
 }

@@ -8,7 +8,9 @@ public class JCReducedMethod {
 
     private final static byte FLAG_INIT_METHOD = 0x01;
 
-    private final static byte FLAG_ONEVENT_METHOD = 0x02;
+    private final static byte FLAG_CLINIT_METHOD = 0x02;
+
+    private final static byte FLAG_ONEVENT_METHOD = 0x04;
 
     private JCReducedCode code;
 
@@ -23,6 +25,8 @@ public class JCReducedMethod {
     private byte idc;
 
     private boolean isInit;
+
+    private boolean isClinit;
 
     private boolean isMain;
 
@@ -50,6 +54,12 @@ public class JCReducedMethod {
         if ((method.getName().equals(JCReducedConstants.API_METHOD_INIT)) &&
                 (method.getSignature().equals("()V"))) {
             this.isInit = true;
+        }
+
+        this.isClinit = false;
+        if ((method.getName().equals(JCReducedConstants.API_METHOD_CLINIT)) &&
+                (method.getSignature().equals("()V"))) {
+            this.isClinit = true;
         }
 
         this.isMain = false;
@@ -82,6 +92,10 @@ public class JCReducedMethod {
             flags |= FLAG_INIT_METHOD;
         }
 
+        if (this.isClinit) {
+            flags |= FLAG_CLINIT_METHOD;
+        }
+
         if (this.isOnEvent) {
             flags |= FLAG_ONEVENT_METHOD;
         }
@@ -104,6 +118,10 @@ public class JCReducedMethod {
     public byte getNumberOfArguments() {
         return this.arguments;
     }
+
+    public boolean isClinit() {
+        return this.isClinit;
+    }    
 
     public boolean isInit() {
         return this.isInit;

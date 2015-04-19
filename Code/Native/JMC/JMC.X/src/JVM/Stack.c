@@ -16,7 +16,6 @@ void Stack_Init(void)
     Heap_GetBytes(sizeof(stack_slot_t) * JavaClass_GetNumberStaticFields());
 }
 
-/*
 uint8_t Stack_IsIdInUse(uint16_t id)
 {
     uint16_t ii = 0;
@@ -29,4 +28,9 @@ uint8_t Stack_IsIdInUse(uint16_t id)
 
     return 0x00;
 }
-*/
+
+void Stack_Push(uint16_t value)
+{
+    Stack_CurrentPointer++;
+    (*Stack_CurrentPointer) = value;
+}

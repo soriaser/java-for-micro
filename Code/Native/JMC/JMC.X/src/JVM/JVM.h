@@ -20,6 +20,7 @@ extern "C" {
 #define BC_ICONST_3         0x06
 #define BC_ICONST_4         0x07
 #define BC_ICONST_5         0x08
+#define BC_BIPUSH           0x10
 #define BC_SIPUSH           0x11
 #define BC_ILOAD            0x15
 #define BC_ILOAD_0          0x1A
@@ -30,6 +31,7 @@ extern "C" {
 #define BC_ISTORE_1         0x3C
 #define BC_ISTORE_2         0x3D
 #define BC_ISTORE_3         0x3E
+#define BC_BASTORE          0x54
 #define BC_DUP              0x59
 #define BC_IADD             0x60
 #define BC_ISUB             0x64
@@ -66,6 +68,7 @@ extern "C" {
 #define BC_INVOKEVIRTUAL    0xB6
 #define BC_INVOKESPECIAL    0xB7
 #define BC_INVOKESTATIC     0xB8
+#define BC_NEWARRAY         0xBC
 
 extern void Jvm_Init(void);
 

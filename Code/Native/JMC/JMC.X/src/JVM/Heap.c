@@ -8,14 +8,26 @@
 uint8_t  Heap[JVM_MAX_SIZE_HEAP];
 uint16_t Heap_BaseOffset = 0;
 
-void Heap_Init(void)
+uint8_t Heap_AllocInternal(uint8_t id, uint8_t ref, uint16_t size)
 {
-    heap_t *heap = (heap_t *) &Heap[0];
-    heap->id  = HEAP_ID_FREE;
-    heap->size = sizeof(Heap) - sizeof(heap_t);
+    uint16_t memory = size + sizeof(heap_t);
+
+    heap_t *heap = (heap_t *) &Heap[Heap_BaseOffset];
+
+    if (heap->size >= memory) {
+        heap->size -= memory;
+
+        heap = (heap_t*) &Heap[Heap_BaseOffset + sizeof(heap_t) + heap->size];
+        heap->id = id;
+        heap->ref = ref;
+        heap->size = size;
+
+        return 0x01;
+    }
+
+    return 0x00;
 }
 
-/*
 uint8_t Heap_IsIdInUse(uint16_t id)
 {
     heap_t *heap = NULL;
@@ -67,7 +79,28 @@ void Heap_GarbageCollect(void)
         EndlessLoop();
     }
 }
-*/
+
+uint8_t Heap_Alloc(uint8_t ref, uint16_t size)
+{
+    uint8_t id = Heap_GetNewId();
+
+    if (!Heap_AllocInternal(id, ref, size)) {
+        Heap_GarbageCollect();
+
+        if (!Heap_AllocInternal(id, ref, size)) {
+            EndlessLoop();
+        }
+    }
+
+    return id;
+}
+
+void Heap_Init(void)
+{
+    heap_t *heap = (heap_t *) &Heap[0];
+    heap->id  = HEAP_ID_FREE;
+    heap->size = sizeof(Heap) - sizeof(heap_t);
+}
 
 void Heap_GetBytes(uint16_t bytes)
 {
@@ -90,7 +123,6 @@ void Heap_GetBytes(uint16_t bytes)
     heap->size = size - bytes;
 }
 
-/*
 heap_t *Heap_GetHeader(uint8_t id)
 {
     uint16_t offset = Heap_BaseOffset;
@@ -108,6 +140,19 @@ heap_t *Heap_GetHeader(uint8_t id)
     return NULL;
 }
 
+uint8_t Heap_GetNewId(void)
+{
+    uint8_t id;
+
+    for (id = 0x01; id; id++) {
+        if (Heap_GetHeader(id) == NULL) {
+            return id;
+        }
+    }
+
+    return 0x00;
+}
+
 void *Heap_GetHeaderAddress(uint8_t id)
 {
     uint8_t *heap = (uint8_t *) Heap_GetHeader(id);
@@ -116,9 +161,8 @@ void *Heap_GetHeaderAddress(uint8_t id)
         EndlessLoop();
     }
 
-    return (void *) heap;
+    return (void *) (heap + 1);
 }
-*/
 
 void Heap_SetBytes(uint16_t bytes)
 {

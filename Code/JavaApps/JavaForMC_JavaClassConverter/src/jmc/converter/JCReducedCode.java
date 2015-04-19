@@ -102,6 +102,15 @@ public class JCReducedCode extends JCCode {
 
                 increment = 3;
                 break;
+            case (byte) Constants.NEWARRAY:
+                this.appendByte(code[offset]);
+
+                if (code[offset + 1] != 0x08) {
+                    System.out.println("Only byte array supported");
+                    System.exit(0);
+                }
+
+                increment++;
             default:
                 this.appendByte(code[offset]);
                 break;

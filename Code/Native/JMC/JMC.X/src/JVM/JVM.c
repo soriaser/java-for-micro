@@ -3,6 +3,7 @@
 #include "Heap.h"
 #include "JavaClass.h"
 #include "JVM.h"
+#include "JVMArray.h"
 #include "MemoryManagement.h"
 #include "Stack.h"
 #include "MemoryManagement_PIC18F4520.h"
@@ -110,6 +111,10 @@ void Jvm_RunMethod(uint16_t index, uint8_t events)
             case BC_ICONST_5:
                 Stack_Push(bytecode - BC_ICONST_0);
                 break;
+            case BC_BIPUSH:
+                Stack_Push(nextcodes.byte_l);
+                increment = 2;
+                break;
             case BC_SIPUSH:
                 Stack_Push(nextcodes.word);
                 increment = 3;
@@ -125,6 +130,13 @@ void Jvm_RunMethod(uint16_t index, uint8_t events)
             case BC_ISTORE_2:
             case BC_ISTORE_3:
                 localVariables[bytecode - BC_ISTORE_0] = Stack_Pop();
+                break;
+            case BC_BASTORE:
+                aux2 = Stack_Pop();
+                aux1 = Stack_Pop();
+                uint8_t *ptr = (uint8_t *) Heap_GetHeaderAddress(Stack_Pop())
+                        + 1;
+                ptr[aux1] = aux2;
                 break;
             case BC_DUP:
                 Stack_Push(Stack_CurrentPointer[0]);
@@ -339,6 +351,11 @@ void Jvm_RunMethod(uint16_t index, uint8_t events)
                     Api_ExecuteNativeMethod(nextcodes.byte_l & API_ID_MASK);
                     increment = 3;
                 }
+                break;
+            case BC_NEWARRAY:
+                aux1 = Stack_Pop();
+                Stack_Push(JvmArray_New(aux1, nextcodes.byte_l));
+                increment = 2;
                 break;
             default:
                 EndlessLoop();
