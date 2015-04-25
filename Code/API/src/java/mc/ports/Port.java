@@ -5,10 +5,6 @@ public final class Port {
 
     public native static Port getPort(byte port);
 
-    public native void setEvent(byte event);
-
-    public native void clearEvent(byte event);
-
     public native void setPinToZero(byte pin);
 
     public native void setPinToOne(byte pin);
