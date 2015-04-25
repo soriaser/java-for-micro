@@ -18,9 +18,12 @@ extern "C" {
 typedef struct {
   unsigned int0:1;
   unsigned int1:1;
+  unsigned receive:1;
 } api_events_t;
 
 extern api_events_t Api_Events;
+
+extern api_events_t Api_EventsRegistered;
 
 extern void Api_ExecuteNativeMethod(uint8_t id, uint8_t bytecode);
 

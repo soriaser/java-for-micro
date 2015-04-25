@@ -7,6 +7,7 @@
 #include "MemoryManagement.h"
 #include "Stack.h"
 #include "APIPortRegistry.h"
+#include "APISerialPort.h"
 
 #define JVM_RETURN_INFO_STACK_SIZE 3
 
@@ -51,6 +52,9 @@ void Jvm_Main(void)
         if (1 == Api_Events.int0) {
             Api_Events.int0 = 0;
             event = API_PORTREGISTRY_EVENT_INT0;
+        } else if (1 == Api_Events.receive) {
+            Api_Events.receive = 0;
+            event = API_SERIALPORT_EVENT_RECEIVED_BYTE;
         }
 
         if (event > 0x00) {

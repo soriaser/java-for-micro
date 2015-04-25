@@ -18,9 +18,15 @@ void interrupt ISR(void)
 {
     if (RCIF) {
         SerialPort_ISR();
+
+        if (1 == Api_EventsRegistered.receive) {
+            Api_Events.receive = 1;
+        }
+
+        RCIF = 0;
     }
 
-    if (INT0IF) {
+    if ((INT0IF) && (1 == Api_EventsRegistered.int0)) {
         INT0IF = 0;
         Api_Events.int0 = 1;
     }

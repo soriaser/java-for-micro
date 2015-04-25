@@ -35,7 +35,7 @@ void SerialPort_ISR(void)
     }
 
     // Store value
-    SerialPort_CurrentValueRx = RCREG;
+    SerialPort_CurrentValueRx = SerialPort_Receive();
 
     if (LOADER_ENABLED == Loader_IsLoaderEnabled) {
         // Disable Serial Port Interrupt
@@ -43,8 +43,6 @@ void SerialPort_ISR(void)
         // Mark as pending
         Loader_State = LOADER_STATE_PENDING;
     }
-
-    RCIF = 0;
 }
 
 void SerialPort_Send(uint8_t byte)

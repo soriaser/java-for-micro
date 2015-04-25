@@ -12,12 +12,11 @@
 extern "C" {
 #endif
 
-extern uint8_t Api_SerialPort_Events;
+#define API_SERIALPORT_EVENT_RECEIVED_BYTE 0x04
 
-#define Api_SerialPort_SetEvent(event) (Api_SerialPort_Events = event)
+extern uint8_t API_SerialPort_Receive(void);
 
-void API_SerialPort_Send(uint8_t *data, uint16_t offset, uint16_t size);
-
+extern void API_SerialPort_Send(uint8_t *data, uint16_t offset, uint16_t size);
 
 #ifdef	__cplusplus
 }

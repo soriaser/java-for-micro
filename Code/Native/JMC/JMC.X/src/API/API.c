@@ -16,11 +16,12 @@
 #define API_ID_PORTREGISTRY_SETPINTOONE         0x06
 #define API_ID_PORTREGISTRY_SETINPUTPIN         0x07
 #define API_ID_PORTREGISTRY_SETOUTPUTPIN        0x08
-#define API_ID_SERIALPORT_ENABLE                0x09
-#define API_ID_SERIALPORT_DISABLE               0x0A
-#define API_ID_SERIALPORT_SEND                  0x0B
+#define API_ID_SERIALPORT_RECEIVE               0x09
+#define API_ID_SERIALPORT_SEND                  0x0A
 
 api_events_t Api_Events;
+
+api_events_t Api_EventsRegistered;
 
 void Api_Execute_SerialPort_Send()
 {
@@ -57,11 +58,8 @@ void Api_ExecuteNativeMethod(uint8_t id, uint8_t bytecode)
         case API_ID_PORTREGISTRY_SETOUTPUTPIN:
             Api_PortRegistry_SetOutputPin(Stack_Pop());
             break;
-        case API_ID_SERIALPORT_ENABLE:
-            Api_SerialPort_SetEvent(0x01);
-            break;
-        case API_ID_SERIALPORT_DISABLE:
-            Api_SerialPort_SetEvent(0x00);
+        case API_ID_SERIALPORT_RECEIVE:
+            Stack_Push(API_SerialPort_Receive());
             break;
         case API_ID_SERIALPORT_SEND:
             Api_Execute_SerialPort_Send();

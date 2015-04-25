@@ -20,6 +20,8 @@ extern uint8_t SerialPort_CurrentValueRx;
 
 #define SerialPort_EnableRx() (RCIE = 1)
 
+#define SerialPort_Receive() (RCREG)
+
 extern void SerialPort_Init(void);
 
 extern void SerialPort_ISR(void);

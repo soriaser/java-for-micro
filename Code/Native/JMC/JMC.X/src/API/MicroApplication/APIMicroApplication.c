@@ -1,16 +1,20 @@
 #include "Common.h"
+#include "API.h"
 #include "APIMicroApplication.h"
 #include "APIPortRegistry.h"
-
-uint8_t Api_MicroApplication_Events = 0x00;
+#include "APISerialPort.h"
 
 void Api_MicroApplication_SetEvent(uint8_t event)
 {
-    if (API_PORTREGISTRY_EVENT_INT0 & event) {
-        Port_SetEvent(API_PORTREGISTRY_EVENT_INT0);
+    switch (event) {
+        case API_PORTREGISTRY_EVENT_INT0:
+            Port_SetEvent(API_PORTREGISTRY_EVENT_INT0);
+            Api_EventsRegistered.int0 = 1;
+            break;
+        case API_SERIALPORT_EVENT_RECEIVED_BYTE:
+            Api_EventsRegistered.receive = 1;
+            break;
     }
-
-    Api_MicroApplication_Events |= event;
 }
 
 /*
