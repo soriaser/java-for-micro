@@ -18,15 +18,19 @@ public class JCMethod extends JCFieldOrMethod {
                 if (type.equals("(S)V")) {
                     this.id = JCReducedConstants.ID_METHOD_MICROAPPLICATION_SLEEP;
                 }
+            } else if (name.equals(JCReducedConstants.API_METHOD_SETEVENT)) {
+                if (type.equals("(B)V")) {
+                    this.id = JCReducedConstants.ID_METHOD_MICROAPPLICATION_SETEVENT;
+                }
+            } else if (name.equals(JCReducedConstants.API_METHOD_CLEAREVENT)) {
+                if (type.equals("(B)V")) {
+                    this.id = JCReducedConstants.ID_METHOD_MICROAPPLICATION_CLEAREVENT;
+                }
             }
         } else if (namePackage.equals(JCReducedConstants.API_PACKAGE_PORT)) {
             if (name.equals(JCReducedConstants.API_METHOD_GETPORT)) {
                 if (type.equals("(B)Ljava/mc/ports/Port;")) {
                     this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_GETPORT;
-                }
-            } else if (name.equals(JCReducedConstants.API_METHOD_SETEVENT)) {
-                if (type.equals("(B)V")) {
-                    this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_SETEVENT;
                 }
             } else if (name.equals(JCReducedConstants.API_METHOD_SETPINTOZERO)) {
                 if (type.equals("(B)V")) {
@@ -46,11 +50,7 @@ public class JCMethod extends JCFieldOrMethod {
                 }
             }
         } else if (namePackage.equals(JCReducedConstants.API_PACKAGE_SERIALPORT)) {
-            if (name.equals(JCReducedConstants.API_METHOD_GETSERIALPORT)) {
-                if (type.equals("()Ljava/mc/serialport/SerialPort;")) {
-                    this.id = JCReducedConstants.ID_METHOD_SERIALPORT_GETSERIALPORT;
-                }
-            } else if (name.equals(JCReducedConstants.API_METHOD_SEND)) {
+            if (name.equals(JCReducedConstants.API_METHOD_SEND)) {
                 if (type.equals("([BSS)V")) {
                     this.id = JCReducedConstants.ID_METHOD_SERIALPORT_SEND;
                 }
