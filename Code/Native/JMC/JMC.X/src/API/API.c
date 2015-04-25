@@ -4,20 +4,21 @@
 #include "APIPortRegistry.h"
 #include "APISerialPort.h"
 #include "Heap.h"
+#include "JVM.h"
 #include "Stack.h"
 
 #define API_ID_MICROAPPLICATION_INIT            0x00
-#define API_ID_MICROAPPLICATION_SLEEP           0x01
-#define API_ID_PORTREGISTRY_GETPORT             0x02
-#define API_ID_PORTREGISTRY_SETEVENT            0x03
+#define API_ID_MICROAPPLICATION_CLEAREVENT      0x01
+#define API_ID_MICROAPPLICATION_SETEVENT        0x02
+#define API_ID_MICROAPPLICATION_SLEEP           0x03
+#define API_ID_PORTREGISTRY_GETPORT             0x04
 #define API_ID_PORTREGISTRY_SETPINTOZERO        0x05
 #define API_ID_PORTREGISTRY_SETPINTOONE         0x06
-#define API_ID_PORTREGISTRY_SETINPUTPIN         0x08
-#define API_ID_PORTREGISTRY_SETOUTPUTPIN        0x09
-#define API_ID_SERIALPORT_GETSERIALPORT         0x0A
-#define API_ID_SERIALPORT_ENABLE                0x0B
-#define API_ID_SERIALPORT_DISABLE               0x0C
-#define API_ID_SERIALPORT_SEND                  0x0D
+#define API_ID_PORTREGISTRY_SETINPUTPIN         0x07
+#define API_ID_PORTREGISTRY_SETOUTPUTPIN        0x08
+#define API_ID_SERIALPORT_ENABLE                0x09
+#define API_ID_SERIALPORT_DISABLE               0x0A
+#define API_ID_SERIALPORT_SEND                  0x0B
 
 api_events_t Api_Events;
 
@@ -30,54 +31,44 @@ void Api_Execute_SerialPort_Send()
     API_SerialPort_Send(buffer, offset, size);
 }
 
-void Api_ExecuteNativeMethod(uint8_t id)
+void Api_ExecuteNativeMethod(uint8_t id, uint8_t bytecode)
 {
     switch (id) {
         case API_ID_MICROAPPLICATION_INIT:
-            Stack_Pop();
             break;
-        case API_ID_MICROAPPLICATION_SLEEP:
-            API_MicroApplication_Sleep(Stack_Pop());
-            Stack_Pop();
+        case API_ID_MICROAPPLICATION_CLEAREVENT:
+            break;
+        case API_ID_MICROAPPLICATION_SETEVENT:
+            Api_MicroApplication_SetEvent(Stack_Pop());
             break;
         case API_ID_PORTREGISTRY_GETPORT:
             Api_PortRegistry_GetPortRegistry(Stack_Pop());
             Stack_Push(0);
             break;
-        case API_ID_PORTREGISTRY_SETEVENT:
-            Api_PortRegistry_SetEvent(Stack_Pop());
-            Stack_Pop();
-            break;
         case API_ID_PORTREGISTRY_SETPINTOZERO:
             Api_PortRegistry_SetPinToZero(Stack_Pop());
-            Stack_Pop();
             break;
         case API_ID_PORTREGISTRY_SETPINTOONE:
             Api_PortRegistry_SetPinToOne(Stack_Pop());
-            Stack_Pop();
             break;
         case API_ID_PORTREGISTRY_SETINPUTPIN:
             Api_PortRegistry_SetInputPin(Stack_Pop());
-            Stack_Pop();
             break;
         case API_ID_PORTREGISTRY_SETOUTPUTPIN:
             Api_PortRegistry_SetOutputPin(Stack_Pop());
-            Stack_Pop();
             break;
         case API_ID_SERIALPORT_ENABLE:
             Api_SerialPort_SetEvent(0x01);
-            Stack_Pop();
             break;
         case API_ID_SERIALPORT_DISABLE:
             Api_SerialPort_SetEvent(0x00);
-            Stack_Pop();
-            break;
-        case API_ID_SERIALPORT_GETSERIALPORT:
-            Stack_Push(0);
             break;
         case API_ID_SERIALPORT_SEND:
             Api_Execute_SerialPort_Send();
-            Stack_Pop();
             break;
+    }
+
+    if (bytecode != BC_INVOKESTATIC) {
+        Stack_Pop();
     }
 }

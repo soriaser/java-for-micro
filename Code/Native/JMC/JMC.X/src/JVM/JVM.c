@@ -6,7 +6,6 @@
 #include "JVMArray.h"
 #include "MemoryManagement.h"
 #include "Stack.h"
-#include "MemoryManagement_PIC18F4520.h"
 #include "APIPortRegistry.h"
 
 #define JVM_RETURN_INFO_STACK_SIZE 3
@@ -21,8 +20,9 @@ void Jvm_Init(void)
 
 void Jvm_Main(void)
 {
-    uint8_t flags = 0;
-    uint8_t index = 0;
+    uint8_t flags = 0x00;
+    uint8_t index = 0x00;
+    uint8_t event = 0x00;
 
     // Before to call main method, it is required to call init
     // init method
@@ -46,14 +46,20 @@ void Jvm_Main(void)
 
     // If no more to execute, endless loop waiting for event
     while (0x01) {
+        event = 0x00;
+
         if (1 == Api_Events.int0) {
             Api_Events.int0 = 0;
-            Jvm_RunMethod(JavaClass_GetOnEventIndex(), Api_PortRegistry_Events);
+            event = API_PORTREGISTRY_EVENT_INT0;
+        }
+
+        if (event > 0x00) {
+            Jvm_RunMethod(JavaClass_GetOnEventIndex(), event);
         }
     }
 }
 
-void Jvm_RunMethod(uint16_t index, uint8_t events)
+void Jvm_RunMethod(uint16_t index, uint8_t event)
 {
     uint8_t increment;
     uint8_t bytecode;
@@ -85,7 +91,7 @@ void Jvm_RunMethod(uint16_t index, uint8_t events)
 
     // If onEvent method is being executed
     if (JavaClass_GetOnEventIndex() == index) {
-        localVariables[1] = events;
+        localVariables[1] = event;
     }
 
     // Loop to execute and process every bytecode
@@ -348,7 +354,8 @@ void Jvm_RunMethod(uint16_t index, uint8_t events)
                     pc = (mm_address_t) (JavaClass_Data + method.code);
                     increment = 0;
                 } else {
-                    Api_ExecuteNativeMethod(nextcodes.byte_l & API_ID_MASK);
+                    Api_ExecuteNativeMethod(nextcodes.byte_l & API_ID_MASK,
+                            bytecode);
                     increment = 3;
                 }
                 break;

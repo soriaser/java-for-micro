@@ -1,7 +1,19 @@
 #include "Common.h"
 #include "APIMicroApplication.h"
-#include "Timer.h"
+#include "APIPortRegistry.h"
 
+uint8_t Api_MicroApplication_Events = 0x00;
+
+void Api_MicroApplication_SetEvent(uint8_t event)
+{
+    if (API_PORTREGISTRY_EVENT_INT0 & event) {
+        Port_SetEvent(API_PORTREGISTRY_EVENT_INT0);
+    }
+
+    Api_MicroApplication_Events |= event;
+}
+
+/*
 void API_MicroApplication_Sleep(uint16_t value)
 {
     uint32_t counter = ((value * 1000) / TIMER0_OVERFLOW_USEC);
@@ -22,3 +34,4 @@ void API_MicroApplication_Sleep(uint16_t value)
         }
     }
 }
+*/

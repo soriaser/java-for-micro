@@ -12,6 +12,10 @@
 extern "C" {
 #endif
 
+extern uint8_t Api_MicroApplication_Events;
+
+extern void Api_MicroApplication_SetEvent(uint8_t event);
+
 extern void API_MicroApplication_Sleep(uint16_t value);
 
 #ifdef	__cplusplus

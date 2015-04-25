@@ -12,6 +12,10 @@
 extern "C" {
 #endif
 
+#if (PLATFORM == PLATFORM_PIC18F4520)
+#include "Port_PIC18F4520.h"
+#endif // PLATFORM
+
 #define API_PORTREGISTRY_EVENT_INT0 0x01
 #define API_PORTREGISTRY_EVENT_INT1 0x02
 
@@ -25,28 +29,19 @@ extern "C" {
 #define API_PORTREGISTRY_SETINPUT   0x03
 
 #define Api_PortRegistry_SetInputPin(pin) \
-    Api_PortRegistry_SetPin((0x01 << pin), API_PORTREGISTRY_SETINPUT)
+    Port_SetPin((0x01 << pin), API_PORTREGISTRY_SETINPUT)
 
 #define Api_PortRegistry_SetOutputPin(pin) \
-    Api_PortRegistry_SetPin((0x01 << pin), API_PORTREGISTRY_SETOUTPUT)
+    Port_SetPin((0x01 << pin), API_PORTREGISTRY_SETOUTPUT)
 
 #define Api_PortRegistry_SetPinToOne(pin) \
-    Api_PortRegistry_SetPin((0x01 << pin), API_PORTREGISTRY_SETONE)
+    Port_SetPin((0x01 << pin), API_PORTREGISTRY_SETONE)
 
 #define Api_PortRegistry_SetPinToZero(pin) \
-    Api_PortRegistry_SetPin((0x01 << pin), API_PORTREGISTRY_SETZERO)
+    Port_SetPin((0x01 << pin), API_PORTREGISTRY_SETZERO)
 
-extern uint8_t *Api_PortRegistry_Port;
-
-extern uint8_t *Api_PortRegistry_Tris;
-
-extern uint8_t Api_PortRegistry_Events;
-
-extern void Api_PortRegistry_GetPortRegistry(uint8_t port);
-
-extern void Api_PortRegistry_SetEvent(uint8_t event);
-
-extern void Api_PortRegistry_SetPin(uint8_t pin, uint8_t type);
+#define Api_PortRegistry_GetPortRegistry(port) \
+    Port_GetPortRegistry(port)
 
 #ifdef	__cplusplus
 }
