@@ -4,12 +4,11 @@ public interface JCReducedConstants {
 
     public static final String API_METHOD_CLEAREVENT = "ClearEvent";
     public static final String API_METHOD_CLINIT = "<clinit>";
-    public static final String API_METHOD_DISABLE = "Disable";
-    public static final String API_METHOD_ENABLE = "Enable";
     public static final String API_METHOD_GETPORT = "getPort";
     public static final String API_METHOD_INIT = "<init>";
     public static final String API_METHOD_MAIN = "main";
     public static final String API_METHOD_ONEVENT = "onEvent";
+    public static final String API_METHOD_RECEIVE = "Receive";
     public static final String API_METHOD_SEND = "Send";
     public static final String API_METHOD_SETEVENT = "SetEvent";
     public static final String API_METHOD_SETINPUTPIN = "setInputPin";
@@ -33,7 +32,6 @@ public interface JCReducedConstants {
     public static final byte ID_METHOD_PORTREGISTRY_SETPINTOONE         = (byte) (BIT_MASK_NATIVE | 0x06);
     public static final byte ID_METHOD_PORTREGISTRY_SETINPUTPIN         = (byte) (BIT_MASK_NATIVE | 0x07);
     public static final byte ID_METHOD_PORTREGISTRY_SETOUTPUTPIN        = (byte) (BIT_MASK_NATIVE | 0x08);
-    public static final byte ID_METHOD_SERIALPORT_ENABLE                = (byte) (BIT_MASK_NATIVE | 0x09);
-    public static final byte ID_METHOD_SERIALPORT_DISABLE               = (byte) (BIT_MASK_NATIVE | 0x0A);
-    public static final byte ID_METHOD_SERIALPORT_SEND                  = (byte) (BIT_MASK_NATIVE | 0x0B);
+    public static final byte ID_METHOD_SERIALPORT_RECEIVE               = (byte) (BIT_MASK_NATIVE | 0x09);
+    public static final byte ID_METHOD_SERIALPORT_SEND                  = (byte) (BIT_MASK_NATIVE | 0x0A);
 }

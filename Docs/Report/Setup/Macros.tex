@@ -1,0 +1,49 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%                                                                  %%%%% 
+%%%%%%    Fitxer de macros d'usuari per la memoria TFC/PFC de l'EETAC   %%%%% 
+%%%%%%                                                                  %%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                         %%
+%%         Author: Xavier Prats i Menendez (xavier.prats@upc.edu)          %% 
+%%                  Technical University of Catalonia (UPC)                %%
+%%                                                                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%      This work is licensed under the Creative Commons  Attribution-     %%
+%%   -Noncommercial-Share Alike 3.0 Spain License. To view a copy of this  %% 
+%%    license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/es/  %%
+%%    or send a letter to Creative Commons, 171 Second Street, Suite 300,  %%
+%%                  San Francisco,California, 94105, USA.                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Versio 1.5 - Juliol 2010                                                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%% Xevi's macros for vectors and matrices:
+
+%\newcommand{\ve}[1]{\mbox{\boldmath$#1$}}          
+\newcommand{\ve}[1]{\vec{#1}}  
+\newcommand{\ma}[1]{\mbox{\boldmath$\mathcal{#1}$}}
+
+%%% Xevi's macros for brackets:
+\newcommand{\lp}{\left(}
+\newcommand{\lc}{\left[}
+\newcommand{\lcl}{\left\{}
+\newcommand{\rp}{\right)}
+\newcommand{\rc}{\right]}
+\newcommand{\rcl}{\right\}}
+
+%%% Xevi's new environment for HIPOTESIS
+\newcounter{num_hyp}
+\newenvironment{hyp}[2]{
+        \refstepcounter{num_hyp}
+        \vspace*{2.5ex}
+        {\noindent \bf\sffamily HYPOTHESIS #1 : #2} \\
+        \sl
+}
+        {\vspace{1ex}
+}
+
+\newcommand{\SUMhyp}[2]{
+ {\sffamily HYPOTHESIS #1 : #2} 
+}

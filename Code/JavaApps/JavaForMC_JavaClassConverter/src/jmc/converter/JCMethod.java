@@ -50,7 +50,11 @@ public class JCMethod extends JCFieldOrMethod {
                 }
             }
         } else if (namePackage.equals(JCReducedConstants.API_PACKAGE_SERIALPORT)) {
-            if (name.equals(JCReducedConstants.API_METHOD_SEND)) {
+            if (name.equals(JCReducedConstants.API_METHOD_RECEIVE)) {
+                if (type.equals("()B")) {
+                    this.id = JCReducedConstants.ID_METHOD_SERIALPORT_RECEIVE;
+                }
+            } else if (name.equals(JCReducedConstants.API_METHOD_SEND)) {
                 if (type.equals("([BSS)V")) {
                     this.id = JCReducedConstants.ID_METHOD_SERIALPORT_SEND;
                 }

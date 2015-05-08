@@ -1,0 +1,266 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%                                                                  %%%%% 
+%%%%%%          Maqueta de memòria TFC/PFC de l'EETAC                   %%%%% 
+%%%%%%                                                                  %%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                         %%
+%%          Autor: Xavier Prats i Menéndez (xavier.prats@upc.edu)          %% 
+%%                  Technical University of Catalonia (UPC)                %%
+%%                                                                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%      This work is licensed under the Creative Commons  Attribution-     %%
+%%   -Noncommercial-Share Alike 3.0 Spain License. To view a copy of this  %% 
+%%    license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/es/  %%
+%%    or send a letter to Creative Commons, 171 Second Street, Suite 300,  %%
+%%                  San Francisco,California, 94105, USA.                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Versió 2.1 - Juliol 2012                                                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% NOTA: els seguents packages son necessaris per utilitzar la
+%%%       plantilla seguent:
+%%%       ifthen,calc,helvet,pslatex,fancyhdr,nextpage,subfigure,tocloft,graphicx,url
+
+%%% NOTA: Es possible que algunes distribuicions Linux o Windows.
+%%%       no portin aquests paquets instal·lats per defecte.
+%%%       En aquest cas els haureu d'instal·lar manualment.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1- INICIALITZACIÓ
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[catalan,final]{setup/eetac_tfc_pfc}
+%% * OPCIONS A CONFIGURAR al \documentclass
+%%    - Estat del document: final o draft
+%%      NOTA: Draft no inserta les figures i marca només l'espai que
+%%      ocupen. També s'indica quan el text sobrepassa els marges.
+%%      Draft és molt útil per compilar ràpid el document si no és important
+%%      en aquell moment visualitzar les figures.
+%%    - Idioma PRINCIPAL del document: catalan, spanish, english, french...
+
+\usepackage[english,catalan]{babel}
+%%  * INCLOURE TOTS ELS IDIOMES QUE S'USARAN EN EL DOCUMENT
+%%    NOTA: per canviar d'idioma al mig del document usar:
+%%          \selectlanguage{nom_idioma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2- CÀRREGA DE PAQUETS ADICIONALS (OPCIONALS)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% NOTA: Es possible que algunes distribuicions Linux o Windows.
+%%%       no portin aquests paquets instal·lats per defecte.
+%%%       En aquest cas els haureu d'instal·lar manualment.
+
+%% El paquet inputenc és extramadament útil. 
+%% Permet escriure els accents directament amb l'editor de texte
+%% sense haver de fer coses com per exemple: introducci\'o
+%% Heu d'especificar la codificació de caracters que utilitzeu pel
+%% vostre fitxer (en aquest exemple utf8)
+\usepackage[utf8]{inputenc}
+
+%% Símbols matemàtics de la American Mathematical Society
+\usepackage{amssymb,amsmath, amsfonts}  
+
+%% El paquet array proporciona eines molt útils a l'hora de fer 
+%% equacions amb matrius
+\usepackage{array}             
+
+%% Paquet que permet fer taules fusionant cel·les de files consecutives
+\usepackage{multirow}          
+
+%% Paquet molt útil en cas de tenir taules molt llargues que 
+%   ocupin vàries pàgines
+\usepackage{longtable}          
+
+%% Permet canviar els colors del document
+%\usepackage{color,colortbl}
+
+%% Paquet molt útil que permet activar links en el PDF final.
+%% * NO OBLIDAR DE CONFIGURAR els quatre primer camps!
+\usepackage[
+  pdfauthor={Nom Cognoms autor},            % Configurar adientment
+  %pdftitle={Treball Fi de Carrera - autor}, % Configurar adientment
+  %pdfsubject={Titol del TFC aqui},          % Configurar adientment
+  % Modificació respecte a la versió 2.1 - Iván Padilla Montero - Juliol 2014
+  pdftitle={Treball Fi de Grau - autor}, % Configurar adientment
+  pdfsubject={Titol del TFG aqui},          % Configurar adientment  
+  pdfkeywords={keyword1, keyword2, ...},    % Configurar adientment
+  pdfcreator={EETAC-UPC}, 
+  pdfproducer={LaTeX, dvipdf},
+  pdfdisplaydoctitle=true, plainpages=false, linktocpage=true,         
+  colorlinks=true, linkcolor=blue,citecolor=blue,urlcolor=blue,
+  hyperfootnotes=false, pagebackref=true, pdfpagelabels=true,
+  pdfpagemode=UseOutlines,
+]{hyperref} 
+
+%% NOTA IMPORTANT!:
+%% Per tal que hyperef funcioni correctament amb els capitols o seccions no
+%% numerats (\chapter*{}), com per exemple introducció, conclusions i bibliografia
+%% cal posar les dues comandes seguents ABANS del \chapter*{} en questió
+%\cleardoublepage
+%\phantomsection
+
+%% Permet trencar links URL. 
+%% Atenció! afegir aquest paquet DESPRES del hyperref!!
+\usepackage{breakurl} 
+
+%% Permet arranjar matricialment multiples figures
+%% NOTA: afegir aquest paquet DESPRES del hyperref!!
+%%       Si no es desitja utilitzar aquest paquet, comentar la linia seguent
+%%       i anar TAMBE al fitxer de classe (eetac_tfc_pfc.cls) per substituir: 
+%%       \RequirePackage[subfigure]{tocloft}  per  \RequirePackage{tocloft}
+\usepackage{subfigmat}         
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 3- DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Configuració de les dades i variables boleanes rellevants del document:
+\input{setup/dades.tex}  
+
+%%% Configuració de MACROS o ENTORNS (opcionals) definides per l'usuari:
+\input{setup/user-macros.tex}  
+
+%%% Configuració manual de les regles d'hyphenation:
+\input{setup/hyphenation.tex}  
+
+\begin{document}
+
+%% Seleccionar l'idioma principal del document:
+\selectlanguage{catalan}
+
+\beforepreface  
+
+%% RESUM i OVERVIEW
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% NOTA: les longituds passades com a parametres d'entrada  s'han
+%        d'ajustar manualment fins que el requadre del resum/overview
+%        ocupi tota la pàgina. 
+
+%%% Resum en català (o castellà)
+\selectlanguage{catalan}   
+\begin{resum}{10cm}
+  Aquest document conté les pautes del format de presentació del treball o projecte de final de carrera. En tot cas, cal tenir en compte el que estableix la ``Normativa del treball de fi de carrera (TFC) i del projecte de fi de carrera (PFC)'' aprovada per la Comissió Permanent de l'EETAC, especialment l'apartat ``Requeriments del treball''.
+\end{resum}
+
+%%% Resum en anglès
+\selectlanguage{english}   
+\begin{overview}{11cm}
+  This document contains guidelines for writing your TFC/PFC. However, you should also take into consideration the standards established in the document Normativa del treball de fi de carrera (TFC) i del projecte de fi de carrera (PFC), paying special attention to the section Requeriments del treball, as this document has been approved by the EETAC Standing Committee
+\end{overview}
+
+% Tornar a l'idioma principal del document
+\selectlanguage{catalan}  
+
+%NOTA: En cas d'utilitzar l'espanyol com a idioma principal del document, el
+%      latex anomena les taules com a 'Cuadros'. Si es desitja canviar aquesta
+%      nomenclatura i utilitzar la paraula 'Tabla' descomentar les línies següents:
+%\def\listtablename{Índice de tablas}
+%\def\tablename{Tabla}%
+
+
+
+% Amb aqueta comanda indiquem que ja s'han inclòs tots els apartats del prefaci del 
+% projecte o podem començar a incloure els capitols de la memòria
+\afterpreface
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% INCLOURE A PARTIR D'AQUÍ TOTS ELS CAPÍTOLS DE LA MEMORIA   %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% NOTA: recordar que la introducció i les conclusions són capítols NO
+%       enumerats, per tant s'ha d'usar \chapter*
+
+% NOTA: és aconsellable incloure els capítols de la memòria en fitxers 
+%       separats utlitzant la comanda \input  Per exemple:
+%       \input{capitol1}  
+%       que farà que s'inclogui el fitxer capitol1.tex
+
+% NOTA: Si es vol incloure agraïments i/o glosari, fer-ho utilitzant 
+% \chapter*{} i incloure'ls abans la introducció
+
+\input{chapters/introduccio}
+\input{chapters/compaginacio}
+\input{chapters/organitzacio}
+\input{chapters/conclusions}
+
+
+%%%  BIBLIOGRAFIA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Per la bibliografia hi ha 2 opcions: generarla amb la utilitat BibTeX 
+%%%                                      o fer-la ''a ma''
+%%% NOTA: podeu trobar facilment informació sobre BibTeX a:
+%%%  http://www.ctan.org/tex-archive/biblio/bibtex/contrib/doc/
+
+%%% OPCIO 1: BibTeX (recomanat) -> descomentar les comandes seguents:
+%\bibliographystyle{unsrt}   %% Estil de bibliografia EETAC
+%\cleardoublepage
+%\phantomsection
+% Indicar aqui el(s) fitxer(s) que contenen la bibliografia
+%\bibliography{fitxer1,...,fitxerN}  
+%\pdfbookmark{Bibliografia}{sec:biblio}
+
+%%% OPCIO 2: bibliografia manual
+%%%
+%%% L'argument d'entrada es el numero de referencies que s'inclouen
+\cleardoublepage
+\phantomsection
+\begin{thebibliography}{2}
+
+%% Llibres:  Autor/s (cognoms i inicials dels noms), títol del llibre (en cursiva), editor, ciutat i any de publicació. Quan es cita el capítol d'un llibre s'ha d'indicar el títol del capítol (entre cometes), el títol del llibre (en cursiva) i els números de pàgines amb la primera i la darrera incloses.
+
+%%  Exemple de capitol en llibre
+\bibitem{prova1} 
+Cognoms-autor, Inicial-nom.
+``Títol del capítol''. {\it Títol del llibre}.
+(Editor. Ciutat. Any publicació): pagina1--paginaN.
+
+%%  Exemple de d'article en revista
+\bibitem{prova2} 
+Cognoms-autor, Inicial-nom.
+``Títol de l'article''. {\it Títol de la revista}.
+{\bf volum}(numero),
+pagina1--paginaN. (Any publicació) 
+
+\end{thebibliography}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%                           APENDIXS                         %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{empty}  % no tocar
+
+%% Descomentar una de les dues línies següents, en funció de:
+%%  a) els apendixs s'encuadernaran apart (amb portada) 
+%%  b) els apendixs s'enquadernen amb el mateix projecte (sense portada). 
+%% Recordeu que si tot el document (amb apèndixs) excedeix les 100 pagines 
+%% s'ha d'enquadernar a part
+%\appendix\ambportada
+\appendix\senseportada
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% INCLOURE A PARTIR D'AQUI TOTS ELS CAPÍTOLS DELS APENDIXS   %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{appendix/prova}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% i  aixo es tot! ;)
+\end{document}
+
+
+
+
+
+

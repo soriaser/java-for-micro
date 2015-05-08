@@ -1,0 +1,122 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%                                                                  %%%%% 
+%%%%%%       Fitxer de dades per la memoria TFC/PFC de l'EETAC          %%%%% 
+%%%%%%                                                                  %%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                         %%
+%%          Autor: Xavier Prats i Menendez (xavier.prats@upc.edu)          %% 
+%%                  Technical University of Catalonia (UPC)                %%
+%%                                                                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%      This work is licensed under the Creative Commons  Attribution-     %%
+%%   -Noncommercial-Share Alike 3.0 Spain License. To view a copy of this  %% 
+%%    license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/es/  %%
+%%    or send a letter to Creative Commons, 171 Second Street, Suite 300,  %%
+%%                  San Francisco,California, 94105, USA.                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Versio 2.1 - Juliol 2012                                                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  VARIABLES A CONFIGURAR                                                  %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% - Projecte o Treball de Fi de Carrera?
+%%      PFC = true   -> Projecte de Fi de Carrera
+%%      PFC = false  -> Treball  de Fi de Carrera
+\setboolean{PFC}{false}
+
+%% - Escollir la titulació
+%\titulacio{Enginyeria Tècnica Aeronàutica, especialitat Aeronavegació}
+%\titulacio{Enginyeria T\`ecnica de Telecomunicaci\'o, especialitat Sistemes de Telecomunicaci\'o}
+%\titulacio{Enginyeria T\`ecnica de Telecomunicaci\'o, especialitat Telem\`atica}
+%\titulacio{Enginyeria de Telecomunicaci\'o (segon cicle)}
+% Modificació respecte a la versió 2.1 - Iván Padilla Montero - Juliol 2014
+%\titulacio{Grau en Enginyeria d'Aeronavegaci\'o}
+%\titulacio{Grau en Enginyeria d'Aeroports}
+%\titulacio{Grau en Enginyeria Telemàtica}
+%\titulacio{Grau en Enginyeria de Sistemes de Telecomunicació}
+\titulacio{Master's degree of Science in Telecommunication Engineering and Management}
+
+
+%% - Configurar els idiomes del document
+%% Si l'idioma PRINCIPAL del document es l'angles, posar aquesta variable a true
+\setboolean{Leng}{true}
+
+%% Escollir entre catala i castella (idioma principial, o nomes pel resum en cas que l'idioma principal sigui anglès)
+%%  catala = true   -> idioma principal (o només resum) en Català
+%%  catala = false  -> idioma principal (o només resum) en Castella
+\setboolean{Lcat}{true}
+
+%% Titol del document en l'idioma principal del document 
+\titol{Study and development of JVM for low and mid range microcontrollers}
+
+%% Titol del document en anglès (Per l'apartat overview)
+\titolE{Study and development of JVM for low and mid range microcontrollers}
+
+%% Titol del document en catala/castella (Per l'apartat resum)
+\titolC{Study and development of JVM for low and mid range microcontrollers}
+
+
+%% - Nombre d'autors del TFC/PFC?
+%%      UNautor = true   Un sol autor
+%%      UNautor = false  Més d'un autor
+\setboolean{UNautor}{true}
+
+%% - Nom del(s) Autor(s) del document
+%% NOTA: En cas de mes d'un autor cal posar la comana \and entre els
+%%        noms dels autors
+\autor{Sergio Soria Nieto}
+
+%% - Nombre de directors del TFC/PFC. Tipicament 1 o 2
+%%      UNdirector = true   Un sol director
+%%      UNdirector = false  Dos directors
+\setboolean{UNdirector}{true}
+
+%% - Nom del Director del TFC/PFC
+\director{Josep Jordana}
+
+%% - Nom del segon director en cas de tenir-lo:
+\segonDirector{Nom2 Cognoms2}
+
+
+%% - Es vol incloure una dedicatoria?
+%%      dedicatoria = true   -> S'afegeix una pagina amb \textDedicatoria
+%%      dedicatoria = true   -> No s'afegeix dedicatoria
+%% NOTA: no confondre dedicatòria amb agraïments. Una dedicatoria sol ser
+%%       un missatge curt d'una o dues frases màxim a la persona, o persones
+%%       a les quals es dedica el treball. 
+%%       Els agraïments poden ser extensos i l'autor pot agraïr a diverses
+%%       persones coses diferents en funció de l'ajuda rebuda, per exemple. 
+%%       Si es volen incloure agraïments, fer-ho al fitxer de la 
+%%       memòria creant una secció nova amb  \chapter*{Agraïments}
+\setboolean{dedicatoria}{true}
+\textDedicatoria{TODO}
+
+%% - Es vol incloure una pagina d'index de figures?
+\setboolean{paginaLOF}{true}  % List of Figures
+
+%% - Es vol incloure una pagina d'index de taules?
+\setboolean{paginaLOT}{true}  % List of Tables 
+
+%% - El projecte ha estat supervisat per alguna persona externa? 
+%%   (NOMES en cas de practiques en empresa)
+%%      supervisor = true    -> Hi ha un supervisor
+%%      supervisor = false   -> No hi ha un supervisor
+\setboolean{supervisor}{true}
+
+%% NOMES en el cas de practiques en empresa (supervisor=true) s'han de 
+%% configurar les variables seguents: 
+
+%% Supervisor del TFC/PFC 
+\supervisor{Josep Jordana}
+
+%% - Es vol incloure el logotip de l'empresa?
+%%   En el cas que el TFC/PFC s'hagi fet en règim d'intercanvi amb una
+%%   empresa, es pot afegir el seu logotip a la cantonada superior
+%%   dreta de la portada. En aquest cas:
+%%   - posar logo=true
+%%   - posar el path de la imatge i l'alçada del logo a \mylogo
+\setboolean{logo}{false}
+\mylogo{./setup/EETAC-positiu-negre}{1.5cm}

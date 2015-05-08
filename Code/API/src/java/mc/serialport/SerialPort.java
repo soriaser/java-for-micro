@@ -9,17 +9,7 @@ package java.mc.serialport;
  */
 public final class SerialPort {
 
-    /**
-     * Disables receive and transmit data functionality.
-     */
-    public native static void Disable();
-
-    /**
-     * Enables receive and transmit data functionality.
-     */
-    public native static void Enable();
-
-    public native static byte GetReceived();
+    public native static byte Receive();
 
     /**
      * Sends some data through SerialPort pins if they are connected.
