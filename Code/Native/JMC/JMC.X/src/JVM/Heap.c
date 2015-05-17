@@ -117,6 +117,10 @@ void Heap_GetBytes(uint16_t bytes)
         EndlessLoop();
     }
 
+    // Keep fields...
+    Mm_CopyRam(((uint8_t *) heap) + bytes, (uint8_t *) heap,
+            (size - bytes + sizeof(heap_t)));
+
     Heap_BaseOffset += bytes;
     heap = (heap_t *) &Heap[Heap_BaseOffset];
     heap->id = HEAP_ID_FREE;
@@ -161,7 +165,7 @@ void *Heap_GetHeaderAddress(uint8_t id)
         EndlessLoop();
     }
 
-    return (void *) (heap + 1);
+    return (void *) heap;
 }
 
 void Heap_SetBytes(uint16_t bytes)
@@ -172,6 +176,10 @@ void Heap_SetBytes(uint16_t bytes)
     if ((Heap_BaseOffset < bytes) || (HEAP_ID_FREE != heap->id)) {
         EndlessLoop();
     }
+
+    // Keep fields...
+    Mm_CopyRam(((uint8_t *) heap) - bytes, (uint8_t *) heap,
+            (size + sizeof(heap_t)));
 
     Heap_BaseOffset -= bytes;
     heap = (heap_t *) &Heap[Heap_BaseOffset];

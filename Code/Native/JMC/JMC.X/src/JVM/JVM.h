@@ -74,7 +74,7 @@ extern void Jvm_Init(void);
 
 extern void Jvm_Main(void);
 
-extern void Jvm_RunMethod(uint16_t index, uint8_t events);
+extern void Jvm_RunMethod(uint16_t index);
 
 #ifdef	__cplusplus
 }

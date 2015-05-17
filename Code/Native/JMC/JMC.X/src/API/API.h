@@ -25,7 +25,7 @@ extern api_events_t Api_Events;
 
 extern api_events_t Api_EventsRegistered;
 
-extern void Api_ExecuteNativeMethod(uint8_t id, uint8_t bytecode);
+extern void Api_ExecuteNativeMethod(uint8_t id);
 
 #ifdef	__cplusplus
 }

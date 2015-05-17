@@ -28,11 +28,11 @@ void Api_Execute_SerialPort_Send()
     uint16_t size = Stack_Pop();
     uint16_t offset = Stack_Pop();
     uint8_t *buffer = (uint8_t *) Heap_GetHeaderAddress(Stack_Pop())
-            + 1;
+            + sizeof(heap_t) + 1;
     API_SerialPort_Send(buffer, offset, size);
 }
 
-void Api_ExecuteNativeMethod(uint8_t id, uint8_t bytecode)
+void Api_ExecuteNativeMethod(uint8_t id)
 {
     switch (id) {
         case API_ID_MICROAPPLICATION_INIT:
@@ -64,9 +64,5 @@ void Api_ExecuteNativeMethod(uint8_t id, uint8_t bytecode)
         case API_ID_SERIALPORT_SEND:
             Api_Execute_SerialPort_Send();
             break;
-    }
-
-    if (bytecode != BC_INVOKESTATIC) {
-        Stack_Pop();
     }
 }

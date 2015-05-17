@@ -13,6 +13,8 @@
 
 stack_slot_t *localVariables;
 
+uint8_t triggeredEvent = 0x00;
+
 void Jvm_Init(void)
 {
     Heap_Init();
@@ -34,7 +36,7 @@ void Jvm_Main(void)
         // Check if method is <init> or <cinit>
         if ((flags & JAVACLASS_METHOD_FLAG_INIT) ||
                 (flags & JAVACLASS_METHOD_FLAG_CLINIT)) {
-            Jvm_RunMethod(index, 0x00);
+            Jvm_RunMethod(index);
 
             if (flags & JAVACLASS_METHOD_FLAG_INIT) {
                 break;
@@ -43,27 +45,27 @@ void Jvm_Main(void)
     }
 
     // Execute Main method
-    Jvm_RunMethod(JavaClass_GetMainMethodIndex(), 0x00);
+    Jvm_RunMethod(JavaClass_GetMainMethodIndex());
 
     // If no more to execute, endless loop waiting for event
     while (0x01) {
-        event = 0x00;
+        triggeredEvent = 0x00;
 
         if (1 == Api_Events.int0) {
             Api_Events.int0 = 0;
-            event = API_PORTREGISTRY_EVENT_INT0;
+            triggeredEvent = API_PORTREGISTRY_EVENT_INT0;
         } else if (1 == Api_Events.receive) {
             Api_Events.receive = 0;
-            event = API_SERIALPORT_EVENT_RECEIVED_BYTE;
+            triggeredEvent = API_SERIALPORT_EVENT_RECEIVED_BYTE;
         }
 
-        if (event > 0x00) {
-            Jvm_RunMethod(JavaClass_GetOnEventIndex(), event);
+        if (triggeredEvent > 0x00) {
+            Jvm_RunMethod(JavaClass_GetOnEventIndex());
         }
     }
 }
 
-void Jvm_RunMethod(uint16_t index, uint8_t event)
+void Jvm_RunMethod(uint16_t index)
 {
     uint8_t increment;
     uint8_t bytecode;
@@ -95,7 +97,7 @@ void Jvm_RunMethod(uint16_t index, uint8_t event)
 
     // If onEvent method is being executed
     if (JavaClass_GetOnEventIndex() == index) {
-        localVariables[1] = event;
+        localVariables[1] = triggeredEvent;
     }
 
     // Loop to execute and process every bytecode
@@ -122,7 +124,7 @@ void Jvm_RunMethod(uint16_t index, uint8_t event)
                 Stack_Push(bytecode - BC_ICONST_0);
                 break;
             case BC_BIPUSH:
-                Stack_Push(nextcodes.byte_l);
+                Stack_Push((0x00FF & nextcodes.byte_l));
                 increment = 2;
                 break;
             case BC_SIPUSH:
@@ -145,7 +147,7 @@ void Jvm_RunMethod(uint16_t index, uint8_t event)
                 aux2 = Stack_Pop();
                 aux1 = Stack_Pop();
                 uint8_t *ptr = (uint8_t *) Heap_GetHeaderAddress(Stack_Pop())
-                        + 1;
+                        + sizeof(heap_t) + 1;
                 ptr[aux1] = aux2;
                 break;
             case BC_DUP:
@@ -306,19 +308,20 @@ void Jvm_RunMethod(uint16_t index, uint8_t event)
                 Stack_Pointer[nextcodes.word] = Stack_Pop();
                 increment = 3;
                 break;
-            /*
             case BC_GETFIELD:
-                Stack_Push(((stack_slot_t *) Heap_GetHeaderAddress(Stack_Pop()))
-                        [2 + nextcodes.word]);
+                aux1 = Stack_Pop();
+                Stack_Push(
+                        ((stack_slot_t *) Heap_GetHeaderAddress(aux1))
+                            [2 + nextcodes.word]);
                 increment = 3;
                 break;
             case BC_PUTFIELD:
                 aux1 = Stack_Pop();
-                ((stack_slot_t *) Heap_GetHeaderAddress(Stack_Pop()))
+                aux2 = Stack_Pop();
+                ((stack_slot_t *) Heap_GetHeaderAddress(aux2))
                         [2 + nextcodes.word] = aux1;
                 increment = 3;
                 break;
-            */
             case BC_INVOKEVIRTUAL:
             case BC_INVOKESPECIAL:
             case BC_INVOKESTATIC:
@@ -358,8 +361,11 @@ void Jvm_RunMethod(uint16_t index, uint8_t event)
                     pc = (mm_address_t) (JavaClass_Data + method.code);
                     increment = 0;
                 } else {
-                    Api_ExecuteNativeMethod(nextcodes.byte_l & API_ID_MASK,
-                            bytecode);
+                    if (BC_INVOKESTATIC != bytecode) {
+                        // Get "this"
+                        Stack_Pop();
+                    }
+                    Api_ExecuteNativeMethod(nextcodes.byte_l & API_ID_MASK);
                     increment = 3;
                 }
                 break;
