@@ -38,10 +38,10 @@ public class JCCode {
             value = Util.revert(value);
         }
 
-        this.appendInt((byte) (value >> 24));
-        this.appendInt((byte) (value >> 16));
-        this.appendInt((byte) (value >>  8));
-        this.appendInt((byte) (value >>  0));        
+        this.appendByte((byte) (value >> 24));
+        this.appendByte((byte) (value >> 16));
+        this.appendByte((byte) (value >>  8));
+        this.appendByte((byte) (value >>  0));        
     }
 
     public byte[] getCode() {
