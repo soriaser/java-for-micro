@@ -59,6 +59,8 @@ extern "C" {
 #define BC_IF_ICMPGT        0xA3
 #define BC_IF_ICMPLE        0xA4
 #define BC_GOTO             0xA7
+#define BC_TABLESWITCH      0xAA
+#define BC_LOOKUPSWITCH     0xAB
 #define BC_IRETURN          0xAC
 #define BC_RETURN           0xB1
 #define BC_GETSTATIC        0xB2

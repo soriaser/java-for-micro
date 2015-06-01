@@ -262,6 +262,60 @@ void Jvm_RunMethod(uint16_t index)
                 pc += nextcodes.word - 3;
                 increment = 3;
                 break;
+            /*
+            case BC_TABLESWITCH:
+                aux1  = (uint16_t)
+                        ((Mm_GetU08((mm_address_t) (pc + 7)) << 8) & 0xFF00);
+                aux1 |= (uint16_t)
+                        (Mm_GetU08((mm_address_t) (pc + 8)) & 0x00FF);
+
+                aux2  = (uint16_t)
+                        ((Mm_GetU08((mm_address_t) (pc + 11)) << 8) & 0xFF00);
+                aux2 |= (uint16_t)
+                        (Mm_GetU08((mm_address_t) (pc + 12)) & 0x00FF);
+
+                nextcodes.word = Stack_Pop();
+
+                if ((nextcodes.word < aux1) || (nextcodes.word > aux2)) {
+                    aux2 = 3;
+                } else {
+                    aux2 = 3 + 12 + ((nextcodes.word - aux1));
+                }
+
+                aux1  = (uint16_t)
+                        ((Mm_GetU08((mm_address_t) (pc + aux2)) << 8) & 0xFF00);
+                aux1 |= (uint16_t)
+                        (Mm_GetU08((mm_address_t) (pc + aux2 + 1)) & 0x00FF);
+                increment = aux1;
+                break;
+            case BC_LOOKUPSWITCH:
+                nextcodes.word = 1 + 4;
+                uint8_t size = Mm_GetU08((mm_address_t) (pc
+                        + nextcodes.word + 3));
+                nextcodes.word += 4;
+
+                aux1 = Stack_Pop();
+
+                while (size) {
+                    if ((Mm_GetU08((mm_address_t) (pc + nextcodes.word + 2)) == aux1 >> 8)
+                            && (Mm_GetU08((mm_address_t) (pc + nextcodes.word + 2)) == aux1 >> 0)) {
+                        nextcodes.word += 4;
+                    }
+                    nextcodes.word += 8;
+                    size--;
+                }
+
+                if (0 == size) {
+                    nextcodes.word = 1;
+                }
+
+                aux1  = (uint16_t)
+                        ((Mm_GetU08((mm_address_t) (pc + nextcodes.word + 2)) << 8) & 0xFF00);
+                aux1 |= (uint16_t)
+                        (Mm_GetU08((mm_address_t) (pc + nextcodes.word + 3)) & 0x00FF);
+                increment = aux1;
+                break;
+            */
             case BC_IRETURN:
                 aux1 = Stack_Pop();
             case BC_RETURN:
