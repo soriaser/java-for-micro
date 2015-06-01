@@ -19,6 +19,12 @@ public class Util {
         return str;
     }
 
+    public static int getInteger(byte b4, byte b3, byte b2, byte b1) {
+        int value = 0x00000001 * b1 + 0x00000100 * b2
+              + 0x00010000 * b3 + 0x01000000 * b4;
+        return value;
+    }
+
     public static short getShort(byte highByte, byte lowByte) {
         return (short) (((highByte & 0xFF) << 8) | (lowByte & 0xFF));
     }
