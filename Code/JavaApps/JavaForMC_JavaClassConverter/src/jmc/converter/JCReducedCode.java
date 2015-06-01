@@ -12,6 +12,7 @@ public class JCReducedCode extends JCCode {
     }
 
     private void translate(byte[] code) {
+        int delta = 0;
         int offset = 0;
         int increment = 0;
         int tmp = 0;
@@ -22,7 +23,7 @@ public class JCReducedCode extends JCCode {
             switch (code[offset]) {
             case Constants.SIPUSH:
                 this.appendByte(code[offset]);
-                this.appendShort(getNextBytes(code, offset, 2));
+                this.appendShort((short) getNextBytes(code, offset, 2));
                 increment = 3;
                 break;
             case Constants.ASTORE:
@@ -46,12 +47,12 @@ public class JCReducedCode extends JCCode {
                 break;
             case (byte) Constants.IFNULL:
                 this.appendByte((byte) Constants.IFEQ);
-                this.appendShort(getNextBytes(code, offset, 2));
+                this.appendShort((short) getNextBytes(code, offset, 2));
                 increment = 3;
                 break;
             case (byte) Constants.IFNONNULL:
                 this.appendByte((byte) Constants.IFNE);
-                this.appendShort(getNextBytes(code, offset, 2));
+                this.appendShort((short) getNextBytes(code, offset, 2));
                 increment = 3;
                 break;
             case (byte) Constants.IINC:
@@ -69,7 +70,7 @@ public class JCReducedCode extends JCCode {
             case (byte) Constants.IF_ICMPLE:
             case (byte) Constants.GOTO:
                 this.appendByte(code[offset]);
-                this.appendShort(getNextBytes(code, offset, 2));
+                this.appendShort((short) getNextBytes(code, offset, 2));
                 increment = 3;
                 break;
             case (byte) Constants.I2B:
@@ -77,6 +78,54 @@ public class JCReducedCode extends JCCode {
             case (byte) Constants.I2S:
                 this.appendByte((byte) Constants.NOP);
                 break;
+            /*
+            case (byte) Constants.TABLESWITCH:
+                offset++;
+                while (offset % 4 != 0) {
+                    this.appendByte((byte) Constants.NOP);
+                    delta++;
+                    offset++;
+                }
+                offset--;
+
+                this.appendByte((byte) Constants.TABLESWITCH);
+                
+                this.appendInt(getNextBytes(code, offset, 4) - delta);
+                offset += 4;
+
+                int low  = getNextBytes(code, offset, 4);
+                int high = getNextBytes(code, offset + 4, 4);
+                offset += 8;
+
+                for (int ii = 0; ii < (high - low + 1); ii++) {
+                    this.appendInt(getNextBytes(code, offset, 4) - delta);
+                    offset += 4;
+                }
+                break;
+            case (byte) Constants.LOOKUPSWITCH:
+                offset++;
+                while (offset % 4 != 0) {
+                    this.appendByte((byte) Constants.NOP);
+                    delta++;
+                    offset++;
+                }
+                offset--;
+
+                this.appendByte((byte) Constants.LOOKUPSWITCH);
+
+                this.appendInt(getNextBytes(code, offset, 4) - delta);
+                offset += 4;
+
+                int count = getNextBytes(code, offset, 4);
+                offset += 4;
+
+                for (int ii = 0; ii < count; ii++) {
+                    offset += 4;
+                    this.appendInt(getNextBytes(code, offset, 4) - delta);
+                    offset += 4;
+                }
+                break;
+            */
             case (byte) Constants.INVOKESPECIAL:
             case (byte) Constants.INVOKEVIRTUAL:
             case (byte) Constants.INVOKESTATIC:
@@ -120,9 +169,18 @@ public class JCReducedCode extends JCCode {
         }
     }
 
-    private short getNextBytes(byte[] code, int offset, int bytes) {
+    private int getNextBytes(byte[] code, int offset, int bytes) {
         offset++;
-        return Util.getShort(code[offset], code[offset + 1]);
+
+        switch (bytes) {
+        case 2:
+            return Util.getShort(code[offset], code[offset + 1]);
+        case 4:
+            return Util.getInteger(code[offset], code[offset + 1],
+                code[offset + 2], code[offset + 3]);
+        }
+
+        return 0;
     }
 
 }
