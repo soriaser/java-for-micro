@@ -12,6 +12,8 @@
 extern "C" {
 #endif
 
+extern void Port_ClearEvent(uint8_t event);
+
 extern void Port_GetPortRegistry(uint8_t port);
 
 extern void Port_SetEvent(uint8_t event);

@@ -6,6 +6,19 @@ uint8_t *PortRegistry_Port = NULL;
 
 uint8_t *PortRegistry_Tris = NULL;
 
+void Port_ClearEvent(uint8_t event)
+{
+    switch (event) {
+        case API_PORTREGISTRY_EVENT_INT0:
+            // Set INT0 as input
+            TRISB = 0x00 | (TRISB & 0xFE);
+            // Enable INT0 interruption but interrupt is not thrown.
+            // Interrupt should be checked manually
+            INTCON = 0x00 | (INTCON & 0xEF);
+            break;
+    }
+}
+
 void Port_GetPortRegistry(uint8_t port)
 {
     switch (port) {
@@ -53,6 +66,12 @@ void Port_SetPin(uint8_t pins, uint8_t type)
             break;
         case API_PORTREGISTRY_SETINPUT:
             (*PortRegistry_Tris) |= pins;
+            break;
+        case API_PORTREGISTRY_SETIO:
+            (*PortRegistry_Tris) = pins;
+            break;
+        case API_PORTREGISTRY_SETPINS:
+            (*PortRegistry_Port) = pins;
             break;
     }
 }

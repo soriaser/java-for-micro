@@ -415,11 +415,8 @@ void Jvm_RunMethod(uint16_t index)
                     pc = (mm_address_t) (JavaClass_Data + method.code);
                     increment = 0;
                 } else {
-                    if (BC_INVOKESTATIC != bytecode) {
-                        // Get "this"
-                        Stack_Pop();
-                    }
-                    Api_ExecuteNativeMethod(nextcodes.byte_l & API_ID_MASK);
+                    Api_ExecuteNativeMethod(nextcodes.byte_l & API_ID_MASK,
+                            (uint8_t) (bytecode == BC_INVOKESTATIC));
                     increment = 3;
                 }
                 break;

@@ -64,8 +64,9 @@ void Heap_GarbageCollect(void)
 
         if (HEAP_ID_FREE != heap->id) {
             if ((!Stack_IsIdInUse(heap->id)) && (!Heap_IsIdInUse(heap->id))) {
-                Mm_CopyRam((Heap + Heap_BaseOffset + size),
-                        (Heap + Heap_BaseOffset), (offset - Heap_BaseOffset));
+                Mm_CopyRam((uint8_t *) (Heap + Heap_BaseOffset + size),
+                        (uint8_t *) (Heap + Heap_BaseOffset),
+                        (offset - Heap_BaseOffset));
 
                 heap = (heap_t *) &Heap[Heap_BaseOffset];
                 heap->size += size;
@@ -85,7 +86,7 @@ uint8_t Heap_Alloc(uint8_t ref, uint16_t size)
     uint8_t id = Heap_GetNewId();
 
     if (!Heap_AllocInternal(id, ref, size)) {
-        Heap_GarbageCollect();
+        //Heap_GarbageCollect();
 
         if (!Heap_AllocInternal(id, ref, size)) {
             EndlessLoop();
@@ -105,6 +106,8 @@ void Heap_Init(void)
 void Heap_GetBytes(uint16_t bytes)
 {
     heap_t *heap = (heap_t *) &Heap[Heap_BaseOffset];
+    uint8_t *heap_data = (uint8_t *) (((uint8_t *) &Heap[Heap_BaseOffset]) + sizeof(heap_t));
+    uint8_t *heap_data_new = 0x00;
     uint16_t size = heap->size;
 
     if (size < bytes) {
@@ -117,12 +120,14 @@ void Heap_GetBytes(uint16_t bytes)
         EndlessLoop();
     }
 
-    // Keep fields...
-    Mm_CopyRam(((uint8_t *) heap) + bytes, (uint8_t *) heap,
-            (size - bytes + sizeof(heap_t)));
-
     Heap_BaseOffset += bytes;
     heap = (heap_t *) &Heap[Heap_BaseOffset];
+    heap_data_new = (uint8_t *) (((uint8_t *) &Heap[Heap_BaseOffset]) + sizeof(heap_t));
+
+    // Keep fields...
+    Mm_CopyRam(heap_data_new, heap_data,
+            (size - bytes - sizeof(heap_t)));
+
     heap->id = HEAP_ID_FREE;
     heap->size = size - bytes;
 }
@@ -171,18 +176,20 @@ void *Heap_GetHeaderAddress(uint8_t id)
 void Heap_SetBytes(uint16_t bytes)
 {
     heap_t *heap = (heap_t *) &Heap[Heap_BaseOffset];
+    uint8_t *heap_data = (uint8_t *) (((uint8_t *) &Heap[Heap_BaseOffset]) + sizeof(heap_t));
+    uint8_t *heap_data_new = 0x00;
     uint16_t size = heap->size;
 
     if ((Heap_BaseOffset < bytes) || (HEAP_ID_FREE != heap->id)) {
         EndlessLoop();
     }
 
-    // Keep fields...
-    Mm_CopyRam(((uint8_t *) heap) - bytes, (uint8_t *) heap,
-            (size + sizeof(heap_t)));
-
     Heap_BaseOffset -= bytes;
     heap = (heap_t *) &Heap[Heap_BaseOffset];
+    heap_data_new = (uint8_t *) (((uint8_t *) &Heap[Heap_BaseOffset]) + sizeof(heap_t));
+
+        // Keep fields...
+    Mm_CopyRam(heap_data_new, heap_data, size);
     heap->id = HEAP_ID_FREE;
     heap->size = size + bytes;
 }

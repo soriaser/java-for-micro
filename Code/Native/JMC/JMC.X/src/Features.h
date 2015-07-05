@@ -20,7 +20,7 @@ extern "C" {
 #define FCPU    (FOSC / 4)
 
 #define JAVACLASS_MAX_SIZE_DATA     1024
-#define JVM_MAX_SIZE_HEAP           1024
+#define JVM_MAX_SIZE_HEAP           100
 
 #define PLATFORM_PIC18F4520 0
 #define PLATFORM PLATFORM_PIC18F4520

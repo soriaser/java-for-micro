@@ -27,12 +27,20 @@ extern "C" {
 #define API_PORTREGISTRY_SETONE     0x01
 #define API_PORTREGISTRY_SETOUTPUT  0x02
 #define API_PORTREGISTRY_SETINPUT   0x03
+#define API_PORTREGISTRY_SETIO      0x04
+#define API_PORTREGISTRY_SETPINS    0x05
 
 #define Api_PortRegistry_SetInputPin(pin) \
     Port_SetPin((0x01 << pin), API_PORTREGISTRY_SETINPUT)
 
+#define Api_PortRegistry_SetIO(pins) \
+    Port_SetPin(pins, API_PORTREGISTRY_SETIO)
+
 #define Api_PortRegistry_SetOutputPin(pin) \
     Port_SetPin((0x01 << pin), API_PORTREGISTRY_SETOUTPUT)
+
+#define Api_PortRegistry_SetPins(pins) \
+    Port_SetPin(pins, API_PORTREGISTRY_SETPINS)
 
 #define Api_PortRegistry_SetPinToOne(pin) \
     Port_SetPin((0x01 << pin), API_PORTREGISTRY_SETONE)

@@ -1,13 +1,43 @@
 #include "Common.h"
 #include "MemoryManagement.h"
 
-void Mm_CopyRam(uint8_t *destination, uint8_t *source, uint16_t size)
+void Mm_CopyRamHigherAddress(uint8_t *destination, uint8_t *source,
+        uint16_t size)
 {
     destination += size;
     source += size;
 
-    while (size--) {
-        *(--destination) = *(--source);
+    while (size > 0) {
+        *(destination) = *(source);
+
+        destination--;
+        source--;
+
+        size--;
+    }
+
+    *(destination) = *(source);
+}
+
+void Mm_CopyRamLowerAddress(uint8_t *destination, uint8_t *source,
+        uint16_t size)
+{
+    while (size > 0) {
+        *(destination) = *(source);
+
+        destination++;
+        source++;
+
+        size--;
+    }
+}
+
+void Mm_CopyRam(uint8_t *destination, uint8_t *source, uint16_t size)
+{
+    if (destination > source) {
+        Mm_CopyRamHigherAddress(destination, source, size);
+    } else {
+        Mm_CopyRamLowerAddress(destination, source, size);
     }
 }
 

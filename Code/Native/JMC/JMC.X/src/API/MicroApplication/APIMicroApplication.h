@@ -12,6 +12,8 @@
 extern "C" {
 #endif
 
+extern void Api_MicroApplication_ClearEvent(uint8_t event);
+
 extern void Api_MicroApplication_SetEvent(uint8_t event);
 
 extern void API_MicroApplication_Sleep(uint16_t value);
