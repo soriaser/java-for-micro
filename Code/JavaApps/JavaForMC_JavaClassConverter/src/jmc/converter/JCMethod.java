@@ -48,6 +48,14 @@ public class JCMethod extends JCFieldOrMethod {
                 if (type.equals("(B)V")) {
                     this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_SETOUTPUTPIN;
                 }
+            } else if (name.equals(JCReducedConstants.API_METHOD_SETIO)) {
+                if (type.equals("(B)V")) {
+                    this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_SETIO;
+                }
+            } else if (name.equals(JCReducedConstants.API_METHOD_SETPINS)) {
+                if (type.equals("(B)V")) {
+                    this.id = JCReducedConstants.ID_METHOD_PORTREGISTRY_SETPINS;
+                }
             }
         } else if (namePackage.equals(JCReducedConstants.API_PACKAGE_SERIALPORT)) {
             if (name.equals(JCReducedConstants.API_METHOD_RECEIVE)) {
@@ -57,6 +65,28 @@ public class JCMethod extends JCFieldOrMethod {
             } else if (name.equals(JCReducedConstants.API_METHOD_SEND)) {
                 if (type.equals("([BSS)V")) {
                     this.id = JCReducedConstants.ID_METHOD_SERIALPORT_SEND;
+                }
+            }
+        } else if (namePackage.equals(JCReducedConstants.API_PACKAGE_TIMER)) {
+            if (name.equals(JCReducedConstants.API_METHOD_GETTIMER)) {
+                if (type.equals("(B)Ljava/mc/timers/Timer;")) {
+                    this.id = JCReducedConstants.ID_METHOD_TIMER_GETTIMER;
+                }
+            } else if (name.equals(JCReducedConstants.API_METHOD_CLEAR)) {
+                if (type.equals("()V")) {
+                    this.id = JCReducedConstants.ID_METHOD_TIMER_CLEAR;
+                }
+            } else if (name.equals(JCReducedConstants.API_METHOD_ENABLE)) {
+                if (type.equals("()V")) {
+                    this.id = JCReducedConstants.ID_METHOD_TIMER_ENABLE;
+                }
+            } else if (name.equals(JCReducedConstants.API_METHOD_DISABLE)) {
+                if (type.equals("()V")) {
+                    this.id = JCReducedConstants.ID_METHOD_TIMER_DISABLE;
+                }
+            } else if (name.equals(JCReducedConstants.API_METHOD_READ)) {
+                if (type.equals("()S")) {
+                    this.id = JCReducedConstants.ID_METHOD_TIMER_READ;
                 }
             }
         }
