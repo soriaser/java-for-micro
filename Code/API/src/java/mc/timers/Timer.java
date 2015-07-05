@@ -10,8 +10,6 @@ public final class Timer {
 
     public native void enable();
 
-    public native void read();
-
-    public native void write(short timer);
+    public native short read();
 
 }
