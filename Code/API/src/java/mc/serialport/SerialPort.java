@@ -9,6 +9,13 @@ package java.mc.serialport;
  */
 public final class SerialPort {
 
+    /**
+     * If byte has been received through Serial Port, it returns the
+     * value of it. If byte has not been received,, it returns current value
+     * in receive register of microcontroller.
+     *
+     * @return Received byte value.
+     */
     public native static byte Receive();
 
     /**
