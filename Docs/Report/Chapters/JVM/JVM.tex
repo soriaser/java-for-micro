@@ -1,0 +1,935 @@
+\chapter{Java Virtual Machine}\label{C:JVM}
+When a java application is compiled and generates an output file for every java object. This file is named class file. The class file contains different required information to be loaded on a JVM\nomenclature{JVM}{Java Virtual Machine}, as defined in \cite{Art:JVMSE7}, and execute the java code. This format was designed for large RAM memory devices and it has been redesign for this project. This new design is based on NanoVM \cite{Art:NanoVM}.
+
+\section{Design}\label{S:JVM:Design}
+The design for a new JVM adapted for $\mu$C\nomenclature{$\mu$C}{Microcontroller} implies several entities external to $\mu$C final code running on it. It requires a full system since java application is created, compiled and loaded in JVM running in $\mu$C. It also requires a design of Java API\nomenclature{API}{Application Programming Interface} responsible to provide access to $\mu$C resources, which are only available if application is programmed in C or assembler.
+
+Diagram of Figure \ref{fig:C:JVM:OverviewDiagram} shows all parts that take part of full process. The main idea is go through those parts explaining in detail every process reflected in this diagram. Dark boxes of this figure indicates the proprietary parts of this project (i.e. fully designed and implemented for this document purpose), while clear boxes are standard or already existing parts that have been used in this project.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{DiagramOverviewDesign.eps}
+\caption{Overview of full design implemented on this project in order to provide and environment to execute java applications in $\mu$Cs}
+\label{fig:C:JVM:OverviewDiagram}
+\end{figure}
+
+Looking at Figure \ref{fig:C:JVM:OverviewDiagram} it is possible to distinguish two paths finishing on $\mu$C. Right path describes the part responsible to create and load the main system that is going to run into $\mu$C. This system or OS\nomenclature{OS}{Operating System} is going to be loaded just one time during life cycle of the device. It is able to load, delete and interpret following Java applications that will be loaded and deleted several times. Then, left path indicates all steps required to load a final Java application that is going be executed on $\mu$C (i.e. interpreted by JVM loaded on the device). It means that, the first and mandatory process is download the OS. After that, it is possible to load or delete the Java applications several times.
+
+\section{API}\label{S:JVM:API}
+One of the objectives of this project is to provide an easy way to create microcontroller applications for those users without high experience in embedded programming or memory management. Java makes it easier, but it is required to provides a mechanism to access, control and use the several resources like Timers, Pins, etc. When a user programs one application in C or assembler, it is easy to modify microcontroller registers for application purposes, then, it is required a Java API\nomenclature{API}{Application Programming Interface} responsible to provide a maximum range of methods to provide, as much as possible, the same possibilities as user programs in C or assembler.
+
+Following API has been design for this project has been divided in following Java packages:
+
+\begin{itemize}
+\item java.mc. Main package for $\mu$C application.
+\item java.mc.ports. Package containing methods to use $\mu$C pin ports.
+\item java.mc.serialport. Package containing methods to use $\mu$C serial port.
+\item java.mc.timers. Package containing methods to use $\mu$C timers.
+\end{itemize}
+
+\subsection{java.mc}\label{SS:JVM:API:Main}
+All standard Java objects inherit the also standard main root class \textit{java.lang.Object}. It means that, when you create an standard Java application, although it is not explicitly written as example \ref{cod:SS:JVM:API:Main:StdJavaMainHeader}, the class is based on or extends from \textit{java.lang.Object}. The application starting point is the main method as shown in example \ref{cod:SS:JVM:API:Main:StdJavaMain}.
+
+\medskip
+\begin{lstlisting}[
+caption={Standard main Java class real header},
+captionpos=b,
+label={cod:SS:JVM:API:Main:StdJavaMainHeader},
+language=Java]
+public class Main extends java.lang.Object
+\end{lstlisting}
+\medskip
+
+\medskip
+\begin{lstlisting}[
+caption={Standard main Java class},
+captionpos=b,
+label={cod:SS:JVM:API:Main:StdJavaMain},
+language=Java]
+package my.java.app;
+
+public class Main {
+
+    public static void main(String[] args) {
+        // code...
+    }
+
+}
+\end{lstlisting}
+\medskip
+
+The package java.mc includes two java classes: \textit{Microapplication} and \textit{MicroapplicationListener}. A Java application developed to run in the system described in this paper should extend \textit{Microapplication} class instead of \textit{java.lang.Object}. It means that it inherits all methods from this class as described in \ref{cod:SS:JVM:API:Main:ClassMicroApp}.
+
+\medskip
+\begin{lstlisting}[
+caption={Microapplication Class},
+captionpos=b,
+label={cod:SS:JVM:API:Main:ClassMicroApp},
+language=Java]
+package java.mc;
+
+public abstract class MicroApplication {
+
+    /**
+     * Constructor.
+     */
+    protected MicroApplication() {}
+
+    /**
+     * Starting point of microcontroller application. After
+     * device power up or reset, JVM integrated in device
+     * starts running this method.
+     */
+    public abstract void main();
+
+    /**
+     * Some interruptions can happen during life cycle of the
+     * device, and it is possible that the application
+     * requires to make some process when it this interruption
+     * happens. This interruptions are called events in this
+     * case.
+     * 
+     * SetEvent provides a mechanism to register the
+     * application to one specific event, while ClearEvent
+     * allows to deregister the events. 
+     * 
+     * @param event Event to register. Current possible
+     * options are:
+     * PortConstants.EVENT_INTERRUPT_0,
+     * PortConstants.EVENT_INTERRUPT_1 or
+     * SerialPortConstants.EVENT_RECEIVED_BYTE
+     */
+    public static native void ClearEvent(byte event);
+
+    /**
+     * Some interruptions can happen during life cycle of the
+     * device, and it is possible that the application
+     * requires to make some process when it this interruption
+     * happens. This interruptions are called events in this
+     * case.
+     * 
+     * This method provides a mechanism to register the
+     * application to one specific event. If application
+     * requires to be registered to several events, it has to
+     * be called several times indicating different events.
+     * 
+     * If application is registered to some event, it has to
+     * implement MicroApplicationListener interface because,
+     * if the event happens, onEvent method is called. 
+     * 
+     * @param event Event to register. Current possible
+     * options are:
+     * PortConstants.EVENT_INTERRUPT_0,
+     * PortConstants.EVENT_INTERRUPT_1 or
+     * SerialPortConstants.EVENT_RECEIVED_BYTE
+     */
+    public static native void SetEvent(byte event);
+
+    /**
+     * Sets device in sleep mode during some milliseconds.
+     * During this time, the microcontroller is not executing
+     * any code.
+     *
+     * @param milliseconds Number of millisecons to wait.
+     */
+    public static native void Sleep(short milliseconds);
+
+}
+\end{lstlisting}
+\medskip
+
+\textit{MicroapplicationListener} is a Java interface that includes method \textit{onEvent}. It means that any Java class that implements this interface has to implement this method. \textit{onEvent} method is called every time an event registered by \textit{ClearEvent} is triggered in the device. These events are basically interruption on pins, timers or similar. Code example \ref{cod:SS:JVM:API:Main:ClassReceive} shows an application registered to an event. In this case the event is receive one byte by Serial Port pins.
+
+\medskip
+\begin{lstlisting}[
+caption={Example on microapplication Java applicaiton registered to device event},
+captionpos=b,
+label={cod:SS:JVM:API:Main:ClassReceive},
+language=Java]
+public class Receive extends MicroApplication implements
+MicroApplicationListener {
+
+    public void main() {
+        // Application initially is registered to
+        // EVENT_RECEIVED_BYTE event in order to trigger
+        // onEvent method every time a byte is received
+        // through Serial Port.
+        MicroApplication.SetEvent(
+            SerialPortConstants.EVENT_RECEIVED_BYTE);
+    }
+
+    public void onEvent(byte event) {
+    	if (SerialPortConstants.EVENT_RECEIVED_BYTE
+    	    == event) {
+    		// Code...
+    	}
+    }
+
+}
+\end{lstlisting}
+\medskip
+
+\subsection{java.mc.ports}\label{SS:JVM:API:Ports}
+One of the main resources of a $\mu$C are the ports, where it is possible to control one pin of this port as an input or output, and set its output state to '0' or '1'. For that reason, \textit{Port} Java class has been designed to control those states. In addition, sometimes, $\mu$C provides several integrated ports with their respective pins, then a method to request which port is going to be used has been also added to this Port Java Class as defined in \ref{cod:SS:JVM:API:Ports:Class}. \textit{PortConstants} is an interface to provide several constants available.
+
+\medskip
+\begin{lstlisting}[
+caption={Port Class},
+captionpos=b,
+label={cod:SS:JVM:API:Ports:Class},
+language=Java]
+package java.mc.ports;
+
+public final class Port {
+
+    /**
+     * Some microcontrollers integrates several ports with
+     * their pins to manipulate. This method returns a Port
+     * class representing this device resource but allows to
+     * specify which port is going to be requested.
+     *
+     * @param port Device port to be requested. Options can
+     * be:
+     * PortConstants.PORTA, PortConstants.PORTB or
+     * PortConstants.PORTC.
+     *
+     * @return Port class representing microcontroller
+     * resource.
+     */
+    public native static Port getPort(byte port);
+
+    /**
+     * Sets specific pin of port to logical '0'.
+     *
+     * @param pin Pin to set.
+     */
+    public native void setPinToZero(byte pin);
+
+    /**
+     * Sets specific pin of port to logical '1'.
+     *
+     * @param pin Pin to set.
+     */
+    public native void setPinToOne(byte pin);
+
+    /**
+     * Bit mask indicating pins to set to '1' or '0'.
+     * Bits sets to '1' in bit mask will set real output pin
+     * to '1'.
+     * Bits sets to '0' in bit mask will set real output pin
+     * to '0'.
+     * 
+     * @param pin Byte representing output pins state.
+     * bit X -> pin X.
+     */
+    public native void setPins(byte pins);
+
+    /**
+     * Sets specific pin of port as input.
+     *
+     * @param pin Pin to set.
+     */
+    public native void setInputPin(byte pin);
+
+    /**
+     * Sets specific pin of port as output.
+     *
+     * @param pin Pin to set.
+     */
+    public native void setOutputPin(byte pin);
+
+    /**
+     * Bit mask indicating pins directions.
+     * Bits sets to '1' in bit mask will set pin as input.
+     * Bits sets to '0' in bit mask will set pin as output.
+     * 
+     * @param pin Byte representing pins directions.
+     * bit X -> pin X.
+     */
+    public native void setIO(byte directions);
+
+}
+\end{lstlisting}
+\medskip
+
+\subsection{java.mc.serialport}\label{SS:JVM:API:SerialPort}
+Some microcontrollers allow configuration of some pins in order to receive data by Serial Port connected to some specific pins. This Java package contains a functionality to facilitate how to receive and send data by Serial Port. It has been   pulled out from ports packages \ref{SS:JVM:API:Ports} because it has been considered an specific configuration an functionality of the device even if it is related to ports. Usually, enable and set parameters related to this kind of configuration does not only involve modification of registers related to pins.
+
+\medskip
+\begin{lstlisting}[
+caption={SerialPort Class},
+captionpos=b,
+label={cod:SS:JVM:API:SerialPort:Class},
+language=Java]
+package java.mc.serialport;
+
+public final class SerialPort {
+
+    /**
+     * If byte has been received through Serial Port, it
+     * returns the value of it. If byte has not been received,
+     * it returns current value in receive register of
+     * microcontroller.
+     *
+     * @return Received byte value.
+     */
+    public native static byte Receive();
+
+    /**
+     * Sends some data through SerialPort pins if they are
+     * connected.
+     *
+     * @param data Bytes to send.
+     * @param offset Offset in byte array where data to
+     * send starts.
+     * @param length Number of bytes to send.
+     */
+    public native static void Send(byte[] data, short offset,
+      short length);
+
+}
+\end{lstlisting}
+\medskip
+
+\textit{SerialPortConstants} is an interface to provide several constants related to Serial Port. Currently, only constant EVENT\_ RECEIVED\_ BYTE exists and it is an event id to use by \textit{SetEvent()} in order to through \textit{onEvent()} method if byte is received through Serial Port. Method \textit{send()} does not require any registration.
+
+\subsection{java.mc.timers}\label{SS:JVM:API:Timers}
+One of the common resources of a $\mu$C are the timers. They can be used for several purposes. Microcontrollers usually can provide several Timers, every one with their possible configurations an characteristics. This Java package tries to provide an API to control them. Currently, configuration is very limited because it has been only defined an developed for this project purposes, but it is enough to show that it is possible to create a Java class that represents every resource available in $\mu$Cs and manage them.
+
+\medskip
+\begin{lstlisting}[
+caption={Timer Class},
+captionpos=b,
+label={cod:SS:JVM:API:Timers:Class},
+language=Java]
+package java.mc.timers;
+
+public final class Timer {
+
+    /**
+     * Some microcontrollers integrates several timers to configurate.
+     * This method returns a Timer class representing this device resource
+     * but allows to specify which timer is going to be requested.
+     *
+     * @param timer Device timer to be requested. Options can
+     * be:
+     * TimerConstants.TIMER0 and TimerConstants.TIMER1.
+     *
+     * @return Timer class representing microcontroller
+     * resource.
+     */
+    public native static Timer getTimer(byte timer);
+
+    /**
+     * Clears current value of timer counter register.
+     */
+    public native void clear();
+
+    /**
+     * Disables timer.
+     */
+    public native void disable();
+
+    /**
+     * Enables timer.
+     */
+    public native void enable();
+
+    /**
+     * Reads current value of timer register.
+     */
+    public native short read();
+
+}
+\end{lstlisting}
+\medskip
+
+\textit{TimertConstants} is an interface to provide several constants related to Tiemr. Currently, only constants related to interruptions are not available but it can be considered for future API extensions.
+
+\section{JCR}\label{S:JVM:JCR}
+Any standard Java application, once it is compiled, a new file \textit{*.class} is created. The structure of this file is explained in detail in chapter 4 of \cite{Art:JVMSE7}. The standard format is designed for high RAM capacity devices, while $\mu$Cs are very limited in that sense. Then, JCR\nomenclature{JCR}{Java Class Reduced} format has been designed for this project and for Java microcontroller purposes. This new structure is based on NanoVM \cite{Art:NanoVM} defined structure.
+
+This chapter defines its own set of data types representing JCR file data. types \textit{uint8\_ t} and \textit{uint16\_ t} represent an unsigned eight- or sixteen-bits, respectively. Symbol * represents a pointer of this type. JCR file consists of following structure:
+
+\medskip
+\begin{lstlisting}[
+caption={JCR file Structure},
+captionpos=b,
+label={cod:S:JVM:JCR:Struct},
+language=C]
+typedef struct jcr {
+  javaclass_header header;
+  javaclass_class* classes;
+  uint8_t* constants;
+  javaclass_method_header* methods;
+  uint8_t* bytecodes;
+} javaclass_class_t;
+\end{lstlisting}
+\medskip
+
+\medskip
+\begin{description}
+\item[javaclass\_ header] \hfill \\
+\colorbox{yellow}{TODO}
+\item[javaclass\_ class] \hfill \\
+\colorbox{yellow}{TODO}
+\item[constants] \hfill \\
+\colorbox{yellow}{TODO}
+\item[javaclass\_ method\_ header] \hfill \\
+\colorbox{yellow}{TODO}
+\item[bytecodes] \hfill \\
+\colorbox{yellow}{TODO}
+\end{description}
+\medskip
+
+\medskip
+\begin{lstlisting}[
+caption={JCR file Structure},
+captionpos=b,
+label={cod:S:JVM:JCR:Struct},
+language=C]
+typedef struct javaclass_header {
+  uint8_t  version;
+  uint8_t  methods;
+  uint16_t constants;
+  uint8_t  classes;
+  uint8_t  fields;
+  uint8_t  main;
+  uint16_t offsetClasses;
+  uint16_t offsetConstants;
+  uint16_t offsetStrings;
+  uint16_t offsetMethods;
+} javaclass_header_t;
+\end{lstlisting}
+\medskip
+
+\begin{description}
+\item[version] \hfill \\
+\colorbox{yellow}{TODO}
+\item[methods] \hfill \\
+\colorbox{yellow}{TODO}
+\item[constants] \hfill \\
+\colorbox{yellow}{TODO}
+\item[classes] \hfill \\
+\colorbox{yellow}{TODO}
+\item[fields] \hfill \\
+\colorbox{yellow}{TODO}
+\item[main] \hfill \\
+\colorbox{yellow}{TODO}
+\item[offsetClasses] \hfill \\
+\colorbox{yellow}{TODO}
+\item[offsetConstants] \hfill \\
+\colorbox{yellow}{TODO}
+\item[offsetStrings] \hfill \\
+\colorbox{yellow}{TODO}
+\item[offsetMethods] \hfill \\
+\colorbox{yellow}{TODO}
+\end{description}
+
+\begin{lstlisting}[
+caption={JCR file Structure},
+captionpos=b,
+label={cod:S:JVM:JCR:Struct},
+language=C]
+typedef struct javaclass_class {
+  uint8_t super;
+  uint8_t fields;
+} javaclass_class_t;
+\end{lstlisting}
+
+\begin{description}
+\item[super] \hfill \\
+\colorbox{yellow}{TODO}
+\item[fields] \hfill \\
+\colorbox{yellow}{TODO}
+\end{description}
+
+\begin{lstlisting}[
+caption={JCR file Structure},
+captionpos=b,
+label={cod:S:JVM:JCR:Struct},
+language=C]
+typedef struct javaclass_method_header {
+  uint16_t code;
+  uint16_t id;
+  uint8_t  flags;
+  uint8_t  arguments;
+  uint8_t  locals;
+  uint8_t  stack;
+} javaclass_method_header_t;
+\end{lstlisting}
+
+\begin{description}
+\item[code] \hfill \\
+\colorbox{yellow}{TODO}
+\item[id] \hfill \\
+\colorbox{yellow}{TODO}
+\item[flags] \hfill \\
+\colorbox{yellow}{TODO}
+\item[arguments] \hfill \\
+\colorbox{yellow}{TODO}
+\item[locals] \hfill \\
+\colorbox{yellow}{TODO}
+\item[stack] \hfill \\
+\colorbox{yellow}{TODO}
+\end{description}
+
+In order to perform the translation process from class file format to JCR file format (taking into account following subsections), a Java application has been designed and developed during this project to perform this translation. It is called JCConverter and received as input a *.class file and creates a *.jcr file by using format described above.
+
+\subsection{Bytecode}\label{SS:JVM:JCR:Bytecode}
+\cite{Art:JVMSE7} describes a list of instructions interpretable by standard JVM. Every instruction is represented using just one byte and the combination of them make up a bytecode. For instance, taking into account Java code example of \ref{cod:S:JVM:JCR:JavaCodeExample}.
+
+\medskip
+\begin{lstlisting}[
+caption={Simple Java Code},
+captionpos=b,
+label={cod:S:JVM:JCR:JavaCodeExample},
+language=Java]
+void method() {
+    int value_1 = 0;
+    int value_2 = 2;
+
+    int sum = (value_1 + value_2);
+}
+\end{lstlisting}
+\medskip
+
+It can be translated to following bytecode:
+
+\medskip
+\begin{lstlisting}
+03 3C 05 3D 1B 1C 60 3E B1
+\end{lstlisting}
+\medskip
+
+Where every byte represents an instruction as following:
+
+\medskip
+\begin{lstlisting}
+instruction [03] - 0000: iconst_0
+instruction [3C] - 0001: istore_1
+instruction [05] - 0002: iconst_2
+instruction [3D] - 0003: istore_2
+instruction [1B] - 0004: iload_1
+instruction [1C] - 0005: iload_2
+instruction [60] - 0006: iadd
+instruction [3E] - 0007: istore_3
+instruction [B1] - 0008: return
+\end{lstlisting}
+\medskip
+
+Bytecodes usually represents actions to perform in Java operand stack. Standard JVM uses a stack where every cell or slot can be filled by an integer value. Usual devices use 32 or 64 bits in order to represent an integer, but the JVM designed for this project uses an stack where every slot can be filled by 16 bits. It restricts the available Java primitive types that can be used when Java application for microcontroller is being written. Current design only allows byte, short, boolean and char primitive types. This limitation also exists in most of JVM designed for 8- or 16- bit devices as defined in \ref{L:Why:Current}.
+
+Behind of limitation described in previous paragraph, this project is a proof of concept and on the main goals is to show that it is possible to create an easy way to develop applications for $\mu$C by using higher level programming languages like Java, but full design of JVM is out of this scope, then, full support of bytecodes is not currently implemented. Maybe it is a good work for future projects, where could it be interesting to analyze the best way to optimize a JVM or how fully integrate and Standard Java into small devices. \ref{Appx:Bytecodes} described all bytescodes supported by JVM designed for this project.
+
+Due to this bytecode restriction, JCR translation also implies some bytecode translation as described in Table \ref{tab:SS:JVM:JCR:TransBytecodes}
+
+\begin{table}[!htb]
+\centering
+\begin{tabular}{|c|c|}
+\hline 
+Class Bytecode & JCR Bytecode \\ 
+\hline 
+ASTORE & ISTORE \\ 
+\hline 
+ASTORE\_ X & ISTORE\_ X \\ 
+\hline 
+ALOAD\_ X & ILOAD\_ X \\ 
+\hline 
+ACONST\_ NULL & ICONST\_ 0 \\ 
+\hline 
+IFNULL & IFEQ \\ 
+\hline 
+IFNONULL & IFNE \\ 
+\hline 
+I2B & NOP \\ 
+\hline 
+I2C & NOP \\ 
+\hline 
+I2S & NOP \\ 
+\hline 
+\end{tabular}
+\caption{Translated bytecodes}
+\label{tab:SS:JVM:JCR:TransBytecodes}
+\end{table}
+
+\subsection{Calling Native API methods}\label{SS:JVM:JCR:NativeAPI}
+Java allows us a mechanism to develop an object oriented application an run it on a microcontroller, but how can it get access to device resources? It is done through API described in \ref{S:JVM:API}.
+
+Java method can be called by other ones or maybe it could require some call to any function in code that make it up. This calling process is usually translated to standard bytecodes INVOKEVIRTUAL, INVOKESPECIAL or INVOKESTATIC followed by two bytes indicating method identifier as shown in example \ref={cod:S:JVM:JCR:JavaCodeExampleMethod}, where \textit{main()} code is translated to bytecode:
+
+\medskip
+\begin{lstlisting}
+B8 00 0F B1
+
+instruction [B8] - 0000: invokestatic 15
+instruction [B1] - 0003: return
+\end{lstlisting}
+\medskip
+
+Where, 0x000F is the identifier of \textit{method()} in class file.
+
+\medskip
+\begin{lstlisting}[
+caption={Simple Java Code showing call to one method},
+captionpos=b,
+label={cod:S:JVM:JCR:JavaCodeExampleMethod},
+language=Java]
+public static void main() {
+    method();
+}
+
+public static void method() {
+    int value_1 = 0;
+    int value_2 = 2;
+
+    int sum = (value_1 + value_2);
+}
+\end{lstlisting}
+\medskip
+
+In case that application requires to use API method, the same mechanism is used but identifier of method is marked as native by setting to '1' the MSB\nomenclature{MSB}{Most Significant Bit} of method identifier. Then, when JVM is going to interpret INVOKEVIRTUAL, INVOKESPECIAL or INVOKESTATIC bytecode, it checks if first bit of method identifier indicates native or not (is set to '1' or '0'). If method identifier indicates native, then it check corresponding identifier of native method and execute corresponding function implemented in native or C, in this case. It allows to get access to $\mu$C resources by using Java API.
+
+\begin{table}[!htb]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline 
+Bit 8 & Bit 7 & Bit 6 & Bit 5 & Bit 4 & Bit 3 & Bit 2 & Bit 1 & Meaning \\ 
+\hline 
+0 & - & - & - & - & - & - & - & Native \\ 
+\hline 
+1 & - & - & - & - & - & - & - & No Native \\ 
+\hline 
+- & X & X & X & X & X & X & X & Identifier \\ 
+\hline 
+\end{tabular}
+\caption{Method identifier bit interpretation of first byte}
+\label{tab:SS:JVM:JCR:TransBytecodes}
+\end{table}
+
+\begin{table}[!htb]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline 
+Bit 8 & Bit 7 & Bit 6 & Bit 5 & Bit 4 & Bit 3 & Bit 2 & Bit 1 & Meaning \\ 
+\hline 
+X & X & X & X & X & X & X & X & Identifier \\ 
+\hline 
+\end{tabular}
+\caption{Method identifier bit interpretation of second byte}
+\label{tab:SS:JVM:JCR:TransBytecodes}
+\end{table}
+
+\section{Loader}\label{S:JVM:Loader}
+Once Java standard application is compiled, generating a \textit{*.class} file, and it is translated to JCR file using JCConverter tool described in \ref{SS:JVM:JCR:JCConverter}, generating \textit{*.jcr} file, then, full content of this final generated file has to be loaded into JVM in order to start bytecode execution.
+
+Previosuly loaded OS contains both JVM and Loader modules as described in \ref{fig:C:JVM:OverviewDiagram}. Loader is the responsible to manage the loading of external compiled Java applications to the microcontroller OS. If no Java application is loaded and running on $\mu$C, Loader is waiting to receive a Load command through Serial Port as defined in \ref{tab:SS:JVM:Loader:Commands}.
+
+Current unique interface supported to download or remove applications is Serial Port. Some commands and a protocol have been designed for this communication between external entity and Loader listening on $\mu$C.
+
+\subsection{Commands}\label{SS:JVM:Loader:Commands}
+Loader is able to process some commands formatted as following structure:
+
+\begin{center}
+INS (1 byte) + Data Length (2 bytes) + Data (N Bytes)
+\end{center}
+
+Currently supported commands defined for this project are defined in table \ref{tab:SS:JVM:Loader:Commands}.
+
+\begin{table}[!htb]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Command & INS & Length & Data \\ 
+\hline 
+Load & 0x10 & Variable & JCR file content \\ 
+\hline 
+Delete & 0x11 & 0x0000 & Empty \\ 
+\hline 
+\end{tabular}
+\caption{Loader supported commands}
+\label{tab:SS:JVM:Loader:Commands}
+\end{table}
+
+\begin{description}
+\item[Load] \hfill \\
+When OS is running but no Java application is loaded on it, Loader and JVM is waiting that some application is loaded on it in order to start the execution. It is possible to say that OS is empty or waiting. It is in this moment when this command can be sent to Loader in order to load a new Java application. If application is already loaded on JVM, this command is rejected.
+\item[Delete] \hfill \\
+Once some application is loaded on $\mu$C, it can be removed in order to load a new one by using this command.
+\end{description}
+
+\subsection{Protocol}\label{SS:JVM:Loader:Protocol}
+In order to send commands specified in \ref{SS:JVM:Loader:Commands}. Following protocol has been designed for this project purposes.
+
+SCB\nomenclature{SCB}{Start Communication Byte} is the first byte sent to the Loader in order to notify that command is going to be sent. SCB is always 0x00. If Loader is not ready to receive commands a 0x91 is returned as a response, otherwise ACK\nomenclature{ACK}{Acknowledgement} with value 0x61 is returned.
+
+After that, INS\nomenclature{INS}{Instruction} indicates the command that is going to be sent. Loader has to answer using the same INS byte to indicate that it support this command. If it does not support this command, 0x92 byte has to be sent as a response.
+Once INS has been successfully received, Loader is ready to receive data length and data bytes. Every length and data byte is answered by an ACK with value 0x61 if it has been processed successfully. Otherwise, 0x93 is returned if some error happens during transmission or processing. Loader must answer 0x80 to the last data byte indicating that command has been successfully processed. The full process to send a command to Loader is shown in \ref{fig:SS:JVM:Loader:ProtocolSeq}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{LoaderProtocol.eps}
+\caption{Specific project designed protocol sequence to send command to Loader}
+\label{fig:SS:JVM:Loader:ProtocolSeq}
+\end{figure}
+
+\subsection{Sender}\label{SS:JVM:Loader:Sender}
+In order to send JCR file generated as described in \ref{S:JVM:JCR} using Protocol described in \ref{SS:JVM:Loader:Protocol}, a standard Java application has been designed an developed.
+
+It uses Java serial port communication library JSSC (Java Simple Serial Connector) v2.6.0 in order to connect to the Loader through Serial Port using parameters described in Table \ref{tab:SS:JVM:Loader:Sender:Params}
+
+\begin{table}[!htb]
+\centering
+\begin{tabular}{|c|c|}
+\hline 
+Parameter & Value \\ 
+\hline 
+BaudRate & 2400 \\ 
+\hline 
+Data Bits & 8 \\ 
+\hline 
+Stop Bits & 1 \\ 
+\hline 
+Parity & 0 \\ 
+\hline 
+RTS & enabled \\ 
+\hline 
+DTS & enabled \\ 
+\hline 
+\end{tabular}
+\caption{Serial Port parameters used by Sender application}
+\label{tab:SS:JVM:Loader:Sender:Params}
+\end{table}
+
+In order to test o simulate it using Proteus, a virtual serial port is created an terminal is used to send and receive data. VSPE (Virtual Serial Port Emulator) and RealTerm have been used for this purposes, respectively.
+
+\section{JVM}\label{S:JVM:RunTime}
+Once application is loaded, then it is time to start JVM execution. JCR data downloaded is interpreted as described in \ref{S:JVM:JCR} and \textit{main()} bytecode is started to be executed as described in \ref{fig:JVMRunTime}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{JVMRunTime.eps}
+\caption{JVM basic Run Time}
+\label{fig:JVMRunTime}
+\end{figure}
+
+Standard JVM uses several Run Time areas during execution of some program as defined in \cite{Art:JVMSE7}. The JVM designed for this project contains 4 areas: Global, Heap, Local and Stack. All of them are dynamically managed by using just one array of unsigned shorts. Figure \ref{fig:JVMRunTimeAreas} shows how these areas are distributed in the unique array used for this purpose.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{JVMRunTimeAreas.eps}
+\caption{JVM basic Run Time areas distribution in memory array}
+\label{fig:JVMRunTimeAreas}
+\end{figure}
+
+\begin{description}
+\item[Global] \hfill \\
+\colorbox{yellow}{TODO}
+\item[Heap] \hfill \\
+\colorbox{yellow}{TODO}
+\item[Local] \hfill \\
+\colorbox{yellow}{TODO}
+\item[Stack] \hfill \\
+\colorbox{yellow}{TODO}
+\end{description}
+
+\subsection{Interruptions}\label{SS:JVM:RunTime:Int}
+Diagram described in \ref{fig:JVMRunTime} only described the main loop of JVM where system is interpreting every bytecode of the code but, as defined in \ref{S:JVM:API:Main}, it is possible to register the application to some possible events. These events are basically interruptions in microcontroller an they have to be handle during execution of JVM if application is registered to them. Diagram shown in \ref{fig:JVMRunTimeWithInt} shows how JVM Run Time manages this interruptions.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{JVMRunTimeWithInt.eps}
+\caption{JVM basic Run Time}
+\label{fig:JVMRunTimeWithInt}
+\end{figure}
+
+When Java application calls to the native method \textit{setEvent()}, it is basically managing required microcontroller registers to wait until interruption. When this event or interruption happens, \textit{onEvent()} method is suddenly called, stopping current processing of the application and returning to the same point once \textit{onEvent()} method has been fully processed. For instance, example \ref{cod:SS:JVM:RunTime:Int:JavaCodeExample} shows a code where \textit{main()} (starting application method) only registers the application to EVENT\_ INTERRUPT\_ 0 (INT0 interruption in case of PIC microcontroller) and, after that, it enters in a endless loop. During this final \textit{while}, JVM is executing bytecodes corresponding to the loop itself but it is already registered to the interruption. If INT0 interruption occurs, as $\mu$C is register to it, native handler interruption method is thrown in the middle of JVM execution (\textit{interrupt} in C code). Then a flag indicating that interruption was thrown but not processed is stored and $\mu$C interruption cleared. Then, JVM continues processing bytecode that it was processing before interruption and, at the en of bytecode processing, the previous set flag is checked. As flag is set to '1', then, current status is stored and \textit{onEvent()} is called. After execute this method, JVM returns to previous state and continue processing, i.e. final \textit{while} loop.
+
+\medskip
+\begin{lstlisting}[
+caption={Interruption Java Code example},
+captionpos=b,
+label={cod:SS:JVM:RunTime:Int:JavaCodeExample},
+language=Java]
+public class Main extends MicroApplication implements
+  MicroApplicationListener {
+
+    public void main() {
+        SetEvent(PortConstants.EVENT_INTERRUPT_0);
+
+        while (true) {}
+    }
+
+    public void onEvent(byte event) {
+        if (PortConstants.EVENT_INTERRUPT_0 == event) {
+            // Code...
+        }
+    }
+
+}
+\end{lstlisting}
+\medskip
+
+It means that, when interruption really occurs, it is not exactly triggered at the moment, it is processed with a little bit delay. JVM is, in general terms, a very big loop processing every bytecode. At the end of every loop check if some registered interruption is pending to be processed by \textit{onEvent()} method. It is important to keep in mind that, if application is registered to some event and \textit{main()} code has been fully processed, JVM still keep in a internal loop waiting to any interruption. It means that example \ref{cod:SS:JVM:RunTime:Int:JavaCodeExample} is the same as example \ref{cod:SS:JVM:RunTime:Int:JavaCodeExampleNoLoop}.
+
+\medskip
+\begin{lstlisting}[
+caption={Interruption Java Code example without final loop},
+captionpos=b,
+label={cod:SS:JVM:RunTime:Int:JavaCodeExampleNoLoop},
+language=Java]
+public class Main extends MicroApplication implements
+  MicroApplicationListener {
+
+    public void main() {
+        SetEvent(PortConstants.EVENT_INTERRUPT_0);
+    }
+
+    public void onEvent(byte event) {
+        if (PortConstants.EVENT_INTERRUPT_0 == event) {
+            // Code...
+        }
+    }
+
+}
+\end{lstlisting}
+\medskip
+
+\section{Microcontroller adaptation}\label{SS:JVM:Micros}
+Another objective of this project is to create an interopeable JVM that works for every device. It is possible, but some specific parts of every $\mu$C are different and cannot be common. For instance, one microcontroller can have Timer 0 and Timer 1 available but another one maybe just have Timer 0. Then, if a Java application tries to get this resource by using API designed in this project with following code:
+
+\medskip
+\begin{lstlisting}[language=Java]
+Timer timer = Timer.getTimer(TimerConstants.TIMER1);
+\end{lstlisting}
+\medskip
+
+First device must return it, but second one cannot and should return a \textit{null} object.
+
+Other scenarios similar to the one specified above problem can happen internally in OS developed. Basically, the main problems is how to write or read some data or memory from every specific $\mu$C. These mechanisms are specified in datasheet of every microcontroller and the can be totally different every time. For that reason, the OS has been designed containing several interfaces separating common part that can be used for all the devices from device specific component as shown in \ref{fig:uCIntfs}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{MicrocontrollerAdaptation.eps}
+\caption{Internal interface speration in microcontroller system designed for this project}
+\label{fig:uCIntfs}
+\end{figure}
+
+It makes easy to adapt system to several devices. Only $\mu$C specific part has to be developed and integrated on system, but rest o functionality is always the same.
+This design also means that every $\mu$C should have its own compilation, but the same Java application will work on every compilation, i.e. final Java application should never change.
+
+\subsection{Memory Management}\label{SS:JVM:Micros:MM}
+\ref{fig:uCIntfs} shows that exists an internal interface that separated how to read or write data in one microcontroller from main system. It allows that following code get the same value regardless $\mu$C used in this  compilation. Main system should not know how to write or read a byte in memory.
+
+\medskip
+\begin{lstlisting}[
+caption={Reading byte using internal Memory Management interface},
+captionpos=b,
+label={cod:SS:JVM:Micros:MM:Reading},
+language=C]
+uint8_t bytecode = Mm_GetU08(pc);
+\end{lstlisting}
+\medskip
+
+Interface designed for this project only contains methods like described in \ref{cod:SS:JVM:Micros:MM:Interface}. It is applied for signed types or arrays too.
+
+\medskip
+\begin{lstlisting}[
+caption={Internal Memory Management interface},
+captionpos=b,
+label={cod:SS:JVM:Micros:MM:Interface},
+language=C]
+
+/**
+ * Reads a byte from specified address.
+ *
+ * @param address Address where byte to read is placed.
+ * @return Byte read.
+ */
+uint8_t  Mm_GetU08(mm_address_t address);
+
+/**
+ * Reads a unsigned short from specified address.
+ *
+ * @param address Address where bytes to read are placed.
+ * @return Unsigned short read.
+ */
+uint16_t Mm_GetU16(mm_address_t address);
+
+/**
+ * Writes a byte on specified address.
+ *
+ * @param address Address where byte is going to be placed.
+ */
+void Mm_SetU08(mm_address_t address, uint8_t value);
+
+/**
+ * Writes a unsigned short on specified address.
+ *
+ * @param address Address where bytes are going to be placed.
+ */
+void Mm_SetU16(mm_address_t address, uint16_t value);
+\end{lstlisting}
+\medskip
+
+For instance, PIC18F4520 specifies different steps to follow if user needs to write or read from Flash, EEPROM\nomenclature{EEPROM}{Electrically Erasable Programmable Read-Only Memory}or RAM memory. In order to read and write program memory, there are two operations that allow the PIC18F4520 processor to move bytes between the program memory space and the data RAM: Table Read (TBLRD) and Table Write (TBLWT). Table reads and table writes move data between these two memory spaces through an 8-bit register (TABLAT). Table read operations retrieve data from program memory and places it into the data RAM space. Table write operations store data from the data memory space into holding registers in program memory. The procedure to write and read are specified in detail in PIC18F4520 data sheet. The EEADR register is used to address the data EEPROM for read and write operations. The 8-bit range of the register can address a memory range of 256 bytes (0x00 to 0xFF).
+
+%\subsubsection{PIC18F4520}\label{SSS:JVM:Micros:MM:PIC18F4520}
+%\subsubsection{PIC16}\label{SSS:JVM:Micros:MM:PIC16}
+%\subsubsection{AVR}\label{SSS:JVM:Micros:MM:AVR}
+
+Then, every new device added has to develop its following read or write mechanism in  methods described in \ref{cod:SS:JVM:Micros:MM:InterfaceDev}. Then, methods of interface \ref{cod:SS:JVM:Micros:MM:Interface} must call to device interface methods to write and read, getting in that way a division of common and device-specific parts.
+
+\medskip
+\begin{lstlisting}[
+caption={Device Memory Management interface},
+captionpos=b,
+label={cod:SS:JVM:Micros:MM:InterfaceDev},
+language=C]
+/**
+ * Reads bytes starting on specified address of memory.
+ *
+ * @param address Address where first bytes to read is
+ * placed.
+ * @param bytes Number of bytes to read.
+ * @param data Pointer to array where bytes read are
+ * going to be copied.
+ */
+void Mm_ReadNVM(mm_address_t address, mm_address_t bytes, uint8_t *data);
+
+/**
+ * Writes bytes starting on specified address of memory.
+ *
+ * @param address Address where first bytes to write is
+ * going to be placed.
+ * @param bytes Number of bytes to write.
+ * @param data Pointer to byte array containing data to
+ * write.
+ */
+void Mm_WriteNVM(mm_address_t address, mm_address_t bytes, uint8_t *data);
+\end{lstlisting}
+\medskip
+
+\subsection{API}\label{SS:JVM:Micros:API}
+Every microcontroller can have a different resources and a different way to configure it. Taking as an example the Java package related to pin modifications, when Java application call to method \textit{setPinToOne()}, every $\mu$C has its own register for this purposes. Then, as defined in \ref{SS:JVM:JCR:NativeAPI}, when JVM is executing bytecodes indicating that is required to execute the native method \textit{setPinToOne()}, the system will call to Native API interface corresponding method defined as follows:
+
+\medskip
+\begin{lstlisting}[language=C]
+void Api_PortRegistry_SetPinToOne(uint8_t pin);
+\end{lstlisting}
+\medskip
+
+This method belongs to Native API interface as explained in \ref{fig:uCIntfs}. Then, this method should call to device-specific methods which have always the same header but definition will depend on device compilation, doing a separation between resources an API native implementations. It means that, for every new device, following method should be implemented:
+
+\medskip
+\begin{lstlisting}[language=C]
+void Port_SetPin(uint8_t pins, uint8_t type)
+\end{lstlisting}
+\medskip
+
+Because it is going the function called by \textit{Api\_ PortRegistry\_ SetPinToOne} method. It is applied for all native methods implemented in API specified in \ref{S:JVM:API}.
+
+\section{CodeStructure}\label{S:JVM:Code}
+Organization of code is explained in \ref{Appx:CodeStructure}
+
+%\section{Example}\label{S:JVM:Example}

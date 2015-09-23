@@ -1,0 +1,119 @@
+\section{Theoretical Circuit Analysis}\label{S:Res:Analysis}
+As direct resistive sensor-to-microcontroller interfaces are basically based on measuring discharging time of an RC circuits, first step before to analyze complete circuit is to study, remember or briefly introduce its operating principle. The RC output relation between voltage (V) and time (t) is shown in Figure \ref{fig:RCChargeDischargeGraphic}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{RCChargeDischargeGraphic.eps}
+\caption{Charging and discharging output of RC circuit}
+\label{fig:RCChargeDischargeGraphic}
+\end{figure}
+
+Capacitor is initially charged until maximum voltage threshold $V_{TH}$. Until arrive to this state, the graphic can be modeled as \eqref{eq:ChargeRC} and the time to reach maximum threshold value can be determined by \eqref{eq:ChargeTime}.
+
+\begin{equation}
+\label{eq:ChargeRC}
+v_{o}(t) = V_{MAX}(1-e^{-\frac{t}{RC}})
+\end{equation}
+
+\begin{equation}
+\label{eq:ChargeTime}
+T_{c} = RC\ln(\frac{V_{MAX}}{V_{MAX}-V_{TH}})
+\end{equation}
+
+Nevertheless, capacitor discharge and the time required to get $V_{TH}$ can be obtained by \eqref{eq:ChargeRC} and \eqref{eq:DischargeTime}, respectively.
+
+\begin{equation}
+\label{eq:DischargeRC}
+v_{o}(t) = V_{MAX}e^{-\frac{t}{RC}}
+\end{equation}
+
+\begin{equation}
+\label{eq:DischargeTime}
+T_{d} = RC\ln(\frac{V_{MAX}}{V_{TL}})
+\end{equation}
+
+Taken into account the internal resistance of the microcontroller pin $R_{n}$, the $R$ from \eqref{eq:DischargeTime} can be expressed as $R=(R+R_{n})$. If factor $k_{R}$ is defined as $k_{R}=C\ln(\frac{V_{MAX}}{V_{TL}})$, equation \eqref{eq:DischargeTime} can be redefined as \eqref{eq:DischargeTimeRedefined}.
+
+\begin{equation}
+\label{eq:DischargeTimeRedefined}
+N = k_{R}(R+R_{n})
+\end{equation}
+
+Where $N$ can be defined as number of counts obtained by microcontroller during capacitor discharge.
+\medskip
+
+Taking below definitions, we could measure discharging time of an unknown resistor or resistive sensor $R_{x}$ and, knowing $R_{n}$, $C$, $V_{MAX}$ and $V_{TL}$, $R_{x}$ should be also known, but all of those parameters are usually constrained by external factors and it results on imprecise final values. In order to avoid it, some calibration techniques use several reference parameters to alleviate those possible variations. Calibration techniques are basically distinguished between them by number of reference components used to obtain most accuracy and resolution. Figures \ref{fig:MicrocontrollerBasedInterfaceCircuitResistor2Points} and \ref{fig:MicrocontrollerBasedInterfaceCircuitResistor3Points} represents two and three points calibration circuit based on resistive sensor, respectively. Both systems are analized during this document. Single-point calibration technique is out of scope of this report.
+\medskip
+
+Two-point calibration technique only uses two calibrator resistors $R_{c1}$ and $R_{c2}$ and three measurements are performed:
+\medskip
+
+\begin{itemize}
+\item Number of counts $N_{x}$ during capacitor $C$ discharge by unknown resistor or sensor $R_{x}$.
+\item Number of counts $N_{c1}$ during capacitor $C$ discharge by calibration resistor $R_{c1}$.
+\item Number of counts $N_{c2}$ during capacitor $C$ discharge by calibration resistor $R_{c2}$.
+\end{itemize}
+\medskip
+
+Then $R_{x}$ can be computed by \eqref{eq:RxTwoPoints}.
+
+\begin{equation}
+\label{eq:RxTwoPoints}
+R_{x} = \frac{N_{x}-N_{c1}}{N_{c2}-N_{c1}}(R_{c2}-R_{c1})+R_{c1}
+\end{equation}
+
+Three-point calibration technique may be considered a variation of two-point calibration technique where $R_{c1}$ is considered zero and an additional resistor $R_{o}$ is placed to improve exponential discharge of capacitor. Then $R_{x}$ can be computed by \eqref{eq:RxThreePoints}.
+
+\begin{equation}
+\label{eq:RxThreePoints}
+R_{x} = \frac{N_{x}-N_{c1}}{N_{c2}-N_{c1}}R_{c2}
+\end{equation}
+
+\begin{figure}[h]
+\centering
+	\begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{MicrocontrollerBasedInterfaceCircuitResistor2Points.eps}
+	\caption{Two calibration points}
+	\label{fig:MicrocontrollerBasedInterfaceCircuitResistor2Points}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{MicrocontrollerBasedInterfaceCircuitResistor3Points.eps}
+	\caption{Three calibration points}
+	\label{fig:MicrocontrollerBasedInterfaceCircuitResistor3Points}
+	\end{subfigure}
+\caption{Microcontroller-based interface circuit for a resistive sensors}
+\end{figure}
+
+Figures \ref{fig:Calibration2Points} and \ref{fig:Calibration3Points} show how nonlinearities are correct depending on two points or three points calibration technique, respectively, applying circuits from Figures \ref{fig:MicrocontrollerBasedInterfaceCircuitResistor2Points} and \ref{fig:MicrocontrollerBasedInterfaceCircuitResistor3Points}.
+\medskip
+
+\begin{figure}[!ht]
+\centering
+	\begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{Calibration2Points.eps}
+	\caption{Two calibration points}
+	\label{fig:Calibration2Points}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{Calibration3Points.eps}
+	\caption{Three calibration points}
+	\label{fig:Calibration3Points}
+	\end{subfigure}
+\caption{Calibration technique applied to}
+\end{figure}
+
+But, all of previous analysis does not take into account internal resistance from microcontroller $R_{n}$. \cite{AccuracyAndResolution} analyses equations \eqref{eq:RxTwoPoints} and \eqref{eq:RxThreePoints} including internal microcontroller resistance resulting equation \eqref{eq:RxInternalRes}.
+
+\begin{equation}
+\label{eq:RxInternalRes}
+R_{x}^{*} = \frac{R_{c2}-R_{c1}}{R_{c2}-R_{c1}+\Delta R_{12}}R_{x}+\frac{R_{c1}\Delta R_{13}-R_{c2}\Delta R_{23}}{R_{c2}-R_{c1}+\Delta R_{12}}
+\end{equation}
+
+Where $\Delta R_{23}=R_{n,2}-R_{n,3}$, $\Delta R_{13}=R_{n,1}-R_{n,3}$ and $\Delta R_{12}=R_{n,1}-R_{n,2}$. Then, relative error can be expressed as equation \eqref{eq:RelativeErrorInternalRes}.
+
+\begin{equation}
+\label{eq:RelativeErrorInternalRes}
+e_{r} = \left|\frac{-\Delta R_{12}}{R_{c2}-R_{c1}+\Delta R_{12}}+\frac{1}{R_{x}}\frac{R_{c1}\Delta R_{13}-R_{c2}\Delta R_{23}}{R_{c2}-R_{c1}+\Delta R_{12}}\right|
+\end{equation}

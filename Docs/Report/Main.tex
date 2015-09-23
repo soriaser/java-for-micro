@@ -1,0 +1,303 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%                                                                  %%%%% 
+%%%%%%          Maqueta de memòria TFC/PFC de l'EETAC                   %%%%% 
+%%%%%%                                                                  %%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                         %%
+%%          Autor: Xavier Prats i Menéndez (xavier.prats@upc.edu)          %% 
+%%                  Technical University of Catalonia (UPC)                %%
+%%                                                                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%      This work is licensed under the Creative Commons  Attribution-     %%
+%%   -Noncommercial-Share Alike 3.0 Spain License. To view a copy of this  %% 
+%%    license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/es/  %%
+%%    or send a letter to Creative Commons, 171 Second Street, Suite 300,  %%
+%%                  San Francisco,California, 94105, USA.                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Versió 2.1 - Juliol 2012                                                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% NOTA: els seguents packages son necessaris per utilitzar la
+%%%       plantilla seguent:
+%%%       ifthen,calc,helvet,pslatex,fancyhdr,nextpage,subfigure,tocloft,graphicx,url
+
+%%% NOTA: Es possible que algunes distribuicions Linux o Windows.
+%%%       no portin aquests paquets instal·lats per defecte.
+%%%       En aquest cas els haureu d'instal·lar manualment.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1- INICIALITZACIÓ
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[english,final]{EETAC_TFC}
+%% * OPCIONS A CONFIGURAR al \documentclass
+%%    - Estat del document: final o draft
+%%      NOTA: Draft no inserta les figures i marca només l'espai que
+%%      ocupen. També s'indica quan el text sobrepassa els marges.
+%%      Draft és molt útil per compilar ràpid el document si no és important
+%%      en aquell moment visualitzar les figures.
+%%    - Idioma PRINCIPAL del document: catalan, spanish, english, french...
+
+\usepackage[english,catalan]{babel}
+%%  * INCLOURE TOTS ELS IDIOMES QUE S'USARAN EN EL DOCUMENT
+%%    NOTA: per canviar d'idioma al mig del document usar:
+%%          \selectlanguage{nom_idioma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2- CÀRREGA DE PAQUETS ADICIONALS (OPCIONALS)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% NOTA: Es possible que algunes distribuicions Linux o Windows.
+%%%       no portin aquests paquets instal·lats per defecte.
+%%%       En aquest cas els haureu d'instal·lar manualment.
+
+%% El paquet inputenc és extramadament útil. 
+%% Permet escriure els accents directament amb l'editor de texte
+%% sense haver de fer coses com per exemple: introducci\'o
+%% Heu d'especificar la codificació de caracters que utilitzeu pel
+%% vostre fitxer (en aquest exemple utf8)
+\usepackage[utf8]{inputenc}
+
+%% Símbols matemàtics de la American Mathematical Society
+\usepackage{amssymb,amsmath,amsfonts}  
+
+%% El paquet array proporciona eines molt útils a l'hora de fer 
+%% equacions amb matrius
+\usepackage{array}             
+
+%% Paquet que permet fer taules fusionant cel·les de files consecutives
+%%\usepackage{multirow}          
+
+%% Paquet molt útil en cas de tenir taules molt llargues que 
+%   ocupin vàries pàgines
+%%\usepackage{longtable}          
+
+%% Permet canviar els colors del document
+%\usepackage{color,colortbl}
+
+%% Paquet molt útil que permet activar links en el PDF final.
+%% * NO OBLIDAR DE CONFIGURAR els quatre primer camps!
+\usepackage[
+  pdfauthor={Sergio Soria Nieto},
+  pdftitle={Study and development of JVM for low and mid range microcontrollers - Sergio Soria Nieto},
+  pdfsubject={Study and development of JVM for low and mid range microcontrollers},
+  pdfkeywords={JVM, microcontrollers},
+  pdfcreator={EETAC-UPC}, 
+  pdfproducer={LaTeX, dvipdf},
+  pdfdisplaydoctitle=true, plainpages=false, linktocpage=true,         
+  colorlinks=true, linkcolor=blue,citecolor=blue,urlcolor=blue,
+  hyperfootnotes=false, pagebackref=true, pdfpagelabels=true,
+  pdfpagemode=UseOutlines,
+]{hyperref} 
+
+%% NOTA IMPORTANT!:
+%% Per tal que hyperef funcioni correctament amb els capitols o seccions no
+%% numerats (\chapter*{}), com per exemple introducció, conclusions i bibliografia
+%% cal posar les dues comandes seguents ABANS del \chapter*{} en questió
+%\cleardoublepage
+%\phantomsection
+
+%% Permet trencar links URL. 
+%% Atenció! afegir aquest paquet DESPRES del hyperref!!
+\usepackage{breakurl} 
+
+%% Permet arranjar matricialment multiples figures
+%% NOTA: afegir aquest paquet DESPRES del hyperref!!
+%%       Si no es desitja utilitzar aquest paquet, comentar la linia seguent
+%%       i anar TAMBE al fitxer de classe (eetac_tfc_pfc.cls) per substituir: 
+%%       \RequirePackage[subfigure]{tocloft}  per  \RequirePackage{tocloft}
+%%\usepackage{subfigmat} % I will use subcaption
+
+%% Additional packages not included in template
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{nomencl}
+\usepackage{footnote}
+\usepackage{listings}
+\usepackage{mdframed}
+\usepackage{float}
+
+\renewcommand{\lstlistingname}{Code}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 3- DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Configuració de les dades i variables boleanes rellevants del document:
+\input{Setup/Data.tex}
+
+%%% Configuració de MACROS o ENTORNS (opcionals) definides per l'usuari:
+\input{Setup/Macros.tex}
+
+%%% Configuració manual de les regles d'hyphenation:
+\input{Setup/Hyphenation.tex}
+
+
+\makenomenclature
+
+\graphicspath{{Images/}}
+\DeclareGraphicsExtensions{.eps}
+
+\begin{document}
+
+%% Seleccionar l'idioma principal del document:
+\selectlanguage{english}
+
+\beforepreface  
+
+%% RESUM i OVERVIEW
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% NOTA: les longituds passades com a parametres d'entrada  s'han
+%        d'ajustar manualment fins que el requadre del resum/overview
+%        ocupi tota la pàgina. 
+
+%%% Resum en anglès
+\selectlanguage{english}   
+\begin{overview}{11cm}
+The aim of this project is to develop a Java Virtual Machine and design Java specific API to provide a easy mechanism to use microcontroller resources using similar concept used in JavaCard for SmartCards.
+
+The main idea is to implement a JVM which could be executed in microcontrollers based on 1 kB RAM or more. This JVM is developed in C and provides a Java API to get access to microcontroller resources (ports, timers, serial port, etc.). It allows to implement microcontrollers Java applications and that means support to object oriented programming and compatible with any microcontroller running this JVM on it, i.e. one Java application that will work in all microcontrollers.
+
+This JVM should be a reduced version of standard JVM in order to successfully execute it on low and mid range microncontroller with limited resources. This project is based on JavaCard for SmartCards, for that reason, an introduction and comparison with this technology and how it is currently used on real life using high range microcontrollers will be analyzed. JVM will be initially developed to PIC18F4520 and PIC16F87X and adaptation to other devices is out of the scope an open for future works.
+
+Then, final goal is to make a comparison, in terms of performance and accuracy, between applications based on this JVM and native application. Regarding accuracy, resistive capture method by microcontroller PIC18F4520 will be analized. Regarding performance has to be defined.
+\end{overview}
+
+% Tornar a l'idioma principal del document
+\selectlanguage{english}  
+
+%NOTA: En cas d'utilitzar l'espanyol com a idioma principal del document, el
+%      latex anomena les taules com a 'Cuadros'. Si es desitja canviar aquesta
+%      nomenclatura i utilitzar la paraula 'Tabla' descomentar les línies següents:
+%\def\listtablename{Índice de tablas}
+%\def\tablename{Tabla}%
+
+\printnomenclature
+
+% Amb aqueta comanda indiquem que ja s'han inclòs tots els apartats del prefaci del 
+% projecte o podem començar a incloure els capitols de la memòria
+\afterpreface
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% INCLOURE A PARTIR D'AQUÍ TOTS ELS CAPÍTOLS DE LA MEMORIA   %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% NOTA: recordar que la introducció i les conclusions són capítols NO
+%       enumerats, per tant s'ha d'usar \chapter*
+
+% NOTA: és aconsellable incloure els capítols de la memòria en fitxers 
+%       separats utlitzant la comanda \input  Per exemple:
+%       \input{capitol1}  
+%       que farà que s'inclogui el fitxer capitol1.tex
+
+% NOTA: Si es vol incloure agraïments i/o glosari, fer-ho utilitzant 
+% \chapter*{} i incloure'ls abans la introducció
+
+\input{Chapters/Intro}
+\input{Chapters/JavaForMicrocontrollers}
+\input{Chapters/JVM/JVM}
+\input{Chapters/Resistive/Resistive}
+\input{Chapters/Conclusions}
+
+%%%  BIBLIOGRAFIA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Per la bibliografia hi ha 2 opcions: generarla amb la utilitat BibTeX 
+%%%                                      o fer-la ''a ma''
+%%% NOTA: podeu trobar facilment informació sobre BibTeX a:
+%%%  http://www.ctan.org/tex-archive/biblio/bibtex/contrib/doc/
+
+%%% OPCIO 1: BibTeX (recomanat) -> descomentar les comandes seguents:
+%\bibliographystyle{unsrt}   %% Estil de bibliografia EETAC
+%\cleardoublepage
+%\phantomsection
+% Indicar aqui el(s) fitxer(s) que contenen la bibliografia
+%\bibliography{fitxer1,...,fitxerN}  
+%\pdfbookmark{Bibliografia}{sec:biblio}
+
+%%% OPCIO 2: bibliografia manual
+%%%
+%%% L'argument d'entrada es el numero de referencies que s'inclouen
+\cleardoublepage
+\phantomsection
+\begin{thebibliography}{2}
+
+%% Llibres:  Autor/s (cognoms i inicials dels noms), títol del llibre (en cursiva), editor, ciutat i any de publicació. Quan es cita el capítol d'un llibre s'ha d'indicar el títol del capítol (entre cometes), el títol del llibre (en cursiva) i els números de pàgines amb la primera i la darrera incloses.
+
+%%  Exemple de capitol en llibre
+%\bibitem{prova1} 
+%Cognoms-autor, Inicial-nom.
+%``Títol del capítol''. {\it Títol del llibre}.
+%(Editor. Ciutat. Any publicació): pagina1--paginaN.
+
+\bibitem{Art:JavaForMicro} 
+Sérgio Akira Ito, Luigi Carro and Ricardo Pezzulo Jacobi.
+''Making Java Work for Microcontroller Applications''. {\it IEEE Xplore}.100--110. (September-October 2001)
+
+\bibitem{Art:Darjeeling} 
+Niels Brouwers, Peter Corke and Koen Langendoen.
+''Darjeeling, a Java Compatible Virtual Machine for Microcontrollers''. {\it ACM/IFIP/USENIX Middleware '08 Conference Companion}. (December 2008)
+
+\bibitem{Art:NanoVM} 
+Ricardo Costa, David Ludovino and Nuno Pinheiro.
+''nanoVM on AVR microcontroller: evaluation, extension and deployment''. {\it Group 7 shift AVExe36L03. Departamento de Engenharia Informatica, DEI. Instituto Superior Tecnico, IST. Lisboa, Portugal}. (2006)
+
+\bibitem{Art:JVMSE7} 
+Tim Lindhlom, Frank Yellin, Gilad Bracha and Alex Buckley.
+''The Java Virtual Machine Specification Java SE 7 Edition''. {\it Oracle}. (February 2013)
+
+\bibitem{Art:Uncertainty} 
+Josep Jordana and Ferran Reverter and Ramon Pallàs-Areny.
+''Uncertainty in resistence measurements based on microcontrollers with embedded time counter''. {\it IEEE Intrumentation and Measurement Technology Conference}. (2003)
+
+\bibitem{Art:Capacitive} 
+Ferran Reverter and Óscar Casas.
+''Direct interface circuit for capacitive humidity sensors''. {\it Sensors and Actuators A 143 315-322}. (2008)
+
+\bibitem{Art:Accuracy} 
+Ferran Reverter and Josep Jordana and Manel Gasulla and Ramon Pallàs-Areny.
+''Accuracy and resolution of direct resistive sensor-to-microcontroller interfaces''. {\it Sensors and Actuators A 121}. (2005)
+
+\bibitem{Art:IntfCircuits} 
+Ferran Reverter and Ramon Pallàs-Areny.
+''Direct sensor-to-microcontroller interface circuits, design and characterisation''. {\it Macombo, Barcelona}. (2005)
+
+%%  Exemple de d'article en revista
+%\bibitem{prova2} 
+%Cognoms-autor, Inicial-nom.
+%``Títol de l'article''. {\it Títol de la revista}.
+%{\bf volum}(numero),
+%100--110. (Any publicació) 
+
+\end{thebibliography}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%                           APENDIXS                         %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{empty}  % no tocar
+
+%% Descomentar una de les dues línies següents, en funció de:
+%%  a) els apendixs s'encuadernaran apart (amb portada) 
+%%  b) els apendixs s'enquadernen amb el mateix projecte (sense portada). 
+%% Recordeu que si tot el document (amb apèndixs) excedeix les 100 pagines 
+%% s'ha d'enquadernar a part
+%\appendix\ambportada
+\appendix\senseportada
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% INCLOURE A PARTIR D'AQUI TOTS ELS CAPÍTOLS DELS APENDIXS   %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{Appendix/Bytecodes}
+\input{Appendix/CodeStructure}
+
+\end{document}

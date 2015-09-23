@@ -1,0 +1,145 @@
+\section{Experimental results}\label{S:Res:Results}
+\subsection{Native}\label{S:Res:Results:Native}
+100 measures has been performed for every combination of capacitor $C$, unknown resistor $R_{x}$ and capture mode. Figures \ref{fig:RelativeErrorResistive2P} and \ref{fig:RelativeErrorResistive3P} show the relative error obtained for those results without take into account microcontroller internal resistance $R_{n}$.
+
+\begin{figure}[!htb]
+\centering
+	\begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{PlotR2PT1_Error.eps}
+	\caption{Using Timer 1}
+	\label{fig:PlotR2PT1Error}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{PlotR2PT1CCP1_Error.eps}
+	\caption{Using CCP}
+	\label{fig:PlotR2PT1CCP1Error}
+	\end{subfigure}
+\caption{Relative Error from experimental results for two points calibration and resistive tests}
+\label{fig:RelativeErrorResistive2P}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+    \begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{PlotR3PT1_Error.eps}
+	\caption{Using Timer 1}
+	\label{fig:PlotR3PT1Error}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{PlotR3PT1CCP1_Error.eps}
+	\caption{Using CCP}
+	\label{fig:PlotR3PT1CCP1Error}
+	\end{subfigure}
+\caption{Relative Error from experimental results for three points calibration and resistive tests}
+\label{fig:RelativeErrorResistive3P}
+\end{figure}
+
+The relative error oscillates between 0.07\% and 0.26\% if $C$ = 0.22 $\mu$F. For higher values of $C$, this relative error oscillates between 0.07\% and 0.01\%. The error is close to 0 when $R_{x}$ values are close to calibrator resistor $R_{c2}$ in case of two points calibration technique. In case of three points technique, the error is close to 0 when $R_{x}$ values are close to calibrator resistor $R_{c2}$, $R_{c1}$ and a midpoint between them. This behavior corresponds to calibration technique shown on Figures \ref{fig:Calibration2Points} and \ref{fig:Calibration3Points}. Figures \ref{fig:DeviationResistive2P} and \ref{fig:DeviationResistive3P} show the standard deviation obtained for every experiment.
+\medskip
+
+\begin{figure}[!htb]
+\centering
+	\begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{PlotR2PT1_Deviation.eps}
+	\caption{Using Timer 1}
+	\label{fig:PlotR2PT1Deviation}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{PlotR2PT1CCP1_Deviation.eps}
+	\caption{Using CCP}
+	\label{fig:PlotR2PT1CCP1Deviation}
+	\end{subfigure}
+\caption{Standard Deviation from experimental results for two points calibration and resistive tests}
+\label{fig:DeviationResistive2P}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+    \begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{PlotR3PT1_Deviation.eps}
+	\caption{Using Timer 1}
+	\label{fig:PlotR3PT1Deviation}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{PlotR3PT1CCP1_Deviation.eps}
+	\caption{Using CCP}
+	\label{fig:PlotR3PT1CCP1Deviation}
+	\end{subfigure}
+\caption{Standard Deviation from experimental results for three points calibration and resistive tests}
+\label{fig:DeviationResistive3P}
+\end{figure}
+
+If internal resistors $R_{n}$ summarized in \ref{tab:InternalResistors} are taken into account as defined in equations \eqref{eq:RxInternalRes} and \eqref{eq:RelativeErrorInternalRes}. The internal resistors has been computed with PIC18F4520 put in PICDEM 2 Plus.
+\medskip
+
+\begin{table}[!htb]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline 
+Port Pin & Internal R & Value $\Omega$ \\ 
+\hline 
+RB1 & $R_{n,2}$ & 19,7591 \\ 
+\hline 
+RB2 & $R_{n,3}$ & 19,6754 \\ 
+\hline 
+RB3 & $R_{n,4}$ & 19,5290 \\ 
+\hline 
+\end{tabular} 
+\caption{Internal PIC18F4520 resistor on PICDEM 2 Plus}
+\label{tab:InternalResistors}
+\end{table}
+
+Figures \ref{fig:PlotR2PT1ErrorRn}, \ref{fig:PlotR2PT1CCP1ErrorRn}, \ref{fig:PlotR3PT1ErrorRn} and \ref{fig:PlotR3PT1CCP1ErrorRn} show the experimental an theoretical results obtained applying $R_{n}$. Those figures only show theoretical and experimental results for $C=2.2$ $\mu$F and $C=4.7$ $\mu$F.
+\medskip
+
+\begin{figure}[!htb]
+\centering
+	\begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{PlotR2PT1_ErrorRn.eps}
+	\caption{Using Timer 1}
+	\label{fig:PlotR2PT1ErrorRn}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{PlotR2PT1CCP1_ErrorRn.eps}
+	\caption{Using CCP}
+	\label{fig:PlotR2PT1CCP1ErrorRn}
+	\end{subfigure}
+\caption{Relative Error from experimental results for two points calibration and resistive tests taking into account $R_{n}$}
+\label{fig:RelativeErrorRnResistive2P}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+    \begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{PlotR3PT1_ErrorRn.eps}
+	\caption{Using Timer 1}
+	\label{fig:PlotR3PT1ErrorRn}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.45\textwidth}
+	\includegraphics[width=\textwidth]{PlotR3PT1CCP1_ErrorRn.eps}
+	\caption{Using CCP}
+	\label{fig:PlotR3PT1CCP1ErrorRn}
+	\end{subfigure}
+\caption{Relative Error from experimental results for three points calibration and resistive tests taking into account $R_{n}$}
+\label{fig:RelativeErrorRnResistive3P}
+\end{figure}
+
+Experimental results tendency of results obtained for 3 points experiments trend to theoretical line but spreading is higher than 2 points experiments. Lower values on 2 points experiments are more distant from theoretical results in comparison with 3 points results.
+\medskip
+
+Figure \ref{fig:PlotAllErrorsRn} shows a graphic representing all capture modes and results for $C=4.7$ $\mu$F in order to represent a comparison between them and theoretical values.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.5]{PlotAllErrorsRn.eps}
+\caption{Relative Error taken into account $R_{n}$ of all capture modes}
+\label{fig:PlotAllErrorsRn}
+\end{figure}
+
+\subsection{Java}\label{S:Res:Results:Java}
