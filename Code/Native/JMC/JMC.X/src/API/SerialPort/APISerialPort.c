@@ -1,8 +1,5 @@
 #include "Common.h"
 #include "APISerialPort.h"
-#include "SerialPort.h"
-
-uint8_t Api_SerialPort_Events = 0x00;
 
 uint8_t API_SerialPort_Receive(void)
 {

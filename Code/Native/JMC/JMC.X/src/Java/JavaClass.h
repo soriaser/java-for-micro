@@ -47,7 +47,7 @@ typedef struct javaclass_method_header {
 
 extern NVMDATA uint16_t JavaClass_DataSize;
 
-extern NVMDATA uint8_t  JavaClass_Data[JAVACLASS_MAX_SIZE_DATA];
+extern NVMDATA uint8_t JavaClass_Data[JAVACLASS_MAX_SIZE_DATA];
 
 #define JavaClass_GetOffsetMethods() \
     (Mm_GetU16((mm_address_t) &((javaclass_header_t *) \
@@ -71,6 +71,7 @@ extern NVMDATA uint8_t  JavaClass_Data[JAVACLASS_MAX_SIZE_DATA];
 
 #define JavaClass_GetVersion() \
     (Mm_GetU08((mm_address_t) &((javaclass_header_t *) JavaClass_Data)->version))
+    // ((javaclass_header_t *) JavaClass_Data)->version
 
 extern uint16_t JavaClass_GetOnEventIndex(void);
 

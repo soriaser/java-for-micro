@@ -12,6 +12,8 @@
 extern "C" {
 #endif
 
+#include "SerialPort.h"
+
 #define API_SERIALPORT_EVENT_RECEIVED_BYTE 0x04
 
 extern uint8_t API_SerialPort_Receive(void);

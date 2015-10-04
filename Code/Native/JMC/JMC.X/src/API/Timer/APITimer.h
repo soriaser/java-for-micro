@@ -12,9 +12,7 @@
 extern "C" {
 #endif
 
-#if (PLATFORM == PLATFORM_PIC18F4520)
-#include "Timer_PIC18F4520.h"
-#endif // PLATFORM
+#include "Timer.h"
 
 #define API_TIMER_TIMER_0   0x00
 #define API_TIMER_TIMER_1   0x01

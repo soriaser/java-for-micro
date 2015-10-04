@@ -2,7 +2,7 @@
 #include "JavaClass.h"
 #include "MemoryManagement.h"
 
-#define JAVACLASS_HEADER_VERSION 0x01
+#define JAVACLASS_HEADER_VERSION (uint8_t) 0x01
 
 uint16_t JavaClass_GetOnEventIndex(void)
 {
@@ -26,7 +26,9 @@ uint16_t JavaClass_GetOnEventIndex(void)
 
 void JavaClass_Init(void)
 {
-    if (JAVACLASS_HEADER_VERSION != JavaClass_GetVersion()) {
+    uint8_t version = JavaClass_GetVersion();
+
+    if (JAVACLASS_HEADER_VERSION != version) {
         EndlessLoop();
     }
 }

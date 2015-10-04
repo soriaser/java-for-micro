@@ -17,6 +17,8 @@
 void interrupt ISR(void)
 {
     if (RCIF) {
+        SerialPort_DisableRx();
+
         SerialPort_ISR();
 
         if (1 == Api_EventsRegistered.receive) {
@@ -26,17 +28,26 @@ void interrupt ISR(void)
         RCIF = 0;
     }
 
-    if ((INT0IF) && (1 == Api_EventsRegistered.int0)) {
+    if (
+#if (PLATFORM == PLATFORM_PIC18F4520)
+        (INT0IF) &&
+#elif (PLATFORM == PLATFORM_PIC16F877)
+        (INTF) &&
+#endif
+        (1 == Api_EventsRegistered.int0)) {
+#if (PLATFORM == PLATFORM_PIC18F4520)
         INT0IF = 0;
+#elif (PLATFORM == PLATFORM_PIC16F877)
+        INTF = 0;
+#endif
         Api_Events.int0 = 1;
     }
 }
 
 void main(void)
 {
-    if (LOADER_ENABLED == Loader_IsLoaderEnabled) {
-        SerialPort_Init();
-    }
+    // Serial Port is allways enabled in order to listen commands
+    SerialPort_Init();
 
     while (LOADER_ENABLED == Loader_IsLoaderEnabled) {
         if (LOADER_STATE_PENDING == Loader_State) {
@@ -44,9 +55,7 @@ void main(void)
         }
     }
 
-    if (LOADER_DISABLED == Loader_IsLoaderEnabled) {
-        JavaClass_Init();
-        Jvm_Init();
-        Jvm_Main();
-    }
+    JavaClass_Init();
+    Jvm_Init();
+    Jvm_Main();
 }

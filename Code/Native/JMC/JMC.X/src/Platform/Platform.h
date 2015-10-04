@@ -14,6 +14,8 @@ extern "C" {
 
 #if (PLATFORM == PLATFORM_PIC18F4520)
 #include "Platform_PIC18F4520.h"
+#elif (PLATFORM == PLATFORM_PIC16F877)
+#include "Platform_PIC16F877.h"
 #endif // PLATFORM
 
 #ifdef	__cplusplus

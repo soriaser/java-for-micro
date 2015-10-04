@@ -12,9 +12,7 @@
 extern "C" {
 #endif
 
-#if (PLATFORM == PLATFORM_PIC18F4520)
-#include "Port_PIC18F4520.h"
-#endif // PLATFORM
+#include "Port.h"
 
 #define API_PORTREGISTRY_EVENT_INT0 0x01
 #define API_PORTREGISTRY_EVENT_INT1 0x02

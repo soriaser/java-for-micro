@@ -64,6 +64,7 @@ void Loader_ProcessCommand(uint8_t value)
 
     switch (Loader_CmdProcessingState) {
         case LOADER_CMD_STATE_PROCESS_CLA:
+            Loader_CmdDataOffset = 0;
             if (LOADER_CMD_CLA != value) {
                 response = LOADER_ERROR_CLA_NOT_SUPPORTED;
             }

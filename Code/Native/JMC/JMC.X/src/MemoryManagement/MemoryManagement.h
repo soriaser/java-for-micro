@@ -14,6 +14,8 @@ extern "C" {
 
 #if (PLATFORM == PLATFORM_PIC18F4520)
 #include "MemoryManagement_PIC18F4520.h"
+#elif (PLATFORM == PLATFORM_PIC16F877)
+#include "MemoryManagement_PIC16F877.h"
 #endif // PLATFORM
 
 extern void Mm_CopyRam(uint8_t *destination, uint8_t *source, uint16_t size);

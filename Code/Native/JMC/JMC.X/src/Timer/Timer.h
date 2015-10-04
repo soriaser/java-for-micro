@@ -12,22 +12,21 @@
 extern "C" {
 #endif
 
-#include "Common.h"
+#if (PLATFORM == PLATFORM_PIC18F4520)
+#include "Timer_PIC18F4520.h"
+#elif (PLATFORM == PLATFORM_PIC16F877)
+#include "Timer_PIC16F877.h"
+#endif // PLATFORM
 
-#define TIMER0_OVERFLOW_USEC ((256 * 1000000) / FCPU)
+extern void Timer_Clear();
 
-#define Timer_T0_Reset() (TMR0 = 0)
+extern void Timer_Disable();
 
-#define Timer_T0_Start() (TMR0ON = 1)
+extern void Timer_Enable();
 
-#define Timer_T0_Stop() \
-    TMR0ON = 0; \
-    Timer_T0_Reset()
-    
-extern void Timer_T0_Init(uint8_t interruption);
+extern void Timer_GetTimer(uint8_t timer);
 
-extern void Timer_T0_ISR(void);
-
+extern uint16_t Timer_Read();
 
 #ifdef	__cplusplus
 }

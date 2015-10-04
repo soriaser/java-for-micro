@@ -1,8 +1,8 @@
 #include "Common.h"
 #include "APITimer.h"
-#include "Timer_PIC18F4520.h"
+#include "Timer_PIC16F877.h"
 
-#if (PLATFORM == PLATFORM_PIC18F4520)
+#if (PLATFORM == PLATFORM_PIC16F877)
 
 void Timer_Clear()
 {
@@ -10,7 +10,8 @@ void Timer_Clear()
         case API_TIMER_TIMER_0:
             break;
         case API_TIMER_TIMER_1:
-            WRITETIMER1(0x0000);
+            TMR1H = 0x00;
+            TMR1L = 0x00;
             break;
     }
 }
@@ -52,10 +53,10 @@ uint16_t Timer_Read()
         case API_TIMER_TIMER_0:
             break;
         case API_TIMER_TIMER_1:
-            return (uint16_t) READTIMER1();
+            return (uint16_t) TMR1;
     }
 
     return (uint16_t) -1;
 }
 
-#endif // (PLATFORM == PLATFORM_PIC18F4520)
+#endif //(PLATFORM == PLATFORM_PIC16F877)

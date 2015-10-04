@@ -1,8 +1,8 @@
 #include "Common.h"
 #include "APIPortRegistry.h"
-#include "Port_PIC18F4520.h"
+#include "Port_PIC16F877.h"
 
-#if (PLATFORM == PLATFORM_PIC18F4520)
+#if (PLATFORM == PLATFORM_PIC16F877)
 
 uint8_t *PortRegistry_Port = NULL;
 
@@ -78,4 +78,4 @@ void Port_SetPin(uint8_t pins, uint8_t type)
     }
 }
 
-#endif // (PLATFORM == PLATFORM_PIC18F4520)
+#endif //(PLATFORM == PLATFORM_PIC16F877)

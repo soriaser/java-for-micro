@@ -6,24 +6,21 @@
  */
 
 #ifndef PORT_H
-#define	PORT_H
+#define PORT_H
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
-/*
-#define Port_Enable_INT0() \
-    INTCON  |= 0xD0; \
-    INTCON2 |= 0x80; \
-    INTEDG0  = 1
-*/
+#if (PLATFORM == PLATFORM_PIC18F4520)
+#include "Port_PIC18F4520.h"
+#elif (PLATFORM == PLATFORM_PIC16F877)
+#include "Port_PIC16F877.h"
+#endif // PLATFORM
 
-//extern void Port_ISR(void);
-
-#ifdef	__cplusplus
+#ifdef __cplusplus
 }
 #endif
 
-#endif	/* PORT_H */
+#endif /* PORT_H */
 

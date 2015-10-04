@@ -33,7 +33,13 @@ extern "C" {
 #pragma config EBTR3    = OFF
 #pragma config EBTRB    = OFF
 #pragma config PBADEN   = OFF
+#pragma config BOREN    = OFF
 #pragma config OSC      = HS
+
+#define _XTAL_FREQ 4000000
+#define BAUDRATE 2400
+#define JAVACLASS_MAX_SIZE_DATA     256
+#define JVM_MAX_SIZE_HEAP           100
 
 #ifdef	__cplusplus
 }

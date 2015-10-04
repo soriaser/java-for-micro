@@ -12,21 +12,13 @@
 extern "C" {
 #endif
 
-#include "Common.h"
+#if (PLATFORM == PLATFORM_PIC18F4520)
+#include "SerialPort_PIC18F4520.h"
+#elif (PLATFORM == PLATFORM_PIC16F877)
+#include "SerialPort_PIC16F877.h"
+#endif // PLATFORM
 
 extern uint8_t SerialPort_CurrentValueRx;
-
-#define SerialPort_DisableRx() (RCIE = 0)
-
-#define SerialPort_EnableRx() (RCIE = 1)
-
-#define SerialPort_Receive() (RCREG)
-
-extern void SerialPort_Init(void);
-
-extern void SerialPort_ISR(void);
-
-extern void SerialPort_Send(uint8_t byte);
 
 #ifdef	__cplusplus
 }

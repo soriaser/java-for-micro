@@ -12,18 +12,9 @@
 extern "C" {
 #endif
 
-#define _XTAL_FREQ 20000000
-
-#define BAUDRATE 2400
-
-#define FOSC    _XTAL_FREQ
-#define FCPU    (FOSC / 4)
-
-#define JAVACLASS_MAX_SIZE_DATA     1024
-#define JVM_MAX_SIZE_HEAP           100
-
 #define PLATFORM_PIC18F4520 0
-#define PLATFORM PLATFORM_PIC18F4520
+#define PLATFORM_PIC16F877  1
+#define PLATFORM PLATFORM_PIC16F877
 
 #ifdef	__cplusplus
 }
