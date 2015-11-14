@@ -95,7 +95,7 @@ public class Sender implements SerialPortEventListener {
 
     public void serialEvent(SerialPortEvent event) {
         // If data received...
-        if (event.isRXCHAR()) {
+        if (event.isRXCHAR() || event.isRXFLAG()) {
             // Stop timer becuase we have received something
             TimerSend.stop();
 
