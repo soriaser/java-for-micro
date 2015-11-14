@@ -3,6 +3,7 @@
 #include "APIMicroApplication.h"
 #include "APIPortRegistry.h"
 #include "APISerialPort.h"
+#include "SerialPort.h"
 
 void Api_MicroApplication_ClearEvent(uint8_t event)
 {
@@ -25,6 +26,7 @@ void Api_MicroApplication_SetEvent(uint8_t event)
             Api_EventsRegistered.int0 = 1;
             break;
         case API_SERIALPORT_EVENT_RECEIVED_BYTE:
+            SerialPort_EnableRx();
             Api_EventsRegistered.receive = 1;
             break;
     }

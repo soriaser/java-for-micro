@@ -10,6 +10,9 @@ void Timer_Clear()
         case API_TIMER_TIMER_0:
             break;
         case API_TIMER_TIMER_1:
+#ifdef STORE_TIMER_IF_INT0
+            //Timer_ValueRead = 0;
+#endif // STORE_TIMER_IF_INT0
             WRITETIMER1(0x0000);
             break;
     }
@@ -32,11 +35,13 @@ void Timer_Enable()
         case API_TIMER_TIMER_0:
             break;
         case API_TIMER_TIMER_1:
+            T1CON = 0xB8;
+            WRITETIMER1(0x0000);
+#ifdef STORE_TIMER_IF_INT0
+            //Timer_ValueRead = 0;
+#endif // STORE_TIMER_IF_INT0
             TMR1IE = 0;
-            T1CON = 0x88;
-            TMR1ON = 0;
-            TMR1L = 0x00;
-            TMR1H = 0x00;
+            TMR1ON = 1;
             break;
     }
 }
@@ -52,7 +57,12 @@ uint16_t Timer_Read()
         case API_TIMER_TIMER_0:
             break;
         case API_TIMER_TIMER_1:
+#ifdef STORE_TIMER_IF_INT0
+            //return Timer_ValueRead;
             return (uint16_t) READTIMER1();
+#else
+            return (uint16_t) READTIMER1();
+#endif // STORE_TIMER_IF_INT0
     }
 
     return (uint16_t) -1;

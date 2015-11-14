@@ -38,8 +38,13 @@ extern "C" {
 
 #define _XTAL_FREQ 4000000
 #define BAUDRATE 2400
-#define JAVACLASS_MAX_SIZE_DATA     256
-#define JVM_MAX_SIZE_HEAP           100
+#define JAVACLASS_MAX_SIZE_DATA     400
+#define JVM_MAX_SIZE_HEAP           200
+
+#define INT0_RISING_EDGE
+#define USE_RAM_ONLY
+//#define USE_STDIO_FOR_SERIAL_PORT
+#define STORE_TIMER_IF_INT0
 
 #ifdef	__cplusplus
 }

@@ -18,6 +18,10 @@ extern "C" {
 #include "Timer_PIC16F877.h"
 #endif // PLATFORM
 
+#ifdef STORE_TIMER_IF_INT0
+extern uint16_t Timer_ValueRead;
+#endif // STORE_TIMER_IF_INT0
+
 extern void Timer_Clear();
 
 extern void Timer_Disable();

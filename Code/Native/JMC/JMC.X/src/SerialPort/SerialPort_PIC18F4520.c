@@ -4,6 +4,10 @@
 
 #if (PLATFORM == PLATFORM_PIC18F4520)
 
+#ifdef USE_STDIO_FOR_SERIAL_PORT
+#include <stdio.h>
+#endif // USE_STDIO_FOR_SERIAL_PORT
+
 uint8_t SerialPort_CurrentValueRx = 0xFF;
 
 void SerialPort_Init(void)
@@ -46,8 +50,12 @@ void SerialPort_ISR(void)
 
 void SerialPort_Send(uint8_t byte)
 {
+#ifdef USE_STDIO_FOR_SERIAL_PORT
+    printf("%d", byte);
+#else
     while (!TXIF);
     TXREG = byte;
+#endif // USE_STDIO_FOR_SERIAL_PORT
 }
 
 #endif // (PLATFORM == PLATFORM_PIC18F4520)

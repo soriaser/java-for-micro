@@ -17,8 +17,6 @@
 void interrupt ISR(void)
 {
     if (RCIF) {
-        SerialPort_DisableRx();
-
         SerialPort_ISR();
 
         if (1 == Api_EventsRegistered.receive) {
@@ -35,6 +33,10 @@ void interrupt ISR(void)
         (INTF) &&
 #endif
         (1 == Api_EventsRegistered.int0)) {
+#ifdef STORE_TIMER_IF_INT0
+        TMR1ON = 0;
+        //Timer_ValueRead = READTIMER1();
+#endif // STORE_TIMER_IF_INT0
 #if (PLATFORM == PLATFORM_PIC18F4520)
         INT0IF = 0;
 #elif (PLATFORM == PLATFORM_PIC16F877)

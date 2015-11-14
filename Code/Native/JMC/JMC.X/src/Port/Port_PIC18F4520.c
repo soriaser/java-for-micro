@@ -48,6 +48,10 @@ void Port_SetEvent(uint8_t event)
             // Enable INT0 interruption but interrupt is not thrown.
             // Interrupt should be checked manually
             INTCON |= 0x10;
+            //INTCON2 = 0x80;
+#ifdef INT0_RISING_EDGE
+            //INTEDG0 = 1;
+#endif // INT0_RISING_EDGE
             break;
     }
 }

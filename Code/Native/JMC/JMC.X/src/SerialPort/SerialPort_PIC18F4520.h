@@ -14,8 +14,6 @@ extern "C" {
 
 #include "Common.h"
 
-extern uint8_t SerialPort_CurrentValueRx;
-
 #define SerialPort_DisableRx() (RCIE = 0)
 
 #define SerialPort_EnableRx() (RCIE = 1)

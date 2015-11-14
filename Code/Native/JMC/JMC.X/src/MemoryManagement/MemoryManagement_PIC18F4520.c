@@ -1,9 +1,9 @@
 #include "Common.h"
 #include "MemoryManagement_PIC18F4520.h"
 
-#if (PLATFORM == PLATFORM_PIC18F4520)
+#if (PLATFORM == PLATFORM_PIC18F4520) && !defined(USE_RAM_ONLY)
 
-#include "flash.h"
+//#include "flash.h"
 
 #define MEMORY_SIZE_EEPROM          (mm_address_t) 0x00FF
 #define MEMORY_SIZE_FLASH           (mm_address_t) 0x77FF
@@ -16,6 +16,7 @@
     (uint32_t) (MEMORY_ADDRESS_FLASH_START + MEMORY_SIZE_FLASH)
 
 #define MEMORY_SIZE_WRITE_BLOCK_FLASH 64
+//#define MEMORY_SIZE_ERASE_BLOCK_FLASH (MEMORY_SIZE_WRITE_BLOCK_FLASH * 2)
 
 uint8_t Mm_IsAddressEEPROM(mm_address_t address)
 {
@@ -55,8 +56,8 @@ void Mm_ReadEEPROM(mm_address_t address, mm_address_t bytes, uint8_t *data)
 
 void Mm_ReadFlash(mm_address_t address, mm_address_t bytes, uint8_t *data)
 {
-    ReadFlash(address, bytes, data);
-    /*
+    //ReadFlash(address, bytes, data);
+
     uint8_t offset = 0x00;
 
     TBLPTR = address;
@@ -73,7 +74,6 @@ void Mm_ReadFlash(mm_address_t address, mm_address_t bytes, uint8_t *data)
 
     // restore the TABLE pointer
     TBLPTR = address;
-    */
 }
 
 void Mm_ReadNVM(mm_address_t address, mm_address_t bytes, uint8_t *data)
@@ -117,7 +117,6 @@ void Mm_WriteEEPROM(mm_address_t address, mm_address_t bytes, uint8_t *data)
     }
 }
 
-/*
 void Mm_WriteFlashBlock(mm_address_t address, uint8_t *block)
 {
     TBLPTR = address;
@@ -136,7 +135,6 @@ void Mm_WriteFlashBlock(mm_address_t address, uint8_t *block)
     EECON1bits.EEPGD = 1; // Flash Access
     Mm_Write();
 }
-*/
 
 void Mm_WriteFlash(mm_address_t address, mm_address_t bytes, uint8_t *data)
 {
@@ -154,8 +152,8 @@ void Mm_WriteFlash(mm_address_t address, mm_address_t bytes, uint8_t *data)
     while (bytes) {
         uint8_t dataOffset = 0x00;
 
-        //Mm_ReadFlash(address, MEMORY_SIZE_WRITE_BLOCK_FLASH, block);
-        ReadFlash(address, MEMORY_SIZE_WRITE_BLOCK_FLASH, block);
+        Mm_ReadFlash(address, MEMORY_SIZE_WRITE_BLOCK_FLASH, block);
+        //ReadFlash(address, MEMORY_SIZE_WRITE_BLOCK_FLASH, block);
 
         for (uint8_t offset = saddress - address;
                 (offset < MEMORY_SIZE_WRITE_BLOCK_FLASH) && (bytes > 0);
@@ -166,15 +164,19 @@ void Mm_WriteFlash(mm_address_t address, mm_address_t bytes, uint8_t *data)
         }
 
         // Erase block
-        //EECON1bits.FREE = 1; // Allow erase
-        //TBLPTR = address;
-        //EECON1bits.EEPGD = 1; // Flash Access
-        //Mm_Write();
-        EraseFlash(address, address + MEMORY_SIZE_WRITE_BLOCK_FLASH);
+        EECON1bits.FREE = 1; // Allow erase
+        TBLPTR = address;
+        EECON1bits.EEPGD = 1; // Flash Access
+        Mm_Write();
+        //EraseFlash(address, address + MEMORY_SIZE_WRITE_BLOCK_FLASH);
+        //FLASH_ERASE(address);
 
         // Write block
-        //Mm_WriteFlashBlock(address, block);
-        WriteBytesFlash(address, MEMORY_SIZE_WRITE_BLOCK_FLASH, block);
+        Mm_WriteFlashBlock(address, block);
+        //WriteBlockFlash(address, MEMORY_SIZE_WRITE_BLOCK_FLASH, block);
+        //WriteBlockFlash(address + MEMORY_SIZE_WRITE_BLOCK_FLASH, MEMORY_SIZE_WRITE_BLOCK_FLASH, block + MEMORY_SIZE_WRITE_BLOCK_FLASH);
+        //FLASH_WRITE(address, MEMORY_SIZE_WRITE_BLOCK_FLASH, block);
+        //WriteBytesFlash((unsigned long) address, MEMORY_SIZE_WRITE_BLOCK_FLASH, block);
 
         address += MEMORY_SIZE_WRITE_BLOCK_FLASH;
         saddress = address;
@@ -192,4 +194,4 @@ void Mm_WriteNVM(mm_address_t address, mm_address_t bytes, uint8_t *data)
     }
 }
 
-#endif // (PLATFORM == PLATFORM_PIC18F4520)
+#endif // defined(PLATFORM == PLATFORM_PIC18F4520) && !defined(USE_RAM_ONLY)

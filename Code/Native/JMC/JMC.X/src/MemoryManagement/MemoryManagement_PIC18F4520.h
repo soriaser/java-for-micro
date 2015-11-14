@@ -14,8 +14,10 @@ extern "C" {
 
 typedef uint16_t mm_address_t;
 
+#ifndef USE_RAM_ONLY
 extern void Mm_ReadNVM(mm_address_t address, mm_address_t bytes, uint8_t *data);
 extern void Mm_WriteNVM(mm_address_t address, mm_address_t bytes, uint8_t *data);
+#endif // USE_RAM_ONLY
 
 #ifdef	__cplusplus
 }

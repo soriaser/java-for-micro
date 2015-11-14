@@ -34,7 +34,7 @@ typedef union {
 
 } word_t;
 
-#define NVMDATA const
+#define NVMDATA //const
 
 #ifndef NULL
 #define NULL ((void *) 0)

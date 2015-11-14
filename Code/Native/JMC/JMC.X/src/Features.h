@@ -14,7 +14,7 @@ extern "C" {
 
 #define PLATFORM_PIC18F4520 0
 #define PLATFORM_PIC16F877  1
-#define PLATFORM PLATFORM_PIC16F877
+#define PLATFORM PLATFORM_PIC18F4520
 
 #ifdef	__cplusplus
 }
