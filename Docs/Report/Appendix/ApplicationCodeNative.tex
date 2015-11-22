@@ -1,0 +1,308 @@
+\chapter{Native Application Code}\label{Appx:AppCodeNative}
+Following C code shows the native application code used for direct interface circuit fo resistor sensors:
+\medskip
+\begin{lstlisting}[
+caption={Native C application code},
+captionpos=b,
+label={cod:Appx:AppCodeNative:NativeCode},
+language=C]
+/*
+ * File:   main.c
+ * Author: Sergio Soria
+ *
+ * Created on 25 de enero de 2014, 17:05
+ */
+
+#include <xc.h>
+#include <stdio.h>
+#include "configuration.h"
+
+#pragma config OSC      = HS
+#pragma config IESO     = OFF
+#pragma config FCMEN    = OFF
+#pragma config WDT      = OFF
+#pragma config BOREN    = OFF
+#pragma config PWRT     = OFF
+#pragma config MCLRE    = ON
+#pragma config PBADEN   = OFF
+#pragma config LVP      = OFF
+#pragma config CPD      = OFF
+#pragma config CP0      = OFF
+#pragma config CP1      = OFF
+#pragma config CP2      = OFF
+#pragma config CP3      = OFF
+
+#define _XTAL_FREQ 4000000
+#define BAUDRATE 2400
+
+// Booleans true and false values
+#define TRUE    1
+#define FALSE   0
+
+// Byte value required to be received in order to start measures
+#define RX_BYTE 0x01
+
+// Application states
+#define ST_MEASURE_NX   0
+#define ST_MEASURE_NC1  1
+#define ST_MEASURE_NC2  2
+
+unsigned char TRISBValue = 0x00;
+// Temporal array containing times measured
+unsigned short g_Times[3];
+// Temporal variable containing time measured
+unsigned short g_Time = 0;
+
+// If TRUE, measurements start. If FALSE, nothing happens
+int g_Start     = FALSE;
+// Current application state. Initially is measuring Nx
+int g_State     = ST_MEASURE_NX;
+// If TRUE, next time measurement can be done. If FALSE, not.
+int g_Next      = FALSE;
+
+void interrupt highISR(void)
+{
+#if (TIMER == TIMER1)
+    // Stop Timer
+    TMR1ON = 0;
+    // Get Time
+#ifdef CCP1
+    g_Time = CCPR1;
+#else // CCP1
+    g_Time = READTIMER1();
+#endif // (TIMER == TIMER1)
+
+#elif (TIMER == TIMER2)
+    // Stop Timer
+    TMR2ON = 0;
+    // Get Time
+    g_Time = TMR2;
+#endif // (TIMER == TIMER2)
+    // Enable next time measurement
+    g_Next = TRUE;
+
+    // Clear interrupt
+#ifdef CCP1
+    CCP1IF = 0;
+#else
+    INT0IF = 0;
+#endif // CCP1
+}
+
+
+void interrupt low_priority lowISR(void)
+{
+    if ((RCIF) && ((RCREG & RX_BYTE) == RX_BYTE)) {
+        // Clear interrupt
+        RCIF = 0;
+        // If over run error, then reset the receiver
+        if(OERR) {
+            CREN = 0;
+            CREN = 1;
+        }
+        // Indicates that measure can start
+        g_Start = TRUE;
+    }
+}
+
+#ifdef _STDIO_H_
+void putch(char data)
+{
+    // Wait for previous transmission to finish.
+    while (!TXIF) {
+        continue;
+    }
+
+    // Write byte to send.
+    TXREG = data;
+}
+#endif // _STDIO_H_
+
+void main(void) {
+    // Force to discharge capacitor through auxiliar Pin 5
+    TRISB = 0x0F;
+    PORTB = 0x00;
+
+    __delay_ms(30);
+
+    // Configure interrupts
+    // --------------------
+    //
+    // Enable high and low priority interrupts int INT0 interrupt
+    INTCON  = 0xD0;
+
+#ifdef CCP1
+    // CCP1 Interrupt enable bit
+    CCP1IE = 1;
+    // CCP1 interrupt as high priority
+    CCP1IP = 1;
+#else
+    // Enable PORTB pull-ups and let RB0 interrupt on falling edge
+    INTCON2 = 0x80;
+#endif // CCP1
+
+#ifdef CCP1
+    CCP1CON = 0x05;
+#else
+    // If external Schmitt trigger is used in RB0, the edge interruption
+    // should be swtiched to interrupt on rising edge
+    INTEDG0 = 1;
+#endif // CCP1
+
+    // Enable interrupt priority
+    IPEN = 1;
+
+    // Configure Serial Port
+    // ---------------------
+    //
+    // - RC6 = Asyncronous serial data ouput.
+    // - RC7 = Syncronous serial receive data input.
+    TRISC6 = 1;
+    TRISC7 = 1;
+    // - 8-bit Baud Rate
+    BRG16 = 0;
+    BRGH  = 0;
+    SPBRG = ((_XTAL_FREQ / 64) / BAUDRATE) - 1;
+    // - 8-bit transmission and reception
+    TX9   = 0;
+    // - Asynchronous mode
+    SYNC  = 0;
+    RX9   = 0;
+    // Enable Serial port and receive mode
+    SPEN  = 1;
+    SREN  = 0;
+    CREN  = 1;
+    // Enable Rx interrupt and disable Tx interrupt
+    RCIE  = 1;
+    TXIE  = 0;
+
+    // Set Rx interrupt as low level
+    RCIP = 0;
+
+    // Reset and enable transmitter
+    TXEN  = 0;
+    TXEN  = 1;
+
+#ifdef CCP1
+    // Configure CCP Timer
+    // -------------------
+    // - Timer 1 as CCP clock
+    T3CON = 0x08;
+    // RC2 as input
+    TRISC2 = 1;
+#endif //CCP1
+
+#if (TIMER == TIMER1)
+    // Configure Timer 1.
+    // ------------------
+    // - 16-bits
+    // - 1:1 Prescale
+    // - Internal clock
+    //
+    // Disables Timer1 overflow interrupt
+    TMR1IE = 0;
+
+    T1CON = 0x88;
+    // Initially Timer 1 OFF
+    TMR1ON = 0;
+
+    // Clear counter values
+    TMR1L = 0x00;
+    TMR1H = 0x00;
+#elif (TIMER == TIMER2)
+    // Configure Timer 2.
+    // ------------------
+    // - 1:1 Postcale
+    // - 1:16 Prescale
+    //
+    T2CON = 0x02;
+    // Initially Timer 2 OFF
+    TMR2ON = 0;
+    // Disable the TMR2 to PR2 match interrupt
+    TMR2IE = 0;
+    // Clear counter values
+    TMR2 = 0x00;
+#endif // (TIMER == TIMER1)
+
+    while (TRUE) {
+        // Wait until receive byte to start
+        while (g_Start) {
+            // Charge capacitor throug auxiliar Pin 5
+            TRISB = 0x0F;
+            PORTB = 0x10;
+
+            __delay_ms(30);
+
+            // Next step is not goig to be executed until RB0
+            // interrupt finishes
+            g_Next = FALSE;
+
+#if (TIMER == TIMER1)
+            // Start Timer1
+            WRITETIMER1(0x0000);
+#elif (TIMER == TIMER2)
+            // Start Timer 2
+            TMR2 = 0x00;
+            TMR2ON = 1;
+#endif // TIMER
+
+#ifdef CCP1
+            CCPR1 = (unsigned short) 0;
+#endif // CCP1
+
+            switch (g_State) {
+                case ST_MEASURE_NX:
+                    // Discharge through Pin 2
+                    TRISBValue = 0x1D;
+                    break;
+                case ST_MEASURE_NC1:
+                    // Discharge through Pin 3
+                    TRISBValue = 0x1B;
+                    break;
+                case ST_MEASURE_NC2:
+                    // It is going to be the last measure
+                    g_Start = FALSE;
+                    // Discharge through Pin 4
+                    TRISBValue = 0x17;
+                    break;
+            }
+
+            TRISB = TRISBValue;
+
+#if (TIMER == TIMER1)
+            TMR1ON = 1;
+#elif (TIMER == TIMER2)
+            TMR2ON = 1;
+#endif // (TIMER == TIMER1)
+
+            // All values as logical '0'
+            PORTB = 0x00;
+
+            asm("L1: BTFSS _g_Next,0");
+            asm("GOTO L1");
+
+            // Store time
+            g_Times[g_State] = g_Time;
+            // Next step
+            g_State++;
+
+            // brief delay
+            __delay_ms(20);
+        }
+
+        if (g_State > ST_MEASURE_NC2) {
+            // Send values
+            printf("%d;", g_Times[ST_MEASURE_NX]);
+            printf("%d;", g_Times[ST_MEASURE_NC1]);
+            printf("%d", g_Times[ST_MEASURE_NC2]);
+            printf("\n");
+
+            // Restart state
+            g_State = ST_MEASURE_NX;
+        }
+    }
+}
+
+\end{lstlisting}
+\medskip
+

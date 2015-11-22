@@ -1,5 +1,5 @@
 \section{Final Circuit}\label{S:Res:Circuit}
-Following concepts described in \ref{S:Res:Analysis} and \ref{sec:Res:Code}, Figures \ref{fig:uR2PointsReal}, \ref{fig:uR3PointsReal}, \ref{fig:uR2PointsCCPReal} and \ref{fig:uR3PointsCCPReal} show the final circuit studied during this first part of this report.
+Following concepts described in \ref{S:Res:Analysis} and \ref{S:Res:Code}, Figures \ref{fig:uR2PointsReal}, \ref{fig:uR3PointsReal}, \ref{fig:uR2PointsCCPReal} and \ref{fig:uR3PointsCCPReal} show the final circuit studied during this first part of this report.
 \medskip
 
 \begin{figure}[!ht]
@@ -39,7 +39,7 @@ Following concepts described in \ref{S:Res:Analysis} and \ref{sec:Res:Code}, Fig
 \label{fig:FinalCircuitsCCP}
 \end{figure}
 
-Those circuit has been implemented using a PICDEM 2 Plus evaluation board and external breadboard. PICDEM 2 Plus has 40-pin DIP\nomenclature{DIP}{Dual In-Line Package} socket, which corresponds to PIC18F4520 (microcontroller used during this experiments). It also contains an RS-232 interface, which has been used to transmit the digital counters $N_{x}$, $N_{c1}$ and $N_{c2}$ obtained by application described in \ref{sec:Res_CodeAnalysis}. The evaluation board has been supplied by 9V DC power supply charger because it provides a +5V regulator for direct input from 9V, 100 mA AC/DC wall adapter.
+Those circuit has been implemented using a PICDEM 2 Plus evaluation board and external breadboard. PICDEM 2 Plus has 40-pin DIP\nomenclature{DIP}{Dual In-Line Package} socket, which corresponds to PIC18F4520 (microcontroller used during this experiments). It also contains an RS-232 interface, which has been used to transmit the digital counters $N_{x}$, $N_{c1}$ and $N_{c2}$ obtained by application described in \ref{S:Res_CodeAnalysis}. The evaluation board has been supplied by 9V DC power supply charger because it provides a +5V regulator for direct input from 9V, 100 mA AC/DC wall adapter.
 \medskip
 
 PICDEM 2 Plus provides reset button and on-board external oscillator for 4 MHz canned crystal oscillator. A 4 MHz FOX F1100E oscillator has been used. As clock preescale 1:1 has been configured for the application, the counting time-base ($T_{s}$) used to get digital counts is 1 $\mu$s.

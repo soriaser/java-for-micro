@@ -2,15 +2,14 @@
 \subsection{Native}\label{S:Res:Results:Native}
 100 measures has been performed for every combination of capacitor $C$, unknown resistor $R_{x}$ and capture mode. Figures \ref{fig:RelativeErrorResistive2P} and \ref{fig:RelativeErrorResistive3P} show the relative error obtained for those results without take into account microcontroller internal resistance $R_{n}$.
 
-\begin{figure}[!htb]
+\begin{figure}[H]
 \centering
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.75\textwidth}
 	\includegraphics[width=\textwidth]{PlotR2PT1_Error.eps}
 	\caption{Using Timer 1}
 	\label{fig:PlotR2PT1Error}
 	\end{subfigure}
-	~
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.75\textwidth}
 	\includegraphics[width=\textwidth]{PlotR2PT1CCP1_Error.eps}
 	\caption{Using CCP}
 	\label{fig:PlotR2PT1CCP1Error}
@@ -19,15 +18,14 @@
 \label{fig:RelativeErrorResistive2P}
 \end{figure}
 
-\begin{figure}[!htb]
+\begin{figure}[H]
 \centering
-    \begin{subfigure}{0.45\textwidth}
+    \begin{subfigure}{0.75\textwidth}
 	\includegraphics[width=\textwidth]{PlotR3PT1_Error.eps}
 	\caption{Using Timer 1}
 	\label{fig:PlotR3PT1Error}
 	\end{subfigure}
-	~
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.75\textwidth}
 	\includegraphics[width=\textwidth]{PlotR3PT1CCP1_Error.eps}
 	\caption{Using CCP}
 	\label{fig:PlotR3PT1CCP1Error}
@@ -39,15 +37,14 @@
 The relative error oscillates between 0.07\% and 0.26\% if $C$ = 0.22 $\mu$F. For higher values of $C$, this relative error oscillates between 0.07\% and 0.01\%. The error is close to 0 when $R_{x}$ values are close to calibrator resistor $R_{c2}$ in case of two points calibration technique. In case of three points technique, the error is close to 0 when $R_{x}$ values are close to calibrator resistor $R_{c2}$, $R_{c1}$ and a midpoint between them. This behavior corresponds to calibration technique shown on Figures \ref{fig:Calibration2Points} and \ref{fig:Calibration3Points}. Figures \ref{fig:DeviationResistive2P} and \ref{fig:DeviationResistive3P} show the standard deviation obtained for every experiment.
 \medskip
 
-\begin{figure}[!htb]
+\begin{figure}[H]
 \centering
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.75\textwidth}
 	\includegraphics[width=\textwidth]{PlotR2PT1_Deviation.eps}
 	\caption{Using Timer 1}
 	\label{fig:PlotR2PT1Deviation}
 	\end{subfigure}
-	~
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.75\textwidth}
 	\includegraphics[width=\textwidth]{PlotR2PT1CCP1_Deviation.eps}
 	\caption{Using CCP}
 	\label{fig:PlotR2PT1CCP1Deviation}
@@ -56,15 +53,14 @@ The relative error oscillates between 0.07\% and 0.26\% if $C$ = 0.22 $\mu$F. Fo
 \label{fig:DeviationResistive2P}
 \end{figure}
 
-\begin{figure}[!htb]
+\begin{figure}[H]
 \centering
-    \begin{subfigure}{0.45\textwidth}
+    \begin{subfigure}{0.75\textwidth}
 	\includegraphics[width=\textwidth]{PlotR3PT1_Deviation.eps}
 	\caption{Using Timer 1}
 	\label{fig:PlotR3PT1Deviation}
 	\end{subfigure}
-	~
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.75\textwidth}
 	\includegraphics[width=\textwidth]{PlotR3PT1CCP1_Deviation.eps}
 	\caption{Using CCP}
 	\label{fig:PlotR3PT1CCP1Deviation}
@@ -76,7 +72,7 @@ The relative error oscillates between 0.07\% and 0.26\% if $C$ = 0.22 $\mu$F. Fo
 If internal resistors $R_{n}$ summarized in \ref{tab:InternalResistors} are taken into account as defined in equations \eqref{eq:RxInternalRes} and \eqref{eq:RelativeErrorInternalRes}. The internal resistors has been computed with PIC18F4520 put in PICDEM 2 Plus.
 \medskip
 
-\begin{table}[!htb]
+\begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|}
 \hline 
@@ -96,15 +92,14 @@ RB3 & $R_{n,4}$ & 19,5290 \\
 Figures \ref{fig:PlotR2PT1ErrorRn}, \ref{fig:PlotR2PT1CCP1ErrorRn}, \ref{fig:PlotR3PT1ErrorRn} and \ref{fig:PlotR3PT1CCP1ErrorRn} show the experimental an theoretical results obtained applying $R_{n}$. Those figures only show theoretical and experimental results for $C=2.2$ $\mu$F and $C=4.7$ $\mu$F.
 \medskip
 
-\begin{figure}[!htb]
+\begin{figure}[H]
 \centering
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.75\textwidth}
 	\includegraphics[width=\textwidth]{PlotR2PT1_ErrorRn.eps}
 	\caption{Using Timer 1}
 	\label{fig:PlotR2PT1ErrorRn}
 	\end{subfigure}
-	~
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.75\textwidth}
 	\includegraphics[width=\textwidth]{PlotR2PT1CCP1_ErrorRn.eps}
 	\caption{Using CCP}
 	\label{fig:PlotR2PT1CCP1ErrorRn}
@@ -113,15 +108,14 @@ Figures \ref{fig:PlotR2PT1ErrorRn}, \ref{fig:PlotR2PT1CCP1ErrorRn}, \ref{fig:Plo
 \label{fig:RelativeErrorRnResistive2P}
 \end{figure}
 
-\begin{figure}[!htb]
+\begin{figure}[H]
 \centering
-    \begin{subfigure}{0.45\textwidth}
+    \begin{subfigure}{0.75\textwidth}
 	\includegraphics[width=\textwidth]{PlotR3PT1_ErrorRn.eps}
 	\caption{Using Timer 1}
 	\label{fig:PlotR3PT1ErrorRn}
 	\end{subfigure}
-	~
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.75\textwidth}
 	\includegraphics[width=\textwidth]{PlotR3PT1CCP1_ErrorRn.eps}
 	\caption{Using CCP}
 	\label{fig:PlotR3PT1CCP1ErrorRn}
@@ -135,11 +129,32 @@ Experimental results tendency of results obtained for 3 points experiments trend
 
 Figure \ref{fig:PlotAllErrorsRn} shows a graphic representing all capture modes and results for $C=4.7$ $\mu$F in order to represent a comparison between them and theoretical values.
 
-\begin{figure}[!htb]
+\begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{PlotAllErrorsRn.eps}
+\includegraphics[scale=0.75]{PlotAllErrorsRn.eps}
 \caption{Relative Error taken into account $R_{n}$ of all capture modes}
 \label{fig:PlotAllErrorsRn}
 \end{figure}
 
 \subsection{Java}\label{S:Res:Results:Java}
+As defined in \ref{SS:Res:Code:Java}, a Java application has been implemented to measure resistors in a circuit based on 3 calibration points and using Timer 1 as microcontroller timer cycle counter.
+
+Following steps of previous subsection, 100 measures has been performed for every combination of capacitor $C$, unknown resistor $R_{x}$. Only results obtained for $4.7$ $\mu$F capacitors have shown a valid and comparable result. Relative error for rest of capacitor values always exceed 50\% in best cases.
+
+Figure \ref{fig:PlotR3PT1ErrorJava} shows relative error obtained during measures of  resistor values with 3 calibration points and Timer 1. Figure \ref{fig:PlotR3PT1DeviationJava} displays standard deviation of measures performed with Java application. For these results, $R_{n}$ has not been taken into account.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.75]{PlotR3PT1Java_Error.eps}
+\caption{Relative Error from experimental results for three points calibration and timer 1 for PIC18F4520 using Java application}
+\label{fig:PlotR3PT1ErrorJava}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.75]{PlotR3PT1Java_Deviation.eps}
+\caption{Standard Deviation from experimental results for three points calibration and timer 1 for PIC18F4520 using Java application}
+\label{fig:PlotR3PT1DeviationJava}
+\end{figure}
+
+Figure \ref{fig:PlotR3PT1ErrorJava} shows and error stability for resistor values between 1000 $\Omega$ and 1470 $\Omega$. As expected, relative error is higher than results obtained for C native applications. Similar behavior can be extracted from standard deviation results. Similar instability can be observed for $0.22$ $\mu$F capacitor, when C native application is used.
