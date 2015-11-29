@@ -353,42 +353,42 @@ This chapter defines its own set of data types representing JCR file data. types
 
 \medskip
 \begin{lstlisting}[
-caption={JCR file Structure},
+caption={JCR file structure},
 captionpos=b,
-label={cod:S:JVM:JCR:Struct},
+label={cod:S:JVM:JCR:JCRStruct},
 language=C]
 typedef struct jcr {
-  javaclass_header header;
-  javaclass_class* classes;
+  jcr_header header;
+  jcr_class* classes;
   uint8_t* constants;
-  javaclass_method_header* methods;
+  jcr_method_header* methods;
   uint8_t* bytecodes;
-} javaclass_class_t;
+} jcr_t;
 \end{lstlisting}
 \medskip
 
 \medskip
 \begin{description}
-\item[javaclass\_ header] \hfill \\
-\colorbox{yellow}{TODO}
+\item[jcr\_ header] \hfill \\
+Required information as defined in \ref{cod:S:JVM:JCR:JCRHeaderStruct}.
 \item[javaclass\_ class] \hfill \\
-\colorbox{yellow}{TODO}
+Array of Java Classes loaded in this JCR application.
 \item[constants] \hfill \\
-\colorbox{yellow}{TODO}
+Identifiers of global constants that are going to be stored in stack.
 \item[javaclass\_ method\_ header] \hfill \\
-\colorbox{yellow}{TODO}
+Array of methods loaded as a sum of all methods used in every Java Class.
 \item[bytecodes] \hfill \\
-\colorbox{yellow}{TODO}
+Translated bytecodes containing all methods instructions to execute.
 \end{description}
 \medskip
 
 \medskip
 \begin{lstlisting}[
-caption={JCR file Structure},
+caption={JCR Header structure},
 captionpos=b,
-label={cod:S:JVM:JCR:Struct},
+label={cod:S:JVM:JCR:JCRHeaderStruct},
 language=C]
-typedef struct javaclass_header {
+typedef struct jcr_header {
   uint8_t  version;
   uint8_t  methods;
   uint16_t constants;
@@ -397,81 +397,78 @@ typedef struct javaclass_header {
   uint8_t  main;
   uint16_t offsetClasses;
   uint16_t offsetConstants;
-  uint16_t offsetStrings;
   uint16_t offsetMethods;
-} javaclass_header_t;
+} jcr_header_t;
 \end{lstlisting}
 \medskip
 
 \begin{description}
 \item[version] \hfill \\
-\colorbox{yellow}{TODO}
+JCR version. Currently, 0x01 is used.
 \item[methods] \hfill \\
-\colorbox{yellow}{TODO}
+Number of methods by taking into account all Java Classes.
 \item[constants] \hfill \\
-\colorbox{yellow}{TODO}
+Number of constants by taking into account all Java Classes.
 \item[classes] \hfill \\
-\colorbox{yellow}{TODO}
+Number of Java Classes.
 \item[fields] \hfill \\
-\colorbox{yellow}{TODO}
+Number of fields by taking into account all Java Classes.
 \item[main] \hfill \\
-\colorbox{yellow}{TODO}
+Offset within JCR file to the main() Java method as defined in \ref{SS:JVM:Micros:API}.
 \item[offsetClasses] \hfill \\
-\colorbox{yellow}{TODO}
+Offset within JCR file to loaded Java Classes.
 \item[offsetConstants] \hfill \\
-\colorbox{yellow}{TODO}
-\item[offsetStrings] \hfill \\
-\colorbox{yellow}{TODO}
+Offset within JCR file to loaded constants.
 \item[offsetMethods] \hfill \\
-\colorbox{yellow}{TODO}
+Offset within JCR file to loaded methods.
 \end{description}
 
 \begin{lstlisting}[
-caption={JCR file Structure},
+caption={JCR Class structure},
 captionpos=b,
-label={cod:S:JVM:JCR:Struct},
+label={cod:S:JVM:JCR:JCRClassStruct},
 language=C]
-typedef struct javaclass_class {
+typedef struct jcr_class {
   uint8_t super;
   uint8_t fields;
-} javaclass_class_t;
+} jcr_class_t;
 \end{lstlisting}
 
 \begin{description}
 \item[super] \hfill \\
-\colorbox{yellow}{TODO}
+Indicates the class identifier of its super class.
 \item[fields] \hfill \\
-\colorbox{yellow}{TODO}
+Number of fields belonging to this class.
 \end{description}
 
 \begin{lstlisting}[
-caption={JCR file Structure},
+caption={JCR Method structure},
 captionpos=b,
-label={cod:S:JVM:JCR:Struct},
+label={cod:S:JVM:JCR:JCRMethodStruct},
 language=C]
-typedef struct javaclass_method_header {
+typedef struct jcr_method_header {
   uint16_t code;
   uint16_t id;
   uint8_t  flags;
   uint8_t  arguments;
   uint8_t  locals;
   uint8_t  stack;
-} javaclass_method_header_t;
+} jcr_method_header_t;
 \end{lstlisting}
 
 \begin{description}
 \item[code] \hfill \\
-\colorbox{yellow}{TODO}
+Offset within JCR file containing first bytecode corresponding to this method.
 \item[id] \hfill \\
-\colorbox{yellow}{TODO}
+Method id used to distinguish API native methods.
 \item[flags] \hfill \\
-\colorbox{yellow}{TODO}
+General purposes flags. Currently, only bit 1 is used to indicate if it is constructor method.
 \item[arguments] \hfill \\
-\colorbox{yellow}{TODO}
+Number of arguments used by this method.
 \item[locals] \hfill \\
-\colorbox{yellow}{TODO}
+Number of local variables used for this method.
 \item[stack] \hfill \\
-\colorbox{yellow}{TODO}
+Maximum amount of stack used for this method.
 \end{description}
 
 In order to perform the translation process from class file format to JCR file format (taking into account following subsections), a Java application has been designed and developed during this project to perform this translation. It is called JCConverter and received as input a *.class file and creates a *.jcr file by using format described above.
@@ -518,7 +515,7 @@ instruction [B1] - 0008: return
 \end{lstlisting}
 \medskip
 
-Bytecodes usually represents actions to perform in Java operand stack. Standard JVM uses a stack where every cell or slot can be filled by an integer value. Usual devices use 32 or 64 bits in order to represent an integer, but the JVM designed for this project uses an stack where every slot can be filled by 16 bits. It restricts the available Java primitive types that can be used when Java application for microcontroller is being written. Current design only allows byte, short, boolean and char primitive types. This limitation also exists in most of JVM designed for 8- or 16- bit devices as defined in \ref{L:Why:Current}.
+Bytecodes usually represents actions to perform in Java operand stack. Standard JVM uses a stack where every cell or slot can be filled by an integer value. Usual devices use 32 or 64 bits in order to represent an integer, but the JVM designed for this project uses an stack where every slot can be filled by 16 bits. It restricts the available Java primitive types that can be used when Java application for microcontroller is being written. Current design only allows byte, short, boolean and char primitive types. This limitation also exists in most of JVM designed for 8- or 16- bit devices.
 
 Behind of limitation described in previous paragraph, this project is a proof of concept and on the main goals is to show that it is possible to create an easy way to develop applications for $\mu$C by using higher level programming languages like Java, but full design of JVM is out of this scope, then, full support of bytecodes is not currently implemented. Maybe it is a good work for future projects, where could it be interesting to analyze the best way to optimize a JVM or how fully integrate and Standard Java into small devices. \ref{Appx:Bytecodes} described all bytescodes supported by JVM designed for this project.
 
@@ -556,7 +553,7 @@ I2S & NOP \\
 \subsection{Calling Native API methods}\label{SS:JVM:JCR:NativeAPI}
 Java allows us a mechanism to develop an object oriented application an run it on a microcontroller, but how can it get access to device resources? It is done through API described in \ref{S:JVM:API}.
 
-Java method can be called by other ones or maybe it could require some call to any function in code that make it up. This calling process is usually translated to standard bytecodes INVOKEVIRTUAL, INVOKESPECIAL or INVOKESTATIC followed by two bytes indicating method identifier as shown in example \ref={cod:S:JVM:JCR:JavaCodeExampleMethod}, where \textit{main()} code is translated to bytecode:
+Java method can be called by other ones or maybe it could require some call to any function in code that make it up. This calling process is usually translated to standard bytecodes INVOKEVIRTUAL, INVOKESPECIAL or INVOKESTATIC followed by two bytes indicating method identifier as shown in example \ref{cod:S:JVM:JCR:JavaCodeExampleMethod}, where \textit{main()} code is translated to bytecode:
 
 \medskip
 \begin{lstlisting}
@@ -621,7 +618,7 @@ X & X & X & X & X & X & X & X & Identifier \\
 \end{table}
 
 \section{Loader}\label{S:JVM:Loader}
-Once Java standard application is compiled, generating a \textit{*.class} file, and it is translated to JCR file using JCConverter tool described in \ref{SS:JVM:JCR:JCConverter}, generating \textit{*.jcr} file, then, full content of this final generated file has to be loaded into JVM in order to start bytecode execution.
+Once Java standard application is compiled, generating a \textit{*.class} file, and it is translated to JCR file using JCConverter tool also developed for this project purposes, generating \textit{*.jcr} file, then, full content of this final generated file has to be loaded into JVM in order to start bytecode execution.
 
 Previosuly loaded OS contains both JVM and Loader modules as described in \ref{fig:C:JVM:OverviewDiagram}. Loader is the responsible to manage the loading of external compiled Java applications to the microcontroller OS. If no Java application is loaded and running on $\mu$C, Loader is waiting to receive a Load command through Serial Port as defined in \ref{tab:SS:JVM:Loader:Commands}.
 
@@ -708,7 +705,7 @@ Once application is loaded, then it is time to start JVM execution. JCR data dow
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{JVMRunTime.eps}
+\includegraphics[scale=0.75]{JVMRunTime.eps}
 \caption{JVM basic Run Time}
 \label{fig:JVMRunTime}
 \end{figure}
@@ -717,28 +714,28 @@ Standard JVM uses several Run Time areas during execution of some program as def
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{JVMRunTimeAreas.eps}
+\includegraphics[scale=0.75]{JVMRunTimeAreas.eps}
 \caption{JVM basic Run Time areas distribution in memory array}
 \label{fig:JVMRunTimeAreas}
 \end{figure}
 
 \begin{description}
 \item[Global] \hfill \\
-\colorbox{yellow}{TODO}
+Contains the values of global variables. The corresponding slot identifies the constant. The size is constant during execution of the program.
 \item[Heap] \hfill \\
-\colorbox{yellow}{TODO}
+Contains the objects created during application execution, i.e. arrays, Java objects, etc. Size is variable and garbage collection is executed if required space for a new object is required. If there is no more space, an internal error is thrown.
 \item[Local] \hfill \\
-\colorbox{yellow}{TODO}
+Contains the values of local constants being used during execution of some specific method. Its size is variable depending on method being executed.
 \item[Stack] \hfill \\
-\colorbox{yellow}{TODO}
+Last-in-first-out (LIFO) stack known as its operand stack. It is used to execute the programming operation pushing values an getting results. Its size is variable depending on method being executed.
 \end{description}
 
 \subsection{Interruptions}\label{SS:JVM:RunTime:Int}
-Diagram described in \ref{fig:JVMRunTime} only described the main loop of JVM where system is interpreting every bytecode of the code but, as defined in \ref{S:JVM:API:Main}, it is possible to register the application to some possible events. These events are basically interruptions in microcontroller an they have to be handle during execution of JVM if application is registered to them. Diagram shown in \ref{fig:JVMRunTimeWithInt} shows how JVM Run Time manages this interruptions.
+Diagram described in \ref{fig:JVMRunTime} only described the main loop of JVM where system is interpreting every bytecode of the code but, as defined in \ref{SS:JVM:API:Main}, it is possible to register the application to some possible events. These events are basically interruptions in microcontroller an they have to be handle during execution of JVM if application is registered to them. Diagram shown in \ref{fig:JVMRunTimeWithInt} shows how JVM Run Time manages this interruptions.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{JVMRunTimeWithInt.eps}
+\includegraphics[scale=0.75]{JVMRunTimeWithInt.eps}
 \caption{JVM basic Run Time}
 \label{fig:JVMRunTimeWithInt}
 \end{figure}

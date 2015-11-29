@@ -213,9 +213,9 @@ void main(void) {
     // Configure Timer 2.
     // ------------------
     // - 1:1 Postcale
-    // - 1:16 Prescale
+    // - 1:1 Prescale
     //
-    T2CON = 0x02;
+    T2CON = 0x00;
     // Initially Timer 2 OFF
     TMR2ON = 0;
     // Disable the TMR2 to PR2 match interrupt

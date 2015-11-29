@@ -1,4 +1,137 @@
 \chapter{Bytecodes}\label{Appx:Bytecodes}
 Following list shows bytecodes supported by JVM designed for this project:
-\colorbox{yellow}{TODO}
+\begin{table}[!htb]
+\centering
+\begin{tabular}{|c|c|}
+\hline 
+Bytecode & Identifier \\
+\hline 
+NOP & 0x00 \\
+\hline 
+ICONST\_M1 & 0x02 \\
+\hline 
+ICONST\_0 & 0x03 \\
+\hline 
+ICONST\_1 & 0x04 \\
+\hline 
+ICONST\_2 & 0x05 \\
+\hline 
+ICONST\_3 & 0x06 \\
+\hline 
+ICONST\_4 & 0x07 \\
+\hline 
+ICONST\_5 & 0x08 \\
+\hline 
+BIPUSH & 0x10 \\
+\hline 
+SIPUSH & 0x11 \\
+\hline 
+ILOAD & 0x15 \\
+\hline 
+ILOAD\_0 & 0x1A \\
+\hline 
+ILOAD\_1 & 0x1B \\
+\hline 
+ILOAD\_2 & 0x1C \\
+\hline 
+ILOAD\_3 & 0x1D \\
+\hline 
+ISTORE\_0 & 0x3B \\
+\hline 
+ISTORE\_1 & 0x3C \\
+\hline 
+ISTORE\_2 & 0x3D \\
+\hline 
+ISTORE\_3 & 0x3E \\
+\hline 
+BASTORE & 0x54 \\
+\hline 
+DUP & 0x59 \\
+\hline 
+IADD & 0x60 \\
+\hline 
+ISUB & 0x64 \\
+\hline 
+IMUL & 0x68 \\
+\hline 
+IDIV & 0x6C \\
+\hline 
+IREM & 0x70 \\
+\hline 
+INEG & 0x74 \\
+\hline 
+ISHL & 0x78 \\
+\hline 
+ISHR & 0x7A \\
+\hline 
+IUSHR & 0x7C \\
+\hline 
+\end{tabular}
+\quad
+\begin{tabular}{|c|c|}
+\hline 
+Bytecode & Identifier \\
+\hline 
+IAND & 0x7E \\
+\hline 
+IOR &  0x80 \\
+\hline 
+IXOR & 0x82 \\
+\hline 
+IINC & 0x84 \\
+\hline 
+IFEQ & 0x99 \\
+\hline 
+IFNE & 0x9A \\
+\hline 
+IFLT & 0x9B \\
+\hline 
+IFGE & 0x9C \\
+\hline 
+IFGT & 0x9D \\
+\hline 
+IFLE & 0x9E \\
+\hline 
+IF\_ICMPEQ & 0x9F \\
+\hline 
+IF\_ICMPNE & 0xA0 \\
+\hline 
+IF\_ICMPLT & 0xA1 \\
+\hline 
+IF\_ICMPGE & 0xA2 \\
+\hline 
+IF\_ICMPGT & 0xA3 \\
+\hline 
+IF\_ICMPLE & 0xA4 \\
+\hline 
+GOTO & 0xA7 \\
+\hline 
+TABLESWITCH & 0xAA \\
+\hline 
+LOOKUPSWITCH & 0xAB \\
+\hline 
+IRETURN & 0xAC \\
+\hline 
+RETURN & 0xB1 \\
+\hline 
+GETSTATIC & 0xB2 \\
+\hline 
+PUTSTATIC & 0xB3 \\
+\hline 
+GETFIELD & 0xB4 \\
+\hline 
+PUTFIELD & 0xB5 \\
+\hline 
+INVOKEVIRTUAL & 0xB6 \\
+\hline 
+INVOKESPECIAL & 0xB7 \\
+\hline 
+INVOKESTATIC & 0xB8 \\
+\hline 
+NEWARRAY & 0xBC \\
+\hline
+\end{tabular}
+\caption{Supported bytecodes}
+\label{tab:Appx:Bytecodes}
+\end{table}
 
