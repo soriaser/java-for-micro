@@ -1,8 +1,8 @@
 \chapter{Java Virtual Machine}\label{C:JVM}
-When a java application is compiled and generates an output file for every java object. This file is named class file. The class file contains different required information to be loaded on a JVM\nomenclature{JVM}{Java Virtual Machine}, as defined in \cite{Art:JVMSE7}, and execute the java code. This format was designed for large RAM memory devices and it has been redesign for this project. This new design is based on NanoVM \cite{Art:NanoVM}.
+As defined in \ref{S:Introduction:Why}, Java is an object-oriented language. Usually, every Java file contains a one object. When these objects are compiler, in order to translate the user code to bytecodes, output file is generated for for every java object previously defined. These new files generated are named Class files. The class file contains different required information to be loaded on a JVM, as defined in \cite{Art:JVMSE7}, and execute the java code. This format was designed for large RAM memory devices and it has been redesign for this project. This new design is based on NanoVM \cite{Art:NanoVM}.
 
 \section{Design}\label{S:JVM:Design}
-The design for a new JVM adapted for $\mu$C\nomenclature{$\mu$C}{Microcontroller} implies several entities external to $\mu$C final code running on it. It requires a full system since java application is created, compiled and loaded in JVM running in $\mu$C. It also requires a design of Java API\nomenclature{API}{Application Programming Interface} responsible to provide access to $\mu$C resources, which are only available if application is programmed in C or assembler.
+The design for a new JVM adapted for $\mu$C\nomenclature{$\mu$C}{Microcontroller} implies several entities external to $\mu$C final code running on it. It requires a full system since java application is created, compiled and loaded in JVM running in $\mu$C. It also requires a design of Java API responsible to provide access to $\mu$C resources, which are only available if application is programmed in C or assembler.
 
 Diagram of Figure \ref{fig:C:JVM:OverviewDiagram} shows all parts that take part of full process. The main idea is go through those parts explaining in detail every process reflected in this diagram. Dark boxes of this figure indicates the proprietary parts of this project (i.e. fully designed and implemented for this document purpose), while clear boxes are standard or already existing parts that have been used in this project.
 
@@ -622,7 +622,7 @@ Once Java standard application is compiled, generating a \textit{*.class} file, 
 
 Previosuly loaded OS contains both JVM and Loader modules as described in \ref{fig:C:JVM:OverviewDiagram}. Loader is the responsible to manage the loading of external compiled Java applications to the microcontroller OS. If no Java application is loaded and running on $\mu$C, Loader is waiting to receive a Load command through Serial Port as defined in \ref{tab:SS:JVM:Loader:Commands}.
 
-Current unique interface supported to download or remove applications is Serial Port. Some commands and a protocol have been designed for this communication between external entity and Loader listening on $\mu$C.
+Currently, only Serial Port interface is supported to download or remove Java applications running JVM. For that reason, OS is always listenting Serial Port communication and processing possible commands defined in this project for Java applications management. In addition, a protocol has been designed for this communication between external entity and Loader listening on $\mu$C.
 
 \subsection{Commands}\label{SS:JVM:Loader:Commands}
 Loader is able to process some commands formatted as following structure:
@@ -673,7 +673,7 @@ Once INS has been successfully received, Loader is ready to receive data length 
 \subsection{Sender}\label{SS:JVM:Loader:Sender}
 In order to send JCR file generated as described in \ref{S:JVM:JCR} using Protocol described in \ref{SS:JVM:Loader:Protocol}, a standard Java application has been designed an developed.
 
-It uses Java serial port communication library JSSC (Java Simple Serial Connector) v2.6.0 in order to connect to the Loader through Serial Port using parameters described in Table \ref{tab:SS:JVM:Loader:Sender:Params}
+It uses Java serial port communication library JSSC\nomenclature{JSSC}{Java Simple Serial Connector} (Java Simple Serial Connector) v2.6.0 in order to connect to the Loader through Serial Port using parameters described in Table \ref{tab:SS:JVM:Loader:Sender:Params}
 
 \begin{table}[!htb]
 \centering
@@ -698,7 +698,7 @@ DTS & enabled \\
 \label{tab:SS:JVM:Loader:Sender:Params}
 \end{table}
 
-In order to test o simulate it using Proteus, a virtual serial port is created an terminal is used to send and receive data. VSPE (Virtual Serial Port Emulator) and RealTerm have been used for this purposes, respectively.
+In order to test o simulate it using Proteus, a virtual serial port is created an terminal is used to send and receive data. VSPE (Virtual Serial Port Emulator) \nomenclature{VSPE}{Virtual Serial Port Emulator} and RealTerm have been used for this purposes, respectively.
 
 \section{JVM}\label{S:JVM:RunTime}
 Once application is loaded, then it is time to start JVM execution. JCR data downloaded is interpreted as described in \ref{S:JVM:JCR} and \textit{main()} bytecode is started to be executed as described in \ref{fig:JVMRunTime}.
@@ -727,7 +727,7 @@ Contains the objects created during application execution, i.e. arrays, Java obj
 \item[Local] \hfill \\
 Contains the values of local constants being used during execution of some specific method. Its size is variable depending on method being executed.
 \item[Stack] \hfill \\
-Last-in-first-out (LIFO) stack known as its operand stack. It is used to execute the programming operation pushing values an getting results. Its size is variable depending on method being executed.
+Last-in-first-out (LIFO) \nomenclature{LIFO}{Last In Fist Out} stack known as its operand stack. It is used to execute the programming operation pushing values an getting results. Its size is variable depending on method being executed.
 \end{description}
 
 \subsection{Interruptions}\label{SS:JVM:RunTime:Int}
@@ -740,7 +740,7 @@ Diagram described in \ref{fig:JVMRunTime} only described the main loop of JVM wh
 \label{fig:JVMRunTimeWithInt}
 \end{figure}
 
-When Java application calls to the native method \textit{setEvent()}, it is basically managing required microcontroller registers to wait until interruption. When this event or interruption happens, \textit{onEvent()} method is suddenly called, stopping current processing of the application and returning to the same point once \textit{onEvent()} method has been fully processed. For instance, example \ref{cod:SS:JVM:RunTime:Int:JavaCodeExample} shows a code where \textit{main()} (starting application method) only registers the application to EVENT\_ INTERRUPT\_ 0 (INT0 interruption in case of PIC microcontroller) and, after that, it enters in a endless loop. During this final \textit{while}, JVM is executing bytecodes corresponding to the loop itself but it is already registered to the interruption. If INT0 interruption occurs, as $\mu$C is register to it, native handler interruption method is thrown in the middle of JVM execution (\textit{interrupt} in C code). Then a flag indicating that interruption was thrown but not processed is stored and $\mu$C interruption cleared. Then, JVM continues processing bytecode that it was processing before interruption and, at the en of bytecode processing, the previous set flag is checked. As flag is set to '1', then, current status is stored and \textit{onEvent()} is called. After execute this method, JVM returns to previous state and continue processing, i.e. final \textit{while} loop.
+When Java application calls to the native method \textit{setEvent()}, it is basically managing required microcontroller registers to wait until interruption. When this event or interruption happens, \textit{onEvent()} method is suddenly called, stopping current processing of the application and returning to the same point once \textit{onEvent()} method has been fully processed. For instance, example \ref{cod:SS:JVM:RunTime:Int:JavaCodeExample} shows a code where \textit{main()} (starting application method) only registers the application to EVENT\_ INTERRUPT\_ 0 (INT0\nomenclature{INT}{Interruption} interruption in case of PIC microcontroller) and, after that, it enters in a endless loop. During this final \textit{while}, JVM is executing bytecodes corresponding to the loop itself but it is already registered to the interruption. If INT0 interruption occurs, as $\mu$C is register to it, native handler interruption method is thrown in the middle of JVM execution (\textit{interrupt} in C code). Then a flag indicating that interruption was thrown but not processed is stored and $\mu$C interruption cleared. Then, JVM continues processing bytecode that it was processing before interruption and, at the en of bytecode processing, the previous set flag is checked. As flag is set to '1', then, current status is stored and \textit{onEvent()} is called. After execute this method, JVM returns to previous state and continue processing, i.e. final \textit{while} loop.
 
 \medskip
 \begin{lstlisting}[
@@ -808,7 +808,7 @@ Other scenarios similar to the one specified above problem can happen internally
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{MicrocontrollerAdaptation.eps}
-\caption{Internal interface speration in microcontroller system designed for this project}
+\caption{Internal interfaces designed for microcontroller system in this project}
 \label{fig:uCIntfs}
 \end{figure}
 
@@ -816,7 +816,7 @@ It makes easy to adapt system to several devices. Only $\mu$C specific part has 
 This design also means that every $\mu$C should have its own compilation, but the same Java application will work on every compilation, i.e. final Java application should never change.
 
 \subsection{Memory Management}\label{SS:JVM:Micros:MM}
-\ref{fig:uCIntfs} shows that exists an internal interface that separated how to read or write data in one microcontroller from main system. It allows that following code get the same value regardless $\mu$C used in this  compilation. Main system should not know how to write or read a byte in memory.
+Designing internal interfaces, which are going to be used by code parts non hardware-dependent, allows to separate how to read or write data from microcontroller regardless hardware being used, as shown in \ref{fig:uCIntfs}. This separation allows that following code obtains the same value regardless $\mu$C used for the compilation. Memory Management system should not know how to write or read a byte in microcontroller memory.
 
 \medskip
 \begin{lstlisting}[
@@ -926,7 +926,5 @@ void Port_SetPin(uint8_t pins, uint8_t type)
 
 Because it is going the function called by \textit{Api\_ PortRegistry\_ SetPinToOne} method. It is applied for all native methods implemented in API specified in \ref{S:JVM:API}.
 
-\section{CodeStructure}\label{S:JVM:Code}
+\section{Code Structure}\label{S:JVM:Code}
 Organization of code is explained in \ref{Appx:CodeStructure}
-
-%\section{Example}\label{S:JVM:Example}

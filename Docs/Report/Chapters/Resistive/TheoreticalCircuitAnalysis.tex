@@ -1,5 +1,5 @@
 \section{Theoretical Circuit Analysis}\label{S:Res:Analysis}
-As direct resistive sensor-to-microcontroller interfaces are basically based on measuring discharging time of an RC circuits, first step before to analyze complete circuit is to study, remember or briefly introduce its operating principle. The RC output relation between voltage (V) and time (t) is shown in Figure \ref{fig:RCChargeDischargeGraphic}.
+As direct resistive sensor-to-microcontroller interfaces are basically based on measuring discharging time of an RC\nomenclature{RC}{Resistor-Capacitor} circuits, first step before to analyze complete circuit is to study, remember or briefly introduce its operating principle. The RC\nomenclature{R}{Resistor}\nomenclature{C}{Capacitor} output relation between voltage (V\nomenclature{V}{Voltage}) and time (t\nomenclature{t}{Time}) is shown in Figure \ref{fig:RCChargeDischargeGraphic}.
 
 \begin{figure}[h]
 \centering
@@ -20,7 +20,7 @@ v_{o}(t) = V_{MAX}(1-e^{-\frac{t}{RC}})
 T_{c} = RC\ln(\frac{V_{MAX}}{V_{MAX}-V_{TH}})
 \end{equation}
 
-Nevertheless, capacitor discharge and the time required to get $V_{TH}$ can be obtained by \eqref{eq:ChargeRC} and \eqref{eq:DischargeTime}, respectively.
+Nevertheless, capacitor discharge and the time required to get $V_{TL}$ can be obtained by \eqref{eq:ChargeRC} and \eqref{eq:DischargeTime}, respectively.
 
 \begin{equation}
 \label{eq:DischargeRC}
@@ -90,21 +90,21 @@ Figures \ref{fig:Calibration2Points} and \ref{fig:Calibration3Points} show how n
 
 \begin{figure}[!ht]
 \centering
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.75\textwidth}
 	\includegraphics[width=\textwidth]{Calibration2Points.eps}
 	\caption{Two calibration points}
 	\label{fig:Calibration2Points}
 	\end{subfigure}
 	~
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.75\textwidth}
 	\includegraphics[width=\textwidth]{Calibration3Points.eps}
 	\caption{Three calibration points}
 	\label{fig:Calibration3Points}
 	\end{subfigure}
-\caption{Calibration technique applied to}
+\caption{Relation between $N_{x}$ and $R_{x}$ applied to}
 \end{figure}
 
-But, all of previous analysis does not take into account internal resistance from microcontroller $R_{n}$. \cite{AccuracyAndResolution} analyses equations \eqref{eq:RxTwoPoints} and \eqref{eq:RxThreePoints} including internal microcontroller resistance resulting equation \eqref{eq:RxInternalRes}.
+But, all of previous analysis does not take into account internal resistance from microcontroller $R_{n}$. \cite{Art:Accuracy} analyses equations \eqref{eq:RxTwoPoints} and \eqref{eq:RxThreePoints} including internal microcontroller resistance resulting equation \eqref{eq:RxInternalRes}.
 
 \begin{equation}
 \label{eq:RxInternalRes}

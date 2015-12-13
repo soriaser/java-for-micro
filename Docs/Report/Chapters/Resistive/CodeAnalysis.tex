@@ -1,7 +1,7 @@
-\section{Code Analysis}\label{S:Res:Code}
+\section{Application Analysis}\label{S:Res:Code}
 \input{Chapters/Resistive/FiniteStateMachine}
 \input{Chapters/Resistive/TimersAndCaptureMode}
-\subsection{Analysis}\label{SS:Res:Code:Analysis}
+\subsection{Code Analysis}\label{SS:Res:Code:Analysis}
 As explained during introduction of this report, PIC18F4520 microcontroller has been used to analyze circuits from Figures \ref{fig:MicrocontrollerBasedInterfaceCircuitResistor2Points} and \ref{fig:MicrocontrollerBasedInterfaceCircuitResistor3Points}. As explained during Section \ref{S:Res:Analysis}, they are based on charge and discharge of RC circuit.
 \medskip
 
@@ -56,20 +56,20 @@ Figure \ref{fig:ResistorsCodeDiagram} shows a diagram explaining the programming
 \begin{figure}[!ht]
 \centering
 \includegraphics[scale=0.75]{ResistorsCodeDiagram.eps}
-\caption{Code diagram of application to measure resistor sensor}
+\caption{Block diagram describing application steps followed to measure resistor sensor}
 \label{fig:ResistorsCodeDiagram}
 \end{figure}
 
-\subsection{Native}\label{SS:Res:Code:Native}
-Application using FSM mechanism has been used for resistor measurements. Appendix \ref{Appx:AppCodeNative} shows code written in C programming language. XC8 complier v 1.33 has been used to compile C native coda and generate final *.hex file that is loaded on microcontroller.
+\subsection{Application using C code}\label{SS:Res:Code:Native}
+Application using FSM mechanism has been used for resistor measurements. Appendix \ref{Appx:AppCodeNative} shows code written in C programming language. XC8 complier v 1.33 has been used to compile C native code and generate final *.hex file that is loaded on microcontroller.
 
-Code allows to run application with Timer 1 or 2, depending on TIMER C macro definition value. It also allows to configure if interruption mechanism used to trigger application when capacitor is discharged by defining CCP1 C macro or not. If CCP1 is defined, Capture Compare PWM (CCP\nomenclature{CCP}{Capture Compare PWM}) capture mode is used instead of INT0 interruption.
+Code allows to run application with Timer 1 or 2, depending on TIMER C macro definition value. It also allows to configure if interruption mechanism used to trigger application when capacitor is discharged by defining CCP1 C macro or not. If CCP1 is defined, CCP capture mode is used instead of INT0 interruption.
 
 Application is waiting in a endless loop until byte with value 0x01 is received through serial port interface. As PIC18F4520 allows to configure interruption priority, Serial Port interruptions are managed as low priority interruption and INT0 or CCP1 trigger as high priority interruption. It allows that, code responsible to manage INT0 or CCP1 interruption directly disable timer currently being used, ensuring that no more timer cycles are included in timer counter. In order to avoid more instructions than required, after configure ports as required, for capacitor discharge and timer enabling, assembler (ASM\nomenclature{ASM}{Assembler}) code is used to wait until high priority interruption is processed.
 
 Once application has collected the three required timer counters, they are sent out through serial port in order to be processed or stored for final result analysis.
 
-\subsection{Java}\label{SS:Res:Code:Java}
+\subsection{Application using Java code}\label{SS:Res:Code:Java}
 As defined during this report, this project has basically three goals. First one is to show a proof of concept of how Java can work in microcontrollers with limited resources and allow to create an standard API to create interoperable Java applications. Second goal would be the analysis of direct sensor interface for resistor sensors using XC8 compiler and FSM code mechanism. In order to join these point, a third aim appear. This third point tries to compare or show the difference between create a C or Java, but application requires accuracy and maybe a specific management of some microcontroller resource. For that reason, a Java application has been created to measure resistor sensors by using the same direct interface circuit as defined in \ref{S:Res:Circuit}.
 
 Only 3 calibration points and Timer 1 has been used to measure resistor values with Java application. The reason for this is basically that API developed for the proof of concept of this project does not allow Timer 2 configuration. In the other hand, the expected result should be worst than C native application, and 3 calibration points should return better results than 2 calibrations points, then it has been decided to just compare with best output expected results.

@@ -1,4 +1,10 @@
-\cleardoublepage
-\phantomsection
 \chapter{Conclusions}\label{C:Conclusions}
-\colorbox{yellow}{TODO}
+Use of Java in microcontrollers and accuracy of direct interface circuit for resistive sensors-to-microcontrollers have been analyzed during this project.
+
+Introducing Java as another way to create applications for microcontrollers can help to introduce new users to this field and create an standard API to build application fully interoperable between devices. Although use of Java in this type of devices with high limitation of resources is possible, it introduces several limitations. These constraints make that final user requires minimum knowledge of memory resources and code optimization. It has been removed the requirement to know microcontroller specific details, but optimum programming is already required.
+ 
+Regarding direct interface circuit for resistive sensors. PICDEM 2 Plus evaluation board add some noise in comparison with specific boards designed for direct interface purpose and it could affect to the accuracy results. But values obtained for this board are acceptable for this type of interfaces because the difference between results got in this report and values from \cite{Art:Uncertainty} and \cite{Art:Accuracy} can be acceptable taken into account circuitry introduced by PICDEM 2 Plus. 3 point calibration obtains better results as expected by theoretical analysis, and it is recommended to use CCP mode when application for direct interface circuit is going to be designed because it can introduce accuracy obtaining timing counter. Anyway, could be concluded that, as lower level is used for application programming in microcontrollers better accuracy is obtained. But it does not mean that it is not possible to add the possibility to use higher level programming languages like Java. It depends on the scope of application.
+
+in comparison with \cite{Art:Accuracy}, relative error for 2 calibration points shows a slight worsening in results obtained with FSM technique used in this project. But, it cannot be concluded if it caused by FSM mechanism or PIC18F4520 micrcontroller, since AVR device was used during \cite{Art:Accuracy} article.
+
+Java results obtained for 3 calibration points and Timer 1 are worst than results obtained with C code, but difference is not so huge as expected for capacitor value of $4.70$ $\mu$F. Capacitor values lower $4.70$ $\mu$F cannot be used for this Java proof of concept developed during this project, but it opens new ways to optimize JVM introduced here to reach until closer results as obtained for C application. This project concludes that it is possible to integrate Java on microcontrollers, but it is required higher analysis in terms of memory, performance and JVM behavior.

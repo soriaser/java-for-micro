@@ -1,18 +1,18 @@
 \subsection{Finite State Machine}\label{S:Res:Code:FSM}
-Finite State Machine (FSM\nomenclature{FSM}{Finite State Machine}) is a computational model, usually used by hardware or some types of software, where the aplication, program or machine can have one or more different states and it will be always in one of them. This state can be changed depending on some events which are represented as an entrance on this state. Those events may, or not, generate an output and, accordingly, a new state transition.
+Finite State Machine (FSM\nomenclature{FSM}{Finite State Machine}) is a computational model, usually used by hardware or some types of software, where the aplication, program or machine can have one or more different states and it will be always in one of them. This state can be changed depending on some events which are represented as an input on this state. Those events may, or not, generate an output and, accordingly, a new state transition.
 \medskip
 
 Figure \ref{fig:FSM} shows an easy example to represent the FSM concept. The application represented in Figure \ref{fig:FSM} can remain in three possible states while it is being executed: $S1$, $S2$ and $S3$. If application stays on $S1$, the event $E_{2}$ would imply a transition to state $S2$ but event $E_{1}$ would change the application state to $S3$. In that way, Figure \ref{fig:FSM} also shows what transitions are available and how to perform them.
 
 \begin{figure}[h]
 \centering
-	\begin{subfigure}[b]{0.45\textwidth}
+	\begin{subfigure}[b]{0.50\textwidth}
 	\includegraphics[width=\textwidth]{FSM.eps}
 	\caption{Finite State Machine}
 	\label{fig:FSM}
 	\end{subfigure}
 	~
-	\begin{subfigure}[b]{0.25\textwidth}
+	\begin{subfigure}[b]{0.30\textwidth}
 	\includegraphics[width=\textwidth]{Sequential.eps}
 	\caption{Sequential}
 	\label{fig:Sequential}
@@ -20,4 +20,4 @@ Figure \ref{fig:FSM} shows an easy example to represent the FSM concept. The app
 \caption{Programming diagrams}
 \end{figure}
 
-This concept it is easily applicable to the PIC software programmed for this report. Those applications has been based on previous programs based on sequential programming, where the application has no possibilities to move to several states depending on different events, in that case, only one transition is available as shown in Figure \ref{fig:Sequential}.
+This concept it is easily applicable to the PIC software programmed for this report. Those applications are based on previous programs based on sequential programming, where the application has no possibilities to move to several states depending on different events, in that case, only one transition is available as shown in Figure \ref{fig:Sequential}.
